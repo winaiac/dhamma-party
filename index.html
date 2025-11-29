@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- เพิ่ม Chart.js สำหรับกราฟ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <link
         href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;700&display=swap"
         rel="stylesheet">
@@ -212,7 +212,7 @@
 
         <!-- INFOGRAPHIC CONTENT -->
         <div class="container mx-auto px-4 py-4 max-w-6xl space-y-16">
-            
+
             <!-- Intro Section: Identity & Radar -->
             <section class="bg-white rounded-2xl shadow-md p-6 md:p-8 border-t-4 border-orange-500">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -221,11 +221,14 @@
                             จุดยืนทางนโยบายที่ชัดเจน
                         </h2>
                         <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                            เราคือนวัตกรรมทางการเมืองที่ผสมผสาน <strong>"หลักธรรม"</strong> เข้ากับการบริหารจัดการสมัยใหม่ โดยให้น้ำหนักสูงสุดกับการปกป้องพระพุทธศาสนาและแก้ปัญหาปากท้องเกษตรกร
+                            เราคือนวัตกรรมทางการเมืองที่ผสมผสาน <strong>"หลักธรรม"</strong>
+                            เข้ากับการบริหารจัดการสมัยใหม่
+                            โดยให้น้ำหนักสูงสุดกับการปกป้องพระพุทธศาสนาและแก้ปัญหาปากท้องเกษตรกร
                         </p>
                         <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500 mb-4">
                             <h4 class="font-bold text-orange-800 font-head">ค่านิยมหลัก</h4>
-                            <p class="text-sm text-gray-600">ซื่อสัตย์ สุจริต ยึดมั่นในธรรม กล้าหาญที่จะทำสิ่งที่ถูกต้อง</p>
+                            <p class="text-sm text-gray-600">ซื่อสัตย์ สุจริต ยึดมั่นในธรรม กล้าหาญที่จะทำสิ่งที่ถูกต้อง
+                            </p>
                         </div>
                     </div>
                     <!-- Chart: Party Focus Radar -->
@@ -239,7 +242,8 @@
             </section>
 
             <!-- Section: Religious & Ethical Policies -->
-            <section class="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-orange-500">
+            <section
+                class="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-orange-500">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-vihara text-4xl text-orange-500 mr-3"></i>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">นโยบายด้านศาสนาและสังคม</h2>
@@ -252,7 +256,8 @@
                     <!-- Viz: Monk Salary Increase -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                         <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">สวัสดิการพระสงฆ์</h3>
-                        <p class="text-sm text-gray-500 mb-4 h-10">เพิ่ม "ค่านิตยภัต" (เงินเดือนพระสังฆาธิการ) เพื่อคุณภาพชีวิตที่ดีขึ้น</p>
+                        <p class="text-sm text-gray-500 mb-4 h-10">เพิ่ม "ค่านิตยภัต" (เงินเดือนพระสังฆาธิการ)
+                            เพื่อคุณภาพชีวิตที่ดีขึ้น</p>
                         <div class="chart-container" style="height: 250px;">
                             <canvas id="monkSalaryChart"></canvas>
                         </div>
@@ -261,15 +266,16 @@
                     <!-- Viz: Social Security Reform -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                         <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">ลดภาระประชาชน</h3>
-                        <p class="text-sm text-gray-500 mb-4 h-10">ลดเงินสมทบประกันสังคม เหลือ 1% เพื่อเพิ่มสภาพคล่อง</p>
+                        <p class="text-sm text-gray-500 mb-4 h-10">ลดเงินสมทบประกันสังคม เหลือ 1% เพื่อเพิ่มสภาพคล่อง
+                        </p>
                         <div class="chart-container" style="height: 250px;">
                             <canvas id="socialSecurityChart"></canvas>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                     <div class="bg-orange-600 text-white p-4 rounded-lg shadow text-center">
+                    <div class="bg-orange-600 text-white p-4 rounded-lg shadow text-center">
                         <i class="fa-solid fa-scroll text-2xl mb-2"></i>
                         <div class="font-bold font-head">ศาสนาประจำชาติ</div>
                         <div class="text-xs opacity-90">บรรจุในรัฐธรรมนูญ</div>
@@ -288,12 +294,13 @@
             </section>
 
             <!-- Section: Economy & Farmers -->
-            <section class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-green-500">
+            <section
+                class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-green-500">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-seedling text-4xl text-green-600 mr-3"></i>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">เศรษฐกิจรากหญ้าและเกษตรกร</h2>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- HTML Diagram: New Ministries -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
@@ -339,7 +346,7 @@
                 </div>
             </section>
 
-             <!-- Section: Education & Structure -->
+            <!-- Section: Education & Structure -->
             <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Education Column -->
                 <div class="md:col-span-2 bg-white rounded-2xl shadow-md p-6 border-t-4 border-purple-600">
@@ -404,7 +411,8 @@
                                     <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span>
                                 </li>
                                 <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
-                                    <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span></li>
+                                    <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span>
+                                </li>
                             </ul>
                             <button onclick="handlePublicAction('member')"
                                 class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
@@ -421,7 +429,8 @@
                                     <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span>
                                 </li>
                                 <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i>
-                                    <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span></li>
+                                    <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span>
+                                </li>
                             </ul>
                             <button onclick="handlePublicAction('candidate')"
                                 class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
@@ -603,7 +612,7 @@
             <!-- Feedback Board -->
             <div class="mt-12">
                 <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋
-                    กระดานติดตามเรื่องร้องเรียนล่าสุด</h3>
+                    กระดานติดตามการเสนอความคิดเห็นล่าสุด</h3>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-600">
@@ -777,17 +786,19 @@
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-purple-600 text-white">
-                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ</h3>
-                <button onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ
+                </h3>
+                <button onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
+                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <input type="hidden" id="fb-manage-id">
-                
+
                 <div class="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
                     <div class="flex justify-between items-start mb-2">
-                         <span id="fb-manage-type" class="text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600">Type</span>
-                         <span id="fb-manage-date" class="text-xs text-gray-400">Date</span>
+                        <span id="fb-manage-type"
+                            class="text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600">Type</span>
+                        <span id="fb-manage-date" class="text-xs text-gray-400">Date</span>
                     </div>
                     <h4 id="fb-manage-topic" class="font-bold text-gray-800 text-lg mb-2">Topic</h4>
                     <p id="fb-manage-detail" class="text-sm text-gray-600 whitespace-pre-line">Detail...</p>
@@ -803,7 +814,8 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-4 border-t">
-                    <button type="button" onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
+                    <button type="button"
+                        onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
                         class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ปิด</button>
                     <button type="button" onclick="saveFeedbackStatus(event)"
                         class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 shadow font-bold action-btn">บันทึกสถานะ</button>
@@ -1150,7 +1162,7 @@
 
         const commonTooltipConfig = {
             callbacks: {
-                title: function(tooltipItems) {
+                title: function (tooltipItems) {
                     const item = tooltipItems[0];
                     let label = item.chart.data.labels[item.dataIndex];
                     if (Array.isArray(label)) return label.join(' ');
@@ -1194,7 +1206,7 @@
             }
 
             // --- CHART INITIALIZATION ---
-            
+
             // 1. Ideology Radar
             const ctxIdeology = document.getElementById('ideologyChart').getContext('2d');
             new Chart(ctxIdeology, {
@@ -1353,7 +1365,7 @@
                 } catch (err) { alert("ไม่สามารถส่งอีเมลรีเซ็ตได้: " + err.message); }
             }
         }
-        
+
         function parseInteractions(remarks) {
             const match = remarks.match(/{{INTERACT:({.*?})}}/s);
             if (match) { try { return JSON.parse(match[1]); } catch (e) { console.error("Parse Error", e); } }
@@ -1675,10 +1687,10 @@
             };
             const { error } = await sb.from('members').insert([payload]);
             if (error) alert("ส่งเรื่องไม่สำเร็จ: " + error.message);
-            else { 
-                alert("✅ ระบบได้รับเรื่องเรียบร้อยแล้ว\nเจ้าหน้าที่จะดำเนินการตรวจสอบและตอบกลับโดยเร็วที่สุด"); 
-                e.target.reset(); 
-                renderFeedbacks(); 
+            else {
+                alert("✅ ระบบได้รับเรื่องเรียบร้อยแล้ว\nเจ้าหน้าที่จะดำเนินการตรวจสอบและตอบกลับโดยเร็วที่สุด");
+                e.target.reset();
+                renderFeedbacks();
             }
             btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> ส่งเรื่อง';
         }
@@ -1696,15 +1708,15 @@
                     let statusBadge = isResolved
                         ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs border border-green-200 font-bold"><i class="fa-solid fa-check-circle mr-1"></i>เสร็จสิ้น</span>'
                         : '<span class="bg-orange-50 text-orange-700 px-2 py-1 rounded text-xs border border-orange-200 font-bold"><i class="fa-regular fa-clock mr-1"></i>รอการตอบกลับ</span>';
-                    
-                    let typeTxt = f.province === 'suggestion' ? '<span class="text-blue-600"><i class="fa-regular fa-lightbulb"></i> ข้อเสนอแนะ</span>' 
-                        : (f.province === 'complaint' ? '<span class="text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> ร้องเรียน</span>' 
-                        : '<span class="text-gray-600"><i class="fa-solid fa-circle-question"></i> สอบถาม</span>');
-                    
+
+                    let typeTxt = f.province === 'suggestion' ? '<span class="text-blue-600"><i class="fa-regular fa-lightbulb"></i> ข้อเสนอแนะ</span>'
+                        : (f.province === 'complaint' ? '<span class="text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> ร้องเรียน</span>'
+                            : '<span class="text-gray-600"><i class="fa-solid fa-circle-question"></i> สอบถาม</span>');
+
                     // สร้าง Ticket ID จำลองจาก ID จริง เพื่อความดูดีและเป็นมาตรฐาน
                     const ticketId = '#' + f.id.substring(0, 6).toUpperCase();
                     const safeFbObj = JSON.stringify(f).replace(/"/g, '&quot;');
-                    
+
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-50 transition border-b cursor-pointer group" onclick="openFeedbackReader(${safeFbObj})">
                             <td class="px-6 py-4 text-gray-400 text-xs font-mono font-bold">${ticketId}</td>
@@ -1787,7 +1799,7 @@
 
         window.openFeedbackManageModal = (record) => {
             const modal = document.getElementById('modal-feedback-manage');
-            
+
             document.getElementById('fb-manage-id').value = record.id;
             document.getElementById('fb-manage-type').innerText = record.province.toUpperCase();
             document.getElementById('fb-manage-date').innerText = new Date(record.created_at).toLocaleDateString('th-TH');
@@ -1809,17 +1821,17 @@
             e.preventDefault();
             const btn = e.target;
             btn.disabled = true; btn.innerText = "กำลังบันทึก...";
-            
+
             try {
                 const id = document.getElementById('fb-manage-id').value;
                 const newStatus = document.getElementById('fb-manage-status').value;
-                
+
                 // Fetch current remarks to preserve other data
                 const record = cachedData.find(r => r.id == id);
                 if (!record) throw new Error("Record not found");
 
                 let remarks = record.remarks || '';
-                
+
                 // Remove old status tag
                 remarks = remarks.replace('{{STATUS:RESOLVED}}', '').trim();
 
@@ -1835,7 +1847,7 @@
                 document.getElementById('modal-feedback-manage').classList.add('hidden');
                 fetchData();
 
-            } catch(err) {
+            } catch (err) {
                 alert("เกิดข้อผิดพลาด: " + err.message);
             } finally {
                 btn.disabled = false; btn.innerText = "บันทึกสถานะ";
@@ -1850,11 +1862,11 @@
                 const r = cachedData.find(d => d.id == record);
                 if (r && r.type === 'feedback') {
                     openFeedbackManageModal(r);
-                    return; 
+                    return;
                 }
             } else if (type === 'edit' && record && record.type === 'feedback') {
-                 openFeedbackManageModal(record);
-                 return;
+                openFeedbackManageModal(record);
+                return;
             }
 
             // Normal Member Logic Continues...
@@ -1882,8 +1894,8 @@
                 if (type === 'edit') type = record.type;
             }
             title.innerHTML = isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลสมาชิก'
-                    : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค');
-            
+                : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค');
+
             if (record) {
                 document.getElementById('inp-member-id').value = record.member_id || '';
                 document.getElementById('inp-name').value = record.name || '';
@@ -1899,7 +1911,7 @@
                 document.getElementById('inp-zip').value = record.zip || '';
                 document.getElementById('inp-recommender').value = record.recommender_name || '';
                 document.getElementById('inp-start-date').value = record.start_date || '';
-                
+
                 let remarks = record.remarks || '';
                 let adminRole = record.admin_role || '';
                 const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
@@ -1908,7 +1920,7 @@
 
                 if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
                 else { document.getElementById('inp-is-old').checked = false; }
-                
+
                 remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
                     .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
                     .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
@@ -1933,11 +1945,11 @@
             e.preventDefault();
             const saveBtn = document.getElementById('btn-save');
             saveBtn.disabled = true; saveBtn.innerText = "กำลังบันทึก...";
-            
+
             try {
                 const recordId = document.getElementById('record-id').value;
                 const type = document.getElementById('inp-type').value;
-                
+
                 // Double Check: If somehow type is feedback, stop here
                 if (type === 'feedback') throw new Error("Please use the Feedback Manager to edit feedback items.");
 
@@ -1946,7 +1958,7 @@
                 const phone = document.getElementById('inp-phone').value;
                 const idCard = document.getElementById('inp-id').value;
                 const province = document.getElementById('inp-prov').value;
-                
+
                 const adminProv = getAdminProvince(currentSession.user.email);
                 if (!adminProv && !checkThaiID(idCard)) {
                     document.getElementById('id-error').classList.remove('hidden');
@@ -2020,10 +2032,10 @@
         async function fetchData() {
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('table-body').innerHTML = '';
-            
+
             const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
             let query = sb.from('members').select('*');
-            
+
             // Permission Logic
             if (!adminProv) {
                 // Regular User: See own data + public posts
@@ -2034,7 +2046,7 @@
             }
 
             const { data, error } = await query;
-            
+
             document.getElementById('loading').classList.add('hidden');
             if (error) {
                 console.error(error);
@@ -2042,12 +2054,12 @@
             }
 
             cachedData = data || [];
-            
+
             // Calculate Stats
             const users = new Set(cachedData.map(m => m.email)).size;
             const members = cachedData.filter(m => m.type === 'member').length;
             const candidates = cachedData.filter(m => m.type === 'candidate').length;
-            
+
             document.getElementById('stat-users').innerText = users;
             document.getElementById('stat-total').innerText = members;
             document.getElementById('stat-candidate').innerText = candidates;
@@ -2058,7 +2070,7 @@
                 const region = mapToMainRegion(getRegion(m.province));
                 regionStats[region] = (regionStats[region] || 0) + 1;
             });
-            
+
             const regionHTML = Object.entries(regionStats).map(([reg, count]) => `
                 <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                     <span class="block text-xs text-gray-500">${reg}</span>
@@ -2073,14 +2085,14 @@
         function sortTable(key) {
             if (sortConfig.key === key) sortConfig.direction *= -1;
             else { sortConfig.key = key; sortConfig.direction = 1; }
-            
+
             filteredData.sort((a, b) => {
                 let valA = a[key] || '';
                 let valB = b[key] || '';
                 return valA.toString().localeCompare(valB.toString()) * sortConfig.direction;
             });
             renderTable(filteredData);
-            
+
             // Update Icons
             document.querySelectorAll('th i').forEach(i => i.className = 'fa-solid fa-sort ml-1');
             const activeTh = document.querySelector(`th[onclick="sortTable('${key}')"] i`);
@@ -2090,7 +2102,7 @@
         function renderTable(data) {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
-            
+
             if (data.length === 0) {
                 document.getElementById('empty-state').classList.remove('hidden');
                 return;
@@ -2107,10 +2119,10 @@
                 // For Feedback items, use special rendering in the "Manage" column
                 let manageBtns = '';
                 const isOwner = item.email === currentSession.user.email;
-                
+
                 if (adminProv || isOwner) {
                     const canEdit = adminProv === 'ALL' || (adminProv && item.province === adminProv) || isOwner;
-                    
+
                     if (canEdit) {
                         manageBtns = `
                             <button onclick="openModal('edit', '${item.id}')" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -2118,14 +2130,14 @@
                         `;
                     }
                 }
-                
+
                 // Status Logic
                 let status = '<span class="px-2 py-1 rounded bg-gray-100 text-gray-500 text-xs">ทั่วไป</span>';
                 if (item.type === 'member') status = '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs">สมาชิก</span>';
                 if (item.type === 'candidate') status = '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs">ผู้สมัคร ส.ส.</span>';
                 if (item.type === 'feedback') {
-                     const isResolved = (item.remarks || '').includes('{{STATUS:RESOLVED}}');
-                     status = isResolved 
+                    const isResolved = (item.remarks || '').includes('{{STATUS:RESOLVED}}');
+                    status = isResolved
                         ? '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-bold">เสร็จสิ้น</span>'
                         : '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs font-bold">รอการตอบกลับ</span>';
                 }
@@ -2173,4 +2185,5 @@
         // Initial fetch handled by auth state change or view switch
     </script>
 </body>
+
 </html>
