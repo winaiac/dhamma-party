@@ -21,10 +21,7 @@
             color: #4e342e;
         }
 
-        h1,
-        h2,
-        h3,
-        .font-head {
+        h1, h2, h3, .font-head {
             font-family: 'Prompt', sans-serif;
         }
 
@@ -33,15 +30,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card-hover:hover {
@@ -50,70 +40,27 @@
             transition: all 0.3s;
         }
 
-        th.sortable {
-            cursor: pointer;
-            transition: background-color 0.2s;
-            user-select: none;
-        }
+        th.sortable { cursor: pointer; transition: background-color 0.2s; user-select: none; }
+        th.sortable:hover { background-color: #f3f4f6; color: #ea580c; }
 
-        th.sortable:hover {
-            background-color: #f3f4f6;
-            color: #ea580c;
-        }
+        .checkbox-wrapper input:checked+div { background-color: #16a34a; border-color: #16a34a; }
+        .checkbox-wrapper input:checked+div svg { display: block; }
 
-        .checkbox-wrapper input:checked+div {
-            background-color: #16a34a;
-            border-color: #16a34a;
-        }
-
-        .checkbox-wrapper input:checked+div svg {
-            display: block;
-        }
-
-        .password-container {
-            position: relative;
-        }
-
+        .password-container { position: relative; }
         .password-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #9ca3af;
-            z-index: 10;
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #9ca3af; z-index: 10;
         }
+        .password-toggle:hover { color: #ea580c; }
 
-        .password-toggle:hover {
-            color: #ea580c;
-        }
-
-        .aspect-video {
-            aspect-ratio: 16 / 9;
-        }
-
-        .action-btn {
-            z-index: 20;
-            position: relative;
-        }
-
+        .aspect-video { aspect-ratio: 16 / 9; }
+        .action-btn { z-index: 20; position: relative; }
+        
         /* Custom Scrollbar for Reader */
-        .reader-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .reader-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .reader-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .reader-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        .reader-scroll::-webkit-scrollbar { width: 8px; }
+        .reader-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .reader-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .reader-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Comments Section */
         .comment-bubble {
@@ -142,26 +89,20 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="switchView('landing')"
-                    class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
+                <button onclick="switchView('landing')" class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
                 <div id="nav-guest">
-                    <button onclick="switchView('auth')"
-                        class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('auth')" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-right-to-bracket"></i> <span>ลงชื่อเข้าใช้งาน</span>
                     </button>
                 </div>
                 <div id="nav-user" class="hidden flex gap-2 items-center">
-                    <button onclick="switchView('member-center')"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('member-center')" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-hand-holding-heart"></i> <span class="hidden sm:inline">ศูนย์สมาชิก</span>
                     </button>
-                    <button onclick="switchView('dashboard')"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('dashboard')" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-database"></i> <span class="hidden sm:inline">ฐานข้อมูล</span>
                     </button>
-                    <button onclick="handleLogout()"
-                        class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn"
-                        title="ออกจากระบบ">
+                    <button onclick="handleLogout()" class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn" title="ออกจากระบบ">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
                 </div>
@@ -176,16 +117,13 @@
                 <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
                     class="w-32 h-32 mx-auto mb-6 drop-shadow-xl animate-pulse">
                 <h1 class="text-4xl md:text-6xl font-bold mb-6 text-gray-900 font-head leading-tight">
-                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span
-                        class="text-blue-700">นำชาติ</span>
+                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span class="text-blue-700">นำชาติ</span>
                 </h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
                     "ปกป้องพระพุทธศาสนา พัฒนาสังคมด้วยธรรม<br>สร้างการเมืองที่โปร่งใส เพื่อประโยชน์สุขของปวงชน"
                 </p>
-                <div
-                    class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
-                    <i class="fa-solid fa-circle-info mr-1"></i>
-                    เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
+                    <i class="fa-solid fa-circle-info mr-1"></i> เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
                 </div>
             </div>
         </header>
@@ -196,47 +134,32 @@
                 <div class="text-center mb-10">
                     <h2 class="text-3xl font-bold font-head text-gray-800 mb-2">นโยบายหลักของพรรค</h2>
                     <div class="h-1 w-24 bg-orange-500 mx-auto rounded-full"></div>
-                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto">มุ่งเน้นการนำหลักธรรมมาใช้ในการบริหารประเทศ
-                        เพื่อความสงบสุขและความเจริญรุ่งเรืองอย่างยั่งยืน</p>
+                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto">มุ่งเน้นการนำหลักธรรมมาใช้ในการบริหารประเทศ เพื่อความสงบสุขและความเจริญรุ่งเรืองอย่างยั่งยืน</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div
-                        class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div
-                            class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-600 transition">
-                            <i
-                                class="fa-solid fa-vihara text-2xl text-orange-600 group-hover:text-white transition"></i>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-600 transition">
+                            <i class="fa-solid fa-vihara text-2xl text-orange-600 group-hover:text-white transition"></i>
                         </div>
                         <h4 class="text-lg font-bold font-head text-gray-800 mb-2">ปกป้องพระพุทธศาสนา</h4>
-                        <p class="text-sm text-gray-600">ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ
-                            และส่งเสริมการศึกษาธรรมะ</p>
+                        <p class="text-sm text-gray-600">ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ และส่งเสริมการศึกษาธรรมะ</p>
                     </div>
-                    <div
-                        class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div
-                            class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition">
-                            <i
-                                class="fa-solid fa-scale-balanced text-2xl text-blue-600 group-hover:text-white transition"></i>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition">
+                            <i class="fa-solid fa-scale-balanced text-2xl text-blue-600 group-hover:text-white transition"></i>
                         </div>
                         <h4 class="text-lg font-bold font-head text-gray-800 mb-2">การเมืองสีขาว</h4>
-                        <p class="text-sm text-gray-600">สร้างระบบการเมืองที่ซื่อสัตย์ สุจริต โปร่งใส
-                            ปราศจากการทุจริตคอร์รัปชัน</p>
+                        <p class="text-sm text-gray-600">สร้างระบบการเมืองที่ซื่อสัตย์ สุจริต โปร่งใส ปราศจากการทุจริตคอร์รัปชัน</p>
                     </div>
-                    <div
-                        class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div
-                            class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-600 transition">
-                            <i
-                                class="fa-solid fa-hand-holding-dollar text-2xl text-green-600 group-hover:text-white transition"></i>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-600 transition">
+                            <i class="fa-solid fa-hand-holding-dollar text-2xl text-green-600 group-hover:text-white transition"></i>
                         </div>
                         <h4 class="text-lg font-bold font-head text-gray-800 mb-2">ธนาคารพุทธ</h4>
-                        <p class="text-sm text-gray-600">จัดตั้งสถาบันการเงินที่ดำเนินงานตามหลักพุทธธรรม
-                            เพื่อช่วยเหลือประชาชน</p>
+                        <p class="text-sm text-gray-600">จัดตั้งสถาบันการเงินที่ดำเนินงานตามหลักพุทธธรรม เพื่อช่วยเหลือประชาชน</p>
                     </div>
-                    <div
-                        class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div
-                            class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600 transition">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600 transition">
                             <i class="fa-solid fa-users text-2xl text-purple-600 group-hover:text-white transition"></i>
                         </div>
                         <h4 class="text-lg font-bold font-head text-gray-800 mb-2">สังคมสันติสุข</h4>
@@ -253,21 +176,16 @@
             <!-- Section 1: Legal Qual -->
             <div class="bg-gray-800 text-white rounded-2xl p-8 mb-12 shadow-xl relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center">
-                    <div
-                        class="md:w-1/3 text-center md:text-left border-b md:border-r border-gray-600 pb-6 md:pb-0 md:pr-6">
+                    <div class="md:w-1/3 text-center md:text-left border-b md:border-r border-gray-600 pb-6 md:pb-0 md:pr-6">
                         <i class="fa-solid fa-gavel text-4xl text-orange-400 mb-2 block"></i>
                         <h3 class="text-2xl font-bold font-head">๑. คุณสมบัติตามกฎหมาย</h3>
                         <p class="text-gray-400 text-sm">ต้องครบถ้วนตามรัฐธรรมนูญ</p>
                     </div>
                     <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i>
-                            สัญชาติไทยโดยกำเนิด</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i>
-                            อายุไม่ต่ำกว่า ๒๕ ปี</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i>
-                            ไม่เป็นภิกษุ/สามเณร</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i>
-                            ไม่เคยต้องโทษทุจริต</div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i> สัญชาติไทยโดยกำเนิด</div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i> อายุไม่ต่ำกว่า ๒๕ ปี</div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i> ไม่เป็นภิกษุ/สามเณร</div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i> ไม่เคยต้องโทษทุจริต</div>
                     </div>
                 </div>
             </div>
@@ -276,16 +194,14 @@
             <h3 class="text-2xl font-bold text-center text-gray-800 font-head mb-8">๒. คุณสมบัติเฉพาะพรรค</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                 <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500 card-hover">
-                    <h4 class="text-lg font-bold text-orange-700 font-head mb-2"><i class="fa-solid fa-star mr-2"></i>
-                        อุดมการณ์และคุณธรรม</h4>
+                    <h4 class="text-lg font-bold text-orange-700 font-head mb-2"><i class="fa-solid fa-star mr-2"></i> อุดมการณ์และคุณธรรม</h4>
                     <ul class="text-sm text-gray-600 list-disc list-inside">
                         <li>ยึดมั่นหลักพุทธธรรม (อริยสัจ ๔, มรรค ๘)</li>
                         <li>มีความกล้าหาญทางธรรม ซื่อสัตย์สุจริต</li>
                     </ul>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-600 card-hover">
-                    <h4 class="text-lg font-bold text-green-700 font-head mb-2"><i
-                            class="fa-solid fa-hands-holding-circle mr-2"></i> ทำงานเพื่อชุมชน</h4>
+                    <h4 class="text-lg font-bold text-green-700 font-head mb-2"><i class="fa-solid fa-hands-holding-circle mr-2"></i> ทำงานเพื่อชุมชน</h4>
                     <ul class="text-sm text-gray-600 list-disc list-inside">
                         <li>รู้จริงในพื้นที่ เข้าใจปัญหาปากท้อง</li>
                         <li>มีจิตอาสา รับใช้สังคม (บวร)</li>
@@ -298,43 +214,29 @@
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="text-center mb-16">
                         <span class="text-orange-600 font-bold tracking-wider text-sm uppercase">JOIN OUR MISSION</span>
-                        <h2 class="text-3xl md:text-5xl font-bold font-head text-gray-800 mt-2 mb-4">ทำไมท่านต้อง
-                            "ก้าวออกมา" ร่วมกับเรา?</h2>
-                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">เราต้องการอำนาจรัฐ
-                            เพื่อสร้างเกราะคุ้มกันทางกฎหมาย</p>
+                        <h2 class="text-3xl md:text-5xl font-bold font-head text-gray-800 mt-2 mb-4">ทำไมท่านต้อง "ก้าวออกมา" ร่วมกับเรา?</h2>
+                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">เราต้องการอำนาจรัฐ เพื่อสร้างเกราะคุ้มกันทางกฎหมาย</p>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
                         <!-- Member Card -->
-                        <div
-                            class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
-                                    class="fa-solid fa-users mr-2"></i> สมัครเป็น "สมาชิกพรรค"</h3>
+                        <div class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i class="fa-solid fa-users mr-2"></i> สมัครเป็น "สมาชิกพรรค"</h3>
                             <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
-                                    <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span>
-                                </li>
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
-                                    <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span></li>
+                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i> <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span></li>
+                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i> <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span></li>
                             </ul>
-                            <button onclick="handlePublicAction('member')"
-                                class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
+                            <button onclick="handlePublicAction('member')" class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
                                 แสดงความจำนงเป็นสมาชิกพรรค
                             </button>
                         </div>
                         <!-- Candidate Card -->
-                        <div
-                            class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
-                                    class="fa-solid fa-user-tie mr-2"></i> อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
+                        <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i class="fa-solid fa-user-tie mr-2"></i> อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
                             <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-gavel text-blue-500 mt-1"></i>
-                                    <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span>
-                                </li>
-                                <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i>
-                                    <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span></li>
+                                <li><i class="fa-solid fa-gavel text-blue-500 mt-1"></i> <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span></li>
+                                <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i> <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span></li>
                             </ul>
-                            <button onclick="handlePublicAction('candidate')"
-                                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
+                            <button onclick="handlePublicAction('candidate')" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
                                 เสนอตัวเป็นผู้สมัคร ส.ส.
                             </button>
                         </div>
@@ -344,14 +246,11 @@
 
             <footer class="bg-gray-900 text-gray-400 py-8 mt-12 rounded-t-xl text-sm">
                 <div class="container mx-auto px-4 text-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
-                        class="w-16 h-16 mx-auto mb-4 opacity-80">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad" class="w-16 h-16 mx-auto mb-4 opacity-80">
                     <div class="border-t border-gray-700 my-4 pt-4 text-xs leading-relaxed">
                         <p class="font-bold text-gray-300 mb-2">ข้อมูลผู้ผลิตสื่อหาเสียงทางอิเล็กทรอนิกส์</p>
-                        <p><strong>ผู้ผลิต:</strong> นายวินัย ผันอากาศ ( ผลิตโดยผู้สมัคร ) <strong>ผู้ว่าจ้าง:</strong>
-                            พรรคแผ่นดินธรรม</p>
-                        <p><strong>วันเดือนปีที่ผลิต:</strong> 26 พ.ย. 2568 <strong>จำนวนที่ผลิต:</strong> 1 ชุด
-                            (อิเล็กทรอนิกส์)</p>
+                        <p><strong>ผู้ผลิต:</strong> นายวินัย ผันอากาศ ( ผลิตโดยผู้สมัคร ) <strong>ผู้ว่าจ้าง:</strong> พรรคแผ่นดินธรรม</p>
+                        <p><strong>วันเดือนปีที่ผลิต:</strong> 26 พ.ย. 2568 <strong>จำนวนที่ผลิต:</strong> 1 ชุด (อิเล็กทรอนิกส์)</p>
                     </div>
                     <p class="text-xs mt-2">&copy; 2025 พรรคแผ่นดินธรรม. All rights reserved.</p>
                 </div>
@@ -363,27 +262,19 @@
     <div id="view-auth" class="hidden flex-grow flex items-center justify-center p-4 bg-gray-100 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border-t-4 border-orange-600">
             <div class="p-8 text-center">
-                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
-                    class="w-20 h-20 mx-auto mb-4">
+                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad" class="w-20 h-20 mx-auto mb-4">
                 <h2 class="text-2xl font-bold text-gray-800 font-head">ลงชื่อเข้าใช้งาน</h2>
                 <form onsubmit="handleAuth(event)" class="text-left mt-6">
-                    <input type="email" id="email"
-                        class="w-full p-3 mb-4 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                        placeholder="อีเมล" required>
+                    <input type="email" id="email" class="w-full p-3 mb-4 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="อีเมล" required autocomplete="username">
                     <div class="password-container mb-6">
-                        <input type="password" id="password"
-                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none pr-10"
-                            placeholder="รหัสผ่าน" required>
+                        <input type="password" id="password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none pr-10" placeholder="รหัสผ่าน" required autocomplete="current-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
                     </div>
-                    <button
-                        class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn">เข้าสู่ระบบ</button>
+                    <button class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn">เข้าสู่ระบบ</button>
                 </form>
                 <div class="mt-4 flex justify-between text-xs text-gray-400">
-                    <span class="cursor-pointer hover:text-orange-600"
-                        onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
-                    <span class="cursor-pointer hover:text-orange-600"
-                        onclick="switchAuthMode('register')">สมัครสมาชิกแอพ</span>
+                    <span class="cursor-pointer hover:text-orange-600" onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
+                    <span class="cursor-pointer hover:text-orange-600" onclick="switchAuthMode('register')">สมัครสมาชิกแอพ</span>
                 </div>
             </div>
         </div>
@@ -396,13 +287,10 @@
                 <h2 class="text-2xl font-bold text-gray-800 font-head">ตั้งรหัสผ่านใหม่</h2>
                 <form onsubmit="handleUpdatePassword(event)" class="text-left mt-6">
                     <div class="password-container mb-6">
-                        <input type="password" id="new-password"
-                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10"
-                            placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" required minlength="6">
+                        <input type="password" id="new-password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" required minlength="6" autocomplete="new-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('new-password', this)"></i>
                     </div>
-                    <button
-                        class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 shadow-lg transition action-btn">ยืนยันเปลี่ยนรหัสผ่าน</button>
+                    <button class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 shadow-lg transition action-btn">ยืนยันเปลี่ยนรหัสผ่าน</button>
                 </form>
             </div>
         </div>
@@ -419,16 +307,13 @@
             <!-- NEWS & ACTIVITIES -->
             <div class="mb-12">
                 <div class="flex justify-between items-end mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 font-head border-l-4 border-orange-500 pl-3">
-                        ข่าวสารและกิจกรรม</h3>
-                    <button id="btn-create-post" onclick="openPostModal('create')"
-                        class="hidden bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition action-btn">
+                    <h3 class="text-xl font-bold text-gray-800 font-head border-l-4 border-orange-500 pl-3">ข่าวสารและกิจกรรม</h3>
+                    <button id="btn-create-post" onclick="openPostModal('create')" class="hidden bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition action-btn">
                         <i class="fa-solid fa-plus mr-1"></i> สร้างข่าวใหม่
                     </button>
                 </div>
                 <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">
-                        กำลังโหลดข่าวสาร...</div>
+                    <div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">กำลังโหลดข่าวสาร...</div>
                 </div>
             </div>
 
@@ -441,8 +326,7 @@
                         <p class="text-orange-100 text-sm">ร่วมแสดงพลังปกป้องพระพุทธศาสนา</p>
                     </div>
                     <div class="p-6">
-                        <button onclick="alert('ขอบคุณที่ร่วมลงชื่อสนับสนุนอุดมการณ์พรรค! (จำลองระบบ)')"
-                            class="w-full py-3 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition action-btn">
+                        <button onclick="alert('ขอบคุณที่ร่วมลงชื่อสนับสนุนอุดมการณ์พรรค! (จำลองระบบ)')" class="w-full py-3 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition action-btn">
                             <i class="fa-solid fa-pen-nib mr-2"></i> ลงชื่อสนับสนุน
                         </button>
                     </div>
@@ -454,8 +338,7 @@
                         <i class="fa-solid fa-book-open text-5xl mb-4"></i>
                         <h3 class="text-2xl font-bold font-head">คลังความรู้</h3>
                         <p class="text-blue-100 text-sm">นโยบาย ข้อบังคับพรรค และเอกสารเผยแพร่</p>
-                        <button id="btn-add-knowledge"
-                            onclick="document.getElementById('modal-knowledge').classList.remove('hidden'); document.getElementById('modal-knowledge').classList.add('flex');"
+                        <button id="btn-add-knowledge" onclick="document.getElementById('modal-knowledge').classList.remove('hidden'); document.getElementById('modal-knowledge').classList.add('flex');" 
                             class="hidden absolute top-4 right-4 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition backdrop-blur-sm border border-white/30">
                             <i class="fa-solid fa-plus"></i>
                         </button>
@@ -471,16 +354,14 @@
             <!-- Feedback Form -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-4xl mx-auto mb-12">
                 <div class="bg-gray-800 p-4 px-6 text-white">
-                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น
-                        / ร้องเรียน</h3>
+                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น / ร้องเรียน</h3>
                 </div>
                 <div class="p-8">
                     <form onsubmit="handleFeedbackSubmit(event)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">ประเภทเรื่อง</label>
-                                <select id="fb-type" required
-                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
+                                <select id="fb-type" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
                                     <option value="suggestion">💡 เสนอแนะ / ความคิดเห็น</option>
                                     <option value="complaint">⚠️ ร้องเรียนปัญหา / แจ้งเบาะแส</option>
                                     <option value="question">❓ สอบถามข้อมูล</option>
@@ -488,20 +369,15 @@
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อเรื่อง</label>
-                                <input id="fb-topic" required
-                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none"
-                                    placeholder="สรุปใจความสำคัญสั้นๆ">
+                                <input id="fb-topic" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none" placeholder="สรุปใจความสำคัญสั้นๆ">
                             </div>
                         </div>
                         <div class="mb-6">
                             <label class="text-xs font-bold text-gray-500 mb-1 block">รายละเอียด</label>
-                            <textarea id="fb-detail" required
-                                class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32"
-                                placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
+                            <textarea id="fb-detail" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32" placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" id="btn-feedback-submit"
-                                class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
+                            <button type="submit" id="btn-feedback-submit" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
                                 <i class="fa-solid fa-paper-plane"></i> ส่งเรื่อง
                             </button>
                         </div>
@@ -511,8 +387,7 @@
 
             <!-- Feedback Board -->
             <div class="mt-12">
-                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋
-                    กระดานติดตามเรื่องร้องเรียนล่าสุด</h3>
+                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋 กระดานติดตามเรื่องร้องเรียนล่าสุด</h3>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-600">
@@ -533,21 +408,18 @@
     </div>
 
     <!-- POST MODAL -->
-    <div id="modal-post"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-post" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3>
-                <button onclick="closePostModal()" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closePostModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form id="postForm" onsubmit="savePost(event)">
                     <input type="hidden" id="post-id">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label>
-                        <input id="inp-post-title" required class="w-full p-2 border rounded"
-                            placeholder="เช่น กิจกรรมลงพื้นที่...">
+                        <input id="inp-post-title" required class="w-full p-2 border rounded" placeholder="เช่น กิจกรรมลงพื้นที่...">
                     </div>
                     <div id="post-target-wrapper" class="mb-4 hidden">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label>
@@ -557,21 +429,16 @@
                     </div>
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">รูปภาพประกอบ (ถ้ามี)</label>
-                        <input type="file" id="inp-post-img" accept="image/*"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
-                        <div id="post-img-preview" class="mt-2 hidden"><img src=""
-                                class="h-32 rounded border object-cover"></div>
+                        <input type="file" id="inp-post-img" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <div id="post-img-preview" class="mt-2 hidden"><img src="" class="h-32 rounded border object-cover"></div>
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label>
-                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32"
-                            placeholder="รายละเอียด..."></textarea>
+                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32" placeholder="รายละเอียด..."></textarea>
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closePostModal()"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-post-save"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
+                        <button type="button" onclick="closePostModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-post-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
                     </div>
                 </form>
             </div>
@@ -587,12 +454,10 @@
                     <p class="text-sm text-gray-500" id="user-display">User</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="handlePublicAction('member')"
-                        class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                    <button onclick="handlePublicAction('member')" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิก
                     </button>
-                    <button onclick="handlePublicAction('candidate')"
-                        class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                    <button onclick="handlePublicAction('candidate')" class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.
                     </button>
                 </div>
@@ -600,24 +465,12 @@
 
             <!-- Filters -->
             <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-                <button onclick="filterDashboard('all')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
-                    data-filter="all">ทั้งหมด</button>
-                <button onclick="filterDashboard('member')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="member">สมาชิกพรรค</button>
-                <button onclick="filterDashboard('candidate')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="candidate">ผู้สมัคร ส.ส.</button>
-                <button onclick="filterDashboard('feedback')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
-                <button onclick="filterDashboard('post')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="post">ข่าวสาร</button>
-                <button onclick="filterDashboard('knowledge')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="knowledge">คลังความรู้</button>
+                <button onclick="filterDashboard('all')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn" data-filter="all">ทั้งหมด</button>
+                <button onclick="filterDashboard('member')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="member">สมาชิกพรรค</button>
+                <button onclick="filterDashboard('candidate')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="candidate">ผู้สมัคร ส.ส.</button>
+                <button onclick="filterDashboard('feedback')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
+                <button onclick="filterDashboard('post')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="post">ข่าวสาร</button>
+                <button onclick="filterDashboard('knowledge')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="knowledge">คลังความรู้</button>
             </div>
 
             <!-- Stats -->
@@ -637,18 +490,14 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i
-                        class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
+                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="region-stats-container"></div>
             </div>
 
             <!-- Search & Table -->
             <div class="mb-4 relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
-                        class="fa-solid fa-search text-gray-400"></i></div>
-                <input type="text" id="inp-search" onkeyup="handleSearch()"
-                    class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm"
-                    placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+                <input type="text" id="inp-search" onkeyup="handleSearch()" class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm" placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -657,18 +506,13 @@
                         <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-bold">
                             <tr>
                                 <!-- UPDATED: Split Member ID and Date Columns -->
-                                <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4">ข้อมูลติดต่อ</th>
                                 <th class="px-6 py-4">ที่อยู่ / รายละเอียด</th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด <i class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4 text-right">จัดการ</th>
                             </tr>
                         </thead>
@@ -681,21 +525,17 @@
         </div>
     </div>
 
-    <!-- MODAL FORM (MEMBER - Updated to 2 Files) -->
-    <div id="modal-form"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <!-- MODAL FORM (MEMBER - EMAIL INSTRUCTION) -->
+    <div id="modal-form" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 my-auto relative">
-            <div id="modal-header"
-                class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
+            <div id="modal-header" class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-title">ลงทะเบียน</h3>
-                <button onclick="closeModal()" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <!-- Admin Tools -->
                 <div id="admin-tools" class="hidden mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">
-                        เครื่องมือผู้ดูแลระบบ</h4>
+                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">เครื่องมือผู้ดูแลระบบ</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="flex items-center gap-2 cursor-pointer font-bold text-yellow-800">
                             <input type="checkbox" id="inp-is-old" class="w-5 h-5 text-yellow-600 rounded">
@@ -703,8 +543,7 @@
                         </label>
                         <div id="admin-role-setting" class="hidden">
                             <label class="text-xs font-bold text-yellow-800 block mb-1">ตั้งค่าสิทธิ์การใช้งาน</label>
-                            <select id="inp-admin-role"
-                                class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
+                            <select id="inp-admin-role" class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
                                 <option value="">สมาชิกทั่วไป (User)</option>
                                 <option value="ALL">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
                             </select>
@@ -716,17 +555,14 @@
                     <input type="hidden" id="record-id">
                     <input type="hidden" id="inp-type">
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i>
-                        ข้อมูลส่วนตัว</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i> ข้อมูลส่วนตัว</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div class="md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">รหัสสมาชิก</label>
-                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono"
-                                placeholder="ระบุภายหลังได้">
+                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono" placeholder="ระบุภายหลังได้">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span
-                                    class="text-red-500">*</span></label>
+                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
                             <input id="inp-name" required class="w-full p-2 border rounded" placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div>
@@ -738,8 +574,7 @@
                             <input type="date" id="inp-start-date" class="w-full p-2 border rounded text-gray-500">
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span
-                                    class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
+                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
                             <input id="inp-id" maxlength="13" class="w-full p-2 border rounded" placeholder="13 หลัก">
                             <p id="id-error" class="text-xs text-red-500 mt-1 hidden">เลขบัตรประชาชนไม่ถูกต้อง</p>
                         </div>
@@ -749,16 +584,14 @@
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
-                        ที่อยู่</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i> ที่อยู่</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div class="md:col-span-2">
                             <label class="text-xs font-bold text-gray-500">ที่อยู่ (บ้านเลขที่/หมู่)</label>
                             <input id="inp-addr" class="w-full p-2 border rounded" placeholder="เช่น 99/1 หมู่ 5">
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500">จังหวัด <span
-                                    class="text-red-500">*</span></label>
+                            <label class="text-xs font-bold text-gray-500">จังหวัด <span class="text-red-500">*</span></label>
                             <select id="inp-prov" required class="w-full p-2 border rounded bg-white">
                                 <option value="">เลือกจังหวัด</option>
                             </select>
@@ -768,13 +601,11 @@
                         <div><input id="inp-zip" class="w-full p-2 border rounded" placeholder="รหัสไปรษณีย์"></div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i>
-                        การติดต่อ</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i> การติดต่อ</h4>
                     <div class="grid grid-cols-3 gap-4 mb-6">
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">เบอร์โทรศัพท์ (10 หลัก)</label>
-                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded"
-                                placeholder="0xxxxxxxxx">
+                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded" placeholder="0xxxxxxxxx">
                             <p id="phone-error" class="text-xs text-red-500 mt-1 hidden">เบอร์โทรไม่ถูกต้อง</p>
                         </div>
                         <div class="col-span-3 md:col-span-1">
@@ -783,43 +614,60 @@
                         </div>
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">อีเมล</label>
-                            <input id="inp-email" type="email" class="w-full p-2 border rounded"
-                                placeholder="email@example.com">
+                            <input id="inp-email" type="email" class="w-full p-2 border rounded" placeholder="email@example.com">
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i
-                            class="fa-regular fa-comment-dots"></i> เอกสารแนบ</h4>
-                    <!-- 2 File Inputs -->
-                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 1: ใบสมัคร /
-                                เอกสารทั่วไป</label>
-                            <input type="file" id="inp-file-1" accept="application/pdf,image/jpeg,image/png"
-                                class="w-full p-2 border rounded bg-gray-50 text-sm">
-                            <p id="link-file-1" class="text-xs text-blue-600 mt-1 hidden"><a href="#" target="_blank"
-                                    class="underline">ดูไฟล์เดิม</a></p>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
+                    
+                    <!-- Email Instruction Block -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex flex-col gap-3">
+                            
+                            <!-- Step 1: Download -->
+                            <div class="flex items-start gap-3">
+                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-download"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-blue-900 text-sm">๑. ดาวน์โหลดและกรอกใบสมัคร</h5>
+                                    <a href="https://bhfytplqshiviuqwkvbm.supabase.co/storage/v1/object/public/ThaiDev/know_1764302915159_hyfvn.pdf" target="_blank" class="text-sm text-orange-600 hover:text-orange-700 underline font-bold mt-1 inline-block">
+                                        <i class="fa-solid fa-file-pdf mr-1"></i> ดาวน์โหลดแบบฟอร์มใบสมัคร
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Prepare Docs -->
+                            <div class="flex items-start gap-3">
+                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-paperclip"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-blue-900 text-sm">๒. เตรียมเอกสารที่ต้องแนบ</h5>
+                                    <ul class="list-disc list-inside text-xs text-blue-800 mt-1 ml-1">
+                                        <li>ใบสมัครที่กรอกข้อมูลครบถ้วน</li>
+                                        <li>สำเนาบัตรประจำตัวประชาชน (รับรองสำเนาถูกต้อง)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Send Email -->
+                            <div class="flex items-start gap-3">
+                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-envelope-circle-check"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-blue-900 text-sm">๓. ส่งเอกสารมาที่อีเมล</h5>
+                                    <a href="mailto:admin@landofdharmaparty.org" class="text-base font-bold text-orange-600 underline mt-1 block">admin@landofdharmaparty.org</a>
+                                    <p class="text-[10px] text-gray-500 mt-1">*หัวข้ออีเมล: "สมัครสมาชิก - [ชื่อ-นามสกุล]"</p>
+                                </div>
+                            </div>
+
                         </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 2: สำเนาบัตร /
-                                รูปถ่าย</label>
-                            <input type="file" id="inp-file-2" accept="application/pdf,image/jpeg,image/png"
-                                class="w-full p-2 border rounded bg-gray-50 text-sm">
-                            <p id="link-file-2" class="text-xs text-blue-600 mt-1 hidden"><a href="#" target="_blank"
-                                    class="underline">ดูไฟล์เดิม</a></p>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500">หมายเหตุ</label>
-                            <textarea id="inp-remarks" class="w-full p-2 border rounded h-20"
-                                placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
-                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="text-xs font-bold text-gray-500">หมายเหตุ</label>
+                        <textarea id="inp-remarks" class="w-full p-2 border rounded h-20" placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
                     </div>
 
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closeModal()"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-save"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -827,39 +675,30 @@
     </div>
 
     <!-- KNOWLEDGE MODAL (Upload) -->
-    <div id="modal-knowledge"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-knowledge" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-blue-600 text-white">
-                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร
-                </h3>
-                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
-                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร</h3>
+                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form onsubmit="saveKnowledge(event)">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ชื่อเอกสาร / หัวข้อ</label>
-                        <input id="inp-know-title" required class="w-full p-2 border rounded"
-                            placeholder="เช่น ระเบียบพรรค 2568">
+                        <input id="inp-know-title" required class="w-full p-2 border rounded" placeholder="เช่น ระเบียบพรรค 2568">
                     </div>
                     <!-- 2 File Inputs for Knowledge -->
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 1 (PDF)</label>
-                        <input type="file" id="inp-know-file-1" accept="application/pdf"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-1" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 2 (PDF) (ถ้ามี)</label>
-                        <input type="file" id="inp-know-file-2" accept="application/pdf"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-2" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button"
-                            onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-know-save"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
+                        <button type="button" onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-know-save" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
                     </div>
                 </form>
             </div>
@@ -867,17 +706,14 @@
     </div>
 
     <!-- KNOWLEDGE READER MODAL (NEW FOR INTERACTION) -->
-    <div id="modal-knowledge-read"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div
-            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="modal-knowledge-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-blue-600 p-6 text-white flex justify-between items-start">
                 <div>
                     <h3 id="kn-read-title" class="text-xl font-bold font-head leading-snug"></h3>
                     <div id="kn-read-files" class="mt-3 flex flex-wrap gap-2"></div>
                 </div>
-                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
-                    class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-0 flex-grow overflow-hidden flex flex-col">
                 <div id="kn-interaction-area" class="flex-grow overflow-y-auto bg-gray-50 p-6 reader-scroll">
@@ -888,10 +724,9 @@
     </div>
 
     <!-- NEWS READER MODAL (NEW) -->
-    <div id="modal-news-reader"
-        class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
+    <div id="modal-news-reader" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
-            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')"
+            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')" 
                 class="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/70 flex items-center justify-center z-10 transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -899,12 +734,10 @@
                 <img id="news-reader-img" src="" class="w-full h-full object-cover">
             </div>
             <div class="p-8 overflow-y-auto flex-grow reader-scroll">
-                <span id="news-reader-date"
-                    class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
+                <span id="news-reader-date" class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
                 <h2 id="news-reader-title" class="text-3xl font-bold font-head text-gray-900 mb-6 leading-tight"></h2>
-                <div id="news-reader-content"
-                    class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
-
+                <div id="news-reader-content" class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
+                
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="news-interaction-area"></div>
@@ -913,27 +746,21 @@
     </div>
 
     <!-- FEEDBACK READER MODAL (NEW) -->
-    <div id="modal-feedback-read"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div
-            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="modal-feedback-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-gray-800 p-6 text-white flex justify-between items-start shrink-0">
                 <div>
-                    <span id="fb-read-type"
-                        class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
+                    <span id="fb-read-type" class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
                     <h3 id="fb-read-topic" class="text-xl font-bold font-head leading-snug"></h3>
                     <p id="fb-read-date" class="text-gray-400 text-xs mt-1"></p>
                 </div>
-                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
-                    class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6 overflow-y-auto flex-grow reader-scroll">
                 <h4 class="text-sm font-bold text-gray-500 mb-2">รายละเอียด</h4>
-                <p id="fb-read-detail"
-                    class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6">
-                </p>
+                <p id="fb-read-detail" class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6"></p>
                 <div id="fb-read-status" class="mb-6"></div>
-
+                
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="fb-interaction-area"></div>
@@ -952,9 +779,9 @@
         let currentSession = null;
         let isEditMode = false;
         let cachedData = [];
-        let filteredData = [];
-        let sortConfig = { key: 'created_at', direction: -1 };
-        const OLD_DATA_TAG = '(สมาชิกรายเดิม)';
+        let filteredData = []; 
+        let sortConfig = { key: 'created_at', direction: -1 }; 
+        const OLD_DATA_TAG = '(สมาชิกรายเดิม)'; 
         const STATUS_APPROVED_TAG = '{{STATUS:APPROVED}}';
         let isRecoveryMode = false;
         let activeFilter = 'all';
@@ -1053,8 +880,8 @@
             if (view === 'dashboard') fetchData();
             if (view === 'member-center') {
                 fetchData().then(() => {
-                    renderNews();
-                    renderKnowledge();
+                   renderNews();
+                   renderKnowledge();
                 });
                 renderFeedbacks();
             }
@@ -1131,12 +958,12 @@
 
         async function updateInteraction(id, action, payload = null) {
             if (!currentSession) return alert("กรุณาเข้าสู่ระบบก่อน");
-
+            
             // 1. Optimistic UI Update (Update Local Data Immediately)
             const recordIndex = cachedData.findIndex(r => r.id == id);
-            if (recordIndex === -1) return;
+            if(recordIndex === -1) return;
             const record = cachedData[recordIndex];
-
+            
             let remarks = record.remarks || '';
             let interactData = parseInteractions(remarks);
             const userEmail = currentSession.user.email;
@@ -1157,7 +984,7 @@
                     interactData.likes = interactData.likes.filter(e => e !== userEmail);
                 }
             } else if (action === 'comment') {
-                if (!payload || !payload.trim()) return;
+                if(!payload || !payload.trim()) return;
                 interactData.comments.push({
                     user: userEmail,
                     text: payload,
@@ -1176,12 +1003,12 @@
 
             // Re-render UI immediately
             const containerId = document.getElementById('modal-news-reader').classList.contains('hidden') === false ? 'news-interaction-area' :
-                (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
+                                (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
             renderInteractionUI(containerId, cachedData[recordIndex]);
 
             // 2. Background Save to DB
             const { error } = await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
-            if (error) {
+            if(error) {
                 console.error("Save failed", error);
                 // Optional: Revert UI if save fails (complex, skip for now)
             }
@@ -1189,13 +1016,13 @@
 
         function renderInteractionUI(containerId, record) {
             const container = document.getElementById(containerId);
-            if (!container) return;
-
+            if(!container) return;
+            
             const data = parseInteractions(record.remarks || '');
             const likesCount = data.likes ? data.likes.length : 0;
             const neutralsCount = data.neutrals ? data.neutrals.length : 0;
             const comments = data.comments || [];
-
+            
             const userEmail = currentSession ? currentSession.user.email : '';
             const isLiked = data.likes && data.likes.includes(userEmail);
             const isNeutral = data.neutrals && data.neutrals.includes(userEmail);
@@ -1203,7 +1030,7 @@
             let commentsHtml = comments.map(c => `
                 <div class="mb-3">
                     <div class="flex items-center gap-2 mb-1">
-                        <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0, 2).toUpperCase()}</div>
+                        <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0,2).toUpperCase()}</div>
                         <span class="text-xs font-bold text-gray-700">${c.user}</span>
                         <span class="text-[10px] text-gray-400">${new Date(c.time).toLocaleDateString('th-TH')}</span>
                     </div>
@@ -1211,7 +1038,7 @@
                 </div>
             `).join('');
 
-            if (comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
+            if(comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
 
             container.innerHTML = `
                 <div class="flex items-center gap-4 mb-6">
@@ -1238,8 +1065,8 @@
         function submitComment(id) {
             const input = document.getElementById(`comment-input-${id}`);
             const text = input.value;
-            if (!text) return;
-            updateInteraction(id, 'comment', text).then(() => { if (input) input.value = ''; });
+            if(!text) return;
+            updateInteraction(id, 'comment', text).then(() => { if(input) input.value = ''; });
         }
 
         // --- KNOWLEDGE LOGIC (UPDATED: 2 FILES + INTERACTION) ---
@@ -1260,7 +1087,7 @@
 
             docs.forEach(doc => {
                 let deleteBtn = adminProv ? `<i onclick="event.stopPropagation(); deleteData('${doc.id}')" class="fa-solid fa-trash text-gray-300 hover:text-red-500 cursor-pointer ml-3 p-2" title="ลบเอกสาร"></i>` : '';
-
+                
                 // Safe serialization
                 const safeDoc = JSON.stringify(doc).replace(/"/g, '&quot;').replace(/'/g, "\\'");
 
@@ -1280,7 +1107,7 @@
 
         function openKnowledgeReader(doc) {
             document.getElementById('kn-read-title').innerText = doc.name;
-
+            
             let filesHtml = '';
             let pdfUrl1 = '#', pdfUrl2 = '#';
             const match1 = (doc.remarks || '').match(/{{PDF1:(.*?)}}/);
@@ -1290,14 +1117,14 @@
             if (match1) pdfUrl1 = match1[1]; else if (oldMatch) pdfUrl1 = oldMatch[1];
             if (match2) pdfUrl2 = match2[1];
 
-            if (pdfUrl1 !== '#') filesHtml += `<a href="${pdfUrl1}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 1</a>`;
-            if (pdfUrl2 !== '#') filesHtml += `<a href="${pdfUrl2}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 2</a>`;
-
+            if(pdfUrl1 !== '#') filesHtml += `<a href="${pdfUrl1}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 1</a>`;
+            if(pdfUrl2 !== '#') filesHtml += `<a href="${pdfUrl2}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 2</a>`;
+            
             document.getElementById('kn-read-files').innerHTML = filesHtml;
-
+            
             document.getElementById('modal-knowledge-read').classList.remove('hidden');
             document.getElementById('modal-knowledge-read').classList.add('flex');
-
+            
             renderInteractionUI('kn-interaction-area', doc);
         }
 
@@ -1316,7 +1143,7 @@
 
             try {
                 let remarks = "";
-
+                
                 // Upload File 1
                 if (file1) {
                     const ext1 = file1.name.split('.').pop();
@@ -1350,7 +1177,7 @@
                 e.target.reset();
                 fetchData().then(() => renderKnowledge());
 
-            } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
+            } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); } 
             finally { btn.disabled = false; btn.innerText = "อัปโหลด"; }
         }
 
@@ -1382,13 +1209,13 @@
             posts.forEach(p => {
                 const date = new Date(p.created_at).toLocaleDateString('th-TH');
                 let content = p.remarks || '';
-                let imgUrl = 'https://via.placeholder.com/400x225?text=No+Image';
+                let imgUrl = 'https://via.placeholder.com/400x225?text=No+Image'; 
                 const imgMatch = content.match(/{{IMG:(.*?)}}/);
                 if (imgMatch) {
                     imgUrl = imgMatch[1];
-                    content = content.replace(/{{IMG:(.*?)}}/g, '');
+                    content = content.replace(/{{IMG:(.*?)}}/g, ''); 
                 }
-
+                
                 // Clean interaction tag from preview
                 content = content.replace(/{{INTERACT:({.*?})}}/s, '');
 
@@ -1439,20 +1266,20 @@
             document.getElementById('news-reader-title').innerText = post.name;
             document.getElementById('news-reader-date').innerText = new Date(post.created_at).toLocaleDateString('th-TH');
             document.getElementById('news-reader-content').innerText = content;
-
+            
             const imgContainer = document.getElementById('news-reader-img-container');
             const img = document.getElementById('news-reader-img');
-
+            
             if (imgUrl) {
                 imgContainer.classList.remove('hidden');
                 img.src = imgUrl;
             } else {
                 imgContainer.classList.add('hidden');
             }
-
+            
             document.getElementById('modal-news-reader').classList.remove('hidden');
             document.getElementById('modal-news-reader').classList.add('flex');
-
+            
             renderInteractionUI('news-interaction-area', post);
         }
 
@@ -1522,7 +1349,7 @@
 
             let finalRemarks = content;
             if (imgUrl) finalRemarks += ` {{IMG:${imgUrl}}}`;
-
+            
             // Preserve interactions if editing
             if (recordId) {
                 const oldRec = cachedData.find(r => r.id == recordId);
@@ -1576,7 +1403,7 @@
                         ? '<span class="text-green-600 font-bold">ดำเนินการแล้ว</span>'
                         : '<span class="text-orange-500 font-bold">รอตรวจสอบ</span>';
                     let typeTxt = f.province === 'suggestion' ? 'ข้อเสนอแนะ' : (f.province === 'complaint' ? 'ร้องเรียน' : 'สอบถาม');
-
+                    
                     const safeFbObj = JSON.stringify(f).replace(/"/g, '&quot;');
 
                     tbody.innerHTML += `
@@ -1596,19 +1423,19 @@
             document.getElementById('fb-read-topic').innerText = fb.name;
             document.getElementById('fb-read-type').innerText = fb.province === 'suggestion' ? 'ข้อเสนอแนะ' : (fb.province === 'complaint' ? 'ร้องเรียน' : 'สอบถาม');
             document.getElementById('fb-read-date').innerText = new Date(fb.created_at).toLocaleDateString('th-TH');
-
+            
             let detail = (fb.remarks || '').replace('{{STATUS:RESOLVED}}', '');
             detail = detail.replace(/{{INTERACT:({.*?})}}/s, '').trim();
             document.getElementById('fb-read-detail').innerText = detail;
-
+            
             let isResolved = (fb.remarks || '').includes('{{STATUS:RESOLVED}}');
             document.getElementById('fb-read-status').innerHTML = isResolved
-                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการแล้ว</span>'
+                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการแล้ว</span>' 
                 : '<span class="text-orange-500 font-bold"><i class="fa-regular fa-clock"></i> รอตรวจสอบ</span>';
-
+            
             document.getElementById('modal-feedback-read').classList.remove('hidden');
             document.getElementById('modal-feedback-read').classList.add('flex');
-
+            
             renderInteractionUI('fb-interaction-area', fb);
         }
 
@@ -1643,7 +1470,7 @@
         function filterDashboard(type) {
             activeFilter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === type) { btn.classList.remove('bg-white', 'border', 'text-gray-600'); btn.classList.add('bg-gray-200', 'text-gray-700'); }
+                if (btn.dataset.filter === type) { btn.classList.remove('bg-white', 'border', 'text-gray-600'); btn.classList.add('bg-gray-200', 'text-gray-700'); } 
                 else { btn.classList.add('bg-white', 'border', 'text-gray-600'); btn.classList.remove('bg-gray-200', 'text-gray-700'); }
             });
             handleSearch();
@@ -1655,8 +1482,8 @@
             if (activeFilter !== 'all') baseData = cachedData.filter(m => m.type === activeFilter);
             if (!txt) filteredData = [...baseData];
             else {
-                filteredData = baseData.filter(m =>
-                    (m.name || '').toLowerCase().includes(txt) || (m.member_id || '').toLowerCase().includes(txt) ||
+                filteredData = baseData.filter(m => 
+                    (m.name || '').toLowerCase().includes(txt) || (m.member_id || '').toLowerCase().includes(txt) || 
                     (m.id_card || '').includes(txt) || (m.phone || '').includes(txt) || (m.remarks || '').toLowerCase().includes(txt)
                 );
             }
@@ -1665,6 +1492,12 @@
 
         // --- MEMBER MODAL & SAVE (UPDATED: 2 FILES) ---
         window.openModal = (type, record = null) => {
+            // FIX: ถ้า record ส่งมาเป็น ID (String) ให้ไปค้นหา Object จริงจาก cachedData
+            // ช่วยแก้ปัญหาคลิกปุ่มแก้ไขแล้วไม่ทำงานเพราะส่ง JSON ผิดพลาด
+            if (typeof record === 'string') {
+                record = cachedData.find(r => r.id == record);
+            }
+
             const modal = document.getElementById('modal-form');
             const title = document.getElementById('modal-title');
             const saveBtn = document.getElementById('btn-save');
@@ -1672,13 +1505,16 @@
             const form = document.getElementById('memberForm');
             const adminTools = document.getElementById('admin-tools');
             const adminRoleSetting = document.getElementById('admin-role-setting');
-
-            const linkFile1 = document.getElementById('link-file-1');
-            const linkFile2 = document.getElementById('link-file-2');
+            
+            // REMOVE: Removed linkFile1, linkFile2 as elements are gone.
+            // const linkFile1 = document.getElementById('link-file-1');
+            // const linkFile2 = document.getElementById('link-file-2');
 
             form.reset();
-            linkFile1.classList.add('hidden');
-            linkFile2.classList.add('hidden');
+            // REMOVE: Removed classList.add logic on null elements
+            // linkFile1.classList.add('hidden');
+            // linkFile2.classList.add('hidden');
+            
             document.getElementById('id-error').classList.add('hidden');
             document.getElementById('phone-error').classList.add('hidden');
             recordIdInput.value = '';
@@ -1698,9 +1534,9 @@
                 if (type === 'edit') type = record.type;
             }
 
-            title.innerHTML = type === 'feedback' ? '<i class="fa-regular fa-comments"></i> จัดการข้อเสนอแนะ'
-                : (isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล'
-                    : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค'));
+            title.innerHTML = type === 'feedback' ? '<i class="fa-regular fa-comments"></i> จัดการข้อเสนอแนะ' 
+                : (isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล' 
+                : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค'));
 
             if (record) {
                 document.getElementById('inp-member-id').value = record.member_id || '';
@@ -1720,38 +1556,30 @@
                 document.getElementById('inp-start-date').value = record.start_date || '';
 
                 let remarks = record.remarks || '';
-
-                // Extract DOC1
-                const doc1Match = remarks.match(/{{DOC1:(.*?)}}/);
-                // Fallback for old single PDF
-                const oldPdfMatch = remarks.match(/{{PDF:(.*?)}}/);
-
-                if (doc1Match) {
-                    linkFile1.classList.remove('hidden'); linkFile1.querySelector('a').href = doc1Match[1];
-                    remarks = remarks.replace(/{{DOC1:(.*?)}}/g, '');
-                } else if (oldPdfMatch) {
-                    linkFile1.classList.remove('hidden'); linkFile1.querySelector('a').href = oldPdfMatch[1];
-                    remarks = remarks.replace(/{{PDF:(.*?)}}/g, '');
-                }
-
-                // Extract DOC2
-                const doc2Match = remarks.match(/{{DOC2:(.*?)}}/);
-                if (doc2Match) {
-                    linkFile2.classList.remove('hidden'); linkFile2.querySelector('a').href = doc2Match[1];
-                    remarks = remarks.replace(/{{DOC2:(.*?)}}/g, '');
-                }
-
+                
+                // Removed logic trying to set href on linkFile1/linkFile2 because they are gone.
+                // However, we should probably strip out file tags from remarks when displaying to avoid clutter,
+                // or keep them if we want to show links somewhere else. 
+                // Since the prompt asked to "change upload to email instruction", 
+                // likely we don't display old file links in this modal anymore.
+                // Just cleaning up remarks display:
+                
                 if (remarks.includes(OLD_DATA_TAG)) {
                     document.getElementById('inp-is-old').checked = true;
                     remarks = remarks.replace(OLD_DATA_TAG, '');
                 } else {
                     document.getElementById('inp-is-old').checked = false;
                 }
-
+                
+                // Clean tags for display
                 remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
                     .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
                     .replace(/{{START_DATE:(.*?)}}/g, '')
-                    .replace(/{{INTERACT:({.*?})}}/s, '').trim();
+                    .replace(/{{INTERACT:({.*?})}}/s, '')
+                    .replace(/{{DOC1:(.*?)}}/g, '')
+                    .replace(/{{PDF:(.*?)}}/g, '')
+                    .replace(/{{DOC2:(.*?)}}/g, '')
+                    .trim();
 
                 document.getElementById('inp-remarks').value = remarks;
 
@@ -1800,60 +1628,24 @@
 
             btn.disabled = true; btn.innerText = "กำลังบันทึก...";
 
-            // Handle Files (up to 2)
-            const file1 = document.getElementById('inp-file-1').files[0];
-            const file2 = document.getElementById('inp-file-2').files[0];
-            let doc1Url = null;
-            let doc2Url = null;
-
-            try {
-                if (file1) {
-                    const ext = file1.name.split('.').pop();
-                    const name = `doc1_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
-                    const { error } = await sb.storage.from('ThaiDev').upload(name, file1);
-                    if (error) throw error;
-                    const { data } = sb.storage.from('ThaiDev').getPublicUrl(name);
-                    doc1Url = data.publicUrl;
-                }
-                if (file2) {
-                    const ext = file2.name.split('.').pop();
-                    const name = `doc2_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
-                    const { error } = await sb.storage.from('ThaiDev').upload(name, file2);
-                    if (error) throw error;
-                    const { data } = sb.storage.from('ThaiDev').getPublicUrl(name);
-                    doc2Url = data.publicUrl;
-                }
-            } catch (err) {
-                alert("Upload failed: " + err.message); btn.disabled = false; return;
-            }
-
+            // No file upload anymore for member form
+            // REMOVE: Removed file upload logic and doc1Url/doc2Url logic
+            
             // Construct Remarks
             let finalRemarks = document.getElementById('inp-remarks').value || '';
             finalRemarks = finalRemarks.replace(OLD_DATA_TAG, '').replace(/{{MID:(.*?)}}/g, '')
                 .replace(/{{ROLE:(.*?)}}/g, '').replace(/{{START_DATE:(.*?)}}/g, '').trim();
 
-            // Append new URLs or keep old ones
-            if (doc1Url) {
-                finalRemarks = finalRemarks.replace(/{{DOC1:(.*?)}}/g, '').replace(/{{PDF:(.*?)}}/g, '').trim();
-                finalRemarks += ` {{DOC1:${doc1Url}}}`;
-            } else if (isEditMode) {
-                const orig = cachedData.find(r => r.id == recordId);
-                const old1 = (orig.remarks || '').match(/{{DOC1:(.*?)}}/) || (orig.remarks || '').match(/{{PDF:(.*?)}}/);
-                if (old1) finalRemarks += ` ${old1[0]}`;
-            }
-
-            if (doc2Url) {
-                finalRemarks = finalRemarks.replace(/{{DOC2:(.*?)}}/g, '').trim();
-                finalRemarks += ` {{DOC2:${doc2Url}}}`;
-            } else if (isEditMode) {
-                const orig = cachedData.find(r => r.id == recordId);
-                const old2 = (orig.remarks || '').match(/{{DOC2:(.*?)}}/);
-                if (old2) finalRemarks += ` ${old2[0]}`;
-            }
-
-            // Restore other tags
+            // Append old URLs if existing (preserve them)
             if (isEditMode) {
                 const orig = cachedData.find(r => r.id == recordId);
+                // Preserve old document links if they exist in original data
+                const old1 = (orig.remarks || '').match(/{{DOC1:(.*?)}}/) || (orig.remarks || '').match(/{{PDF:(.*?)}}/);
+                if (old1) finalRemarks += ` ${old1[0]}`;
+                const old2 = (orig.remarks || '').match(/{{DOC2:(.*?)}}/);
+                if (old2) finalRemarks += ` ${old2[0]}`;
+                
+                // Preserve other tags
                 if ((orig.remarks || '').includes(STATUS_APPROVED_TAG)) finalRemarks += ` ${STATUS_APPROVED_TAG}`;
                 if ((orig.remarks || '').includes('{{STATUS:RESOLVED}}')) finalRemarks += ` {{STATUS:RESOLVED}}`;
                 // Restore Interaction Tag
@@ -1908,7 +1700,7 @@
                 const remarks = d.remarks || '';
                 const midMatch = remarks.match(/{{MID:(.*?)}}/);
                 const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
-
+                
                 // Helper to check for any PDF link
                 const hasFile = remarks.includes('{{DOC1:') || remarks.includes('{{PDF:') || remarks.includes('{{DOC2:') || remarks.includes('{{PDF1:') || remarks.includes('{{PDF2:');
 
@@ -1956,17 +1748,17 @@
             data.forEach(m => {
                 if (m.type === 'knowledge' || m.type === 'feedback' || m.type === 'post') {
                     // Simplified row for non-member types in dashboard (optional, or filter them out)
-                    return;
+                    return; 
                 }
 
                 const isOwner = m.email === currentEmail;
                 let canManage = isOwner || adminProv === 'ALL' || (adminProv && adminProv === m.province);
 
-                const badge = m.type === 'candidate' ? '<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs border border-orange-200 font-bold">ผู้สมัคร ส.ส.</span>'
+                const badge = m.type === 'candidate' ? '<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs border border-orange-200 font-bold">ผู้สมัคร ส.ส.</span>' 
                     : '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs border border-blue-200">สมาชิกพรรค</span>';
-                const statusBadge = m.status_approved ? '<span class="text-green-600 ml-1"><i class="fa-solid fa-circle-check"></i></span>'
+                const statusBadge = m.status_approved ? '<span class="text-green-600 ml-1"><i class="fa-solid fa-circle-check"></i></span>' 
                     : (adminProv ? `<span class="text-gray-300 ml-1 cursor-pointer hover:text-orange-500" onclick="approveItem('${m.id}', 'member')"><i class="fa-regular fa-circle"></i></span>` : '');
-
+                
                 const fileIcon = m.has_file ? `<i class="fa-solid fa-paperclip text-blue-500 ml-1" title="มีเอกสารแนบ"></i>` : '';
 
                 // Date formatting
@@ -1976,17 +1768,18 @@
                     dateDisplay = d.toLocaleDateString('th-TH');
                 }
 
+                // FIX: เปลี่ยน onclick ให้ส่งแค่ ID (m.id) แทนที่จะส่งทั้ง object เพื่อป้องกัน error
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-gray-50 transition">
                         <td class="px-6 py-4 text-gray-500 font-mono font-bold text-orange-600">${m.member_id || '-'}</td>
                         <td class="px-6 py-4 text-gray-500 text-sm">${dateDisplay}</td>
                         <td class="px-6 py-4 font-medium text-gray-900">${m.name} ${m.is_old_data ? '(เดิม)' : ''} ${statusBadge} ${fileIcon}</td>
                         <td class="px-6 py-4">${badge}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm font-mono">${(adminProv || isOwner) ? (m.phone || '-') : (m.phone ? m.phone.substring(0, 3) + '-xxx' : '-')}</td>
+                        <td class="px-6 py-4 text-gray-500 text-sm font-mono">${(adminProv || isOwner) ? (m.phone || '-') : (m.phone ? m.phone.substring(0,3)+'-xxx' : '-')}</td>
                         <td class="px-6 py-4 text-gray-500 text-sm">${m.district || '-'}</td>
                         <td class="px-6 py-4 text-gray-500 text-sm">${m.province}</td>
                         <td class="px-6 py-4 text-right whitespace-nowrap">
-                            ${canManage ? `<button onclick='openModal("edit", ${JSON.stringify(m).replace(/"/g, '&quot;').replace(/'/g, "\\'")})' class="text-blue-500 p-2"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                            ${canManage ? `<button onclick="openModal('edit', '${m.id}')" class="text-blue-500 p-2"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
                             ${(adminProv === 'ALL' || isOwner) ? `<button onclick="deleteData('${m.id}')" class="text-red-500 p-2"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </td>
                     </tr>`;
