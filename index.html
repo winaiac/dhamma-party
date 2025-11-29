@@ -8,6 +8,9 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- เพิ่ม Chart.js สำหรับกราฟ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link
         href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;700&display=swap"
         rel="stylesheet">
@@ -21,7 +24,10 @@
             color: #4e342e;
         }
 
-        h1, h2, h3, .font-head {
+        h1,
+        h2,
+        h3,
+        .font-head {
             font-family: 'Prompt', sans-serif;
         }
 
@@ -30,8 +36,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card-hover:hover {
@@ -40,27 +53,70 @@
             transition: all 0.3s;
         }
 
-        th.sortable { cursor: pointer; transition: background-color 0.2s; user-select: none; }
-        th.sortable:hover { background-color: #f3f4f6; color: #ea580c; }
-
-        .checkbox-wrapper input:checked+div { background-color: #16a34a; border-color: #16a34a; }
-        .checkbox-wrapper input:checked+div svg { display: block; }
-
-        .password-container { position: relative; }
-        .password-toggle {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #9ca3af; z-index: 10;
+        th.sortable {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            user-select: none;
         }
-        .password-toggle:hover { color: #ea580c; }
 
-        .aspect-video { aspect-ratio: 16 / 9; }
-        .action-btn { z-index: 20; position: relative; }
-        
+        th.sortable:hover {
+            background-color: #f3f4f6;
+            color: #ea580c;
+        }
+
+        .checkbox-wrapper input:checked+div {
+            background-color: #16a34a;
+            border-color: #16a34a;
+        }
+
+        .checkbox-wrapper input:checked+div svg {
+            display: block;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #ea580c;
+        }
+
+        .aspect-video {
+            aspect-ratio: 16 / 9;
+        }
+
+        .action-btn {
+            z-index: 20;
+            position: relative;
+        }
+
         /* Custom Scrollbar for Reader */
-        .reader-scroll::-webkit-scrollbar { width: 8px; }
-        .reader-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
-        .reader-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .reader-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .reader-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .reader-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .reader-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .reader-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
 
         /* Comments Section */
         .comment-bubble {
@@ -70,6 +126,23 @@
             padding: 0.75rem;
             font-size: 0.9rem;
             line-height: 1.5;
+        }
+
+        /* Chart Container Styling (Added from Infographic) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
         }
     </style>
 </head>
@@ -89,20 +162,26 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="switchView('landing')" class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
+                <button onclick="switchView('landing')"
+                    class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
                 <div id="nav-guest">
-                    <button onclick="switchView('auth')" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('auth')"
+                        class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-right-to-bracket"></i> <span>ลงชื่อเข้าใช้งาน</span>
                     </button>
                 </div>
                 <div id="nav-user" class="hidden flex gap-2 items-center">
-                    <button onclick="switchView('member-center')" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('member-center')"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-hand-holding-heart"></i> <span class="hidden sm:inline">ศูนย์สมาชิก</span>
                     </button>
-                    <button onclick="switchView('dashboard')" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('dashboard')"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-database"></i> <span class="hidden sm:inline">ฐานข้อมูล</span>
                     </button>
-                    <button onclick="handleLogout()" class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn" title="ออกจากระบบ">
+                    <button onclick="handleLogout()"
+                        class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn"
+                        title="ออกจากระบบ">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
                 </div>
@@ -117,126 +196,236 @@
                 <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
                     class="w-32 h-32 mx-auto mb-6 drop-shadow-xl animate-pulse">
                 <h1 class="text-4xl md:text-6xl font-bold mb-6 text-gray-900 font-head leading-tight">
-                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span class="text-blue-700">นำชาติ</span>
+                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span
+                        class="text-blue-700">นำชาติ</span>
                 </h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
                     "ปกป้องพระพุทธศาสนา พัฒนาสังคมด้วยธรรม<br>สร้างการเมืองที่โปร่งใส เพื่อประโยชน์สุขของปวงชน"
                 </p>
-                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
-                    <i class="fa-solid fa-circle-info mr-1"></i> เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
+                <div
+                    class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
+                    <i class="fa-solid fa-circle-info mr-1"></i>
+                    เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
                 </div>
             </div>
         </header>
 
+        <!-- INSERTED: INFOGRAPHIC CONTENT START -->
+        <div class="container mx-auto px-4 py-4 max-w-6xl space-y-16">
+            
+            <!-- Intro Section: Identity & Radar -->
+            <section class="bg-white rounded-2xl shadow-md p-6 md:p-8 border-t-4 border-orange-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4 font-head">
+                            จุดยืนทางนโยบายที่ชัดเจน
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                            เราคือนวัตกรรมทางการเมืองที่ผสมผสาน <strong>"หลักธรรม"</strong> เข้ากับการบริหารจัดการสมัยใหม่ โดยให้น้ำหนักสูงสุดกับการปกป้องพระพุทธศาสนาและแก้ปัญหาปากท้องเกษตรกร
+                        </p>
+                        <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500 mb-4">
+                            <h4 class="font-bold text-orange-800 font-head">ค่านิยมหลัก</h4>
+                            <p class="text-sm text-gray-600">ซื่อสัตย์ สุจริต ยึดมั่นในธรรม กล้าหาญที่จะทำสิ่งที่ถูกต้อง</p>
+                        </div>
+                    </div>
+                    <!-- Chart: Party Focus Radar -->
+                    <div class="flex flex-col items-center">
+                        <div class="chart-container">
+                            <canvas id="ideologyChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm text-gray-400 mt-2">แผนภาพแสดงน้ำหนักความสำคัญของนโยบาย</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Religious & Ethical Policies -->
+            <section class="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-orange-500">
+                <div class="flex items-center mb-6">
+                    <i class="fa-solid fa-vihara text-4xl text-orange-500 mr-3"></i>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">นโยบายด้านศาสนาและสังคม</h2>
+                </div>
+                <p class="text-gray-700 mb-8 max-w-3xl">
+                    ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ จัดตั้งธนาคารพุทธ และปฏิรูปสวัสดิการเพื่อความเป็นธรรม
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Viz: Monk Salary Increase -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">สวัสดิการพระสงฆ์</h3>
+                        <p class="text-sm text-gray-500 mb-4 h-10">เพิ่ม "ค่านิตยภัต" (เงินเดือนพระสังฆาธิการ) เพื่อคุณภาพชีวิตที่ดีขึ้น</p>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="monkSalaryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Viz: Social Security Reform -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">ลดภาระประชาชน</h3>
+                        <p class="text-sm text-gray-500 mb-4 h-10">ลดเงินสมทบประกันสังคม เหลือ 1% เพื่อเพิ่มสภาพคล่อง</p>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="socialSecurityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                     <div class="bg-orange-600 text-white p-4 rounded-lg shadow text-center">
+                        <i class="fa-solid fa-scroll text-2xl mb-2"></i>
+                        <div class="font-bold font-head">ศาสนาประจำชาติ</div>
+                        <div class="text-xs opacity-90">บรรจุในรัฐธรรมนูญ</div>
+                    </div>
+                    <div class="bg-blue-600 text-white p-4 rounded-lg shadow text-center">
+                        <i class="fa-solid fa-building-columns text-2xl mb-2"></i>
+                        <div class="font-bold font-head">ธนาคารพุทธ</div>
+                        <div class="text-xs opacity-90">สถาบันการเงินวิถีพุทธ</div>
+                    </div>
+                    <div class="bg-green-600 text-white p-4 rounded-lg shadow text-center">
+                        <i class="fa-solid fa-ban text-2xl mb-2"></i>
+                        <div class="font-bold font-head">ยกเลิกเกณฑ์ทหาร</div>
+                        <div class="text-xs opacity-90">เปลี่ยนเป็นสมัครใจ</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Economy & Farmers -->
+            <section class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-green-500">
+                <div class="flex items-center mb-6">
+                    <i class="fa-solid fa-seedling text-4xl text-green-600 mr-3"></i>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">เศรษฐกิจรากหญ้าและเกษตรกร</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- HTML Diagram: New Ministries -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
+                        <h3 class="font-bold text-xl text-gray-800 mb-4 font-head">การปรับโครงสร้างภาครัฐ</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                <i class="fa-solid fa-wheat-awn text-2xl text-green-600 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">กระทรวงชาวนา</h4>
+                                    <p class="text-xs text-gray-500">ดูแลชาวนาโดยตรง ประกันราคา</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-600">
+                                <i class="fa-solid fa-tree text-2xl text-green-700 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">กระทรวงยางพารา</h4>
+                                    <p class="text-xs text-gray-500">บริหารจัดการราคายางครบวงจร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HTML Diagram: Mega Projects -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
+                        <h3 class="font-bold text-xl text-gray-800 mb-4 font-head">โครงการเศรษฐกิจพิเศษ</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                <i class="fa-solid fa-ship text-2xl text-blue-600 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">ขุด "คลองไทย"</h4>
+                                    <p class="text-xs text-gray-500">เส้นทางเดินเรือสมุทร สร้างรายได้มหาศาล</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                <i class="fa-solid fa-solar-panel text-2xl text-yellow-600 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">โซล่าเซลล์เสรี</h4>
+                                    <p class="text-xs text-gray-500">ประชาชนติดตั้งเองได้ ไม่ต้องขออนุญาต</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- Section: Education & Structure -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Education Column -->
+                <div class="md:col-span-2 bg-white rounded-2xl shadow-md p-6 border-t-4 border-purple-600">
+                    <div class="flex items-center mb-4">
+                        <i class="fa-solid fa-graduation-cap text-3xl text-purple-600 mr-3"></i>
+                        <h2 class="text-2xl font-bold text-gray-800 font-head">การศึกษาโลกยุคใหม่</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                        <div class="p-4 bg-purple-50 rounded-xl text-center border border-purple-100">
+                            <i class="fa-brands fa-bitcoin text-2xl text-purple-600 mb-2"></i>
+                            <div class="font-bold text-sm text-purple-900">Crypto & Finance</div>
+                            <div class="text-xs text-gray-500">รู้ทันโลกการเงิน</div>
+                        </div>
+                        <div class="p-4 bg-purple-50 rounded-xl text-center border border-purple-100">
+                            <i class="fa-solid fa-campground text-2xl text-purple-600 mb-2"></i>
+                            <div class="font-bold text-sm text-purple-900">Survival Skills</div>
+                            <div class="text-xs text-gray-500">วิชาเอาตัวรอด</div>
+                        </div>
+                        <div class="p-4 bg-purple-50 rounded-xl text-center border border-purple-100">
+                            <i class="fa-solid fa-spa text-2xl text-purple-600 mb-2"></i>
+                            <div class="font-bold text-sm text-purple-900">สมาธิภาวนา</div>
+                            <div class="text-xs text-gray-500">ทุกระดับชั้น</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Structure Column -->
+                <div class="md:col-span-1 bg-white rounded-2xl shadow-md p-6 border-t-4 border-gray-600">
+                    <div class="flex items-center mb-4">
+                        <i class="fa-solid fa-handshake text-3xl text-gray-600 mr-3"></i>
+                        <h2 class="text-2xl font-bold text-gray-800 font-head">ค่าสมาชิก</h2>
+                    </div>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="membershipChart"></canvas>
+                    </div>
+                    <div class="text-center mt-2">
+                        <p class="text-xs text-gray-500">เปรียบเทียบค่าบำรุงพรรค (บาท)</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- INSERTED: INFOGRAPHIC CONTENT END -->
+
         <div class="container mx-auto px-4 py-12 max-w-6xl">
-            <!-- นโยบายพรรค -->
-            <div class="mb-16">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold font-head text-gray-800 mb-2">นโยบายหลักของพรรค</h2>
-                    <div class="h-1 w-24 bg-orange-500 mx-auto rounded-full"></div>
-                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto">มุ่งเน้นการนำหลักธรรมมาใช้ในการบริหารประเทศ เพื่อความสงบสุขและความเจริญรุ่งเรืองอย่างยั่งยืน</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-600 transition">
-                            <i class="fa-solid fa-vihara text-2xl text-orange-600 group-hover:text-white transition"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-head text-gray-800 mb-2">ปกป้องพระพุทธศาสนา</h4>
-                        <p class="text-sm text-gray-600">ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ และส่งเสริมการศึกษาธรรมะ</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition">
-                            <i class="fa-solid fa-scale-balanced text-2xl text-blue-600 group-hover:text-white transition"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-head text-gray-800 mb-2">การเมืองสีขาว</h4>
-                        <p class="text-sm text-gray-600">สร้างระบบการเมืองที่ซื่อสัตย์ สุจริต โปร่งใส ปราศจากการทุจริตคอร์รัปชัน</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-600 transition">
-                            <i class="fa-solid fa-hand-holding-dollar text-2xl text-green-600 group-hover:text-white transition"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-head text-gray-800 mb-2">ธนาคารพุทธ</h4>
-                        <p class="text-sm text-gray-600">จัดตั้งสถาบันการเงินที่ดำเนินงานตามหลักพุทธธรรม เพื่อช่วยเหลือประชาชน</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition text-center group">
-                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600 transition">
-                            <i class="fa-solid fa-users text-2xl text-purple-600 group-hover:text-white transition"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-head text-gray-800 mb-2">สังคมสันติสุข</h4>
-                        <p class="text-sm text-gray-600">สร้างความปรองดองในชาติ ด้วยหลักเมตตาธรรมและการให้อภัย</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold font-head text-gray-800 mb-2">คุณสมบัติผู้ประสงค์ลงสมัคร ส.ส.</h2>
-                <div class="h-1 w-24 bg-orange-500 mx-auto rounded-full"></div>
-            </div>
-
-            <!-- Section 1: Legal Qual -->
-            <div class="bg-gray-800 text-white rounded-2xl p-8 mb-12 shadow-xl relative overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center">
-                    <div class="md:w-1/3 text-center md:text-left border-b md:border-r border-gray-600 pb-6 md:pb-0 md:pr-6">
-                        <i class="fa-solid fa-gavel text-4xl text-orange-400 mb-2 block"></i>
-                        <h3 class="text-2xl font-bold font-head">๑. คุณสมบัติตามกฎหมาย</h3>
-                        <p class="text-gray-400 text-sm">ต้องครบถ้วนตามรัฐธรรมนูญ</p>
-                    </div>
-                    <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i> สัญชาติไทยโดยกำเนิด</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400"></i> อายุไม่ต่ำกว่า ๒๕ ปี</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i> ไม่เป็นภิกษุ/สามเณร</div>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-red-400"></i> ไม่เคยต้องโทษทุจริต</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 2: Party Qual -->
-            <h3 class="text-2xl font-bold text-center text-gray-800 font-head mb-8">๒. คุณสมบัติเฉพาะพรรค</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500 card-hover">
-                    <h4 class="text-lg font-bold text-orange-700 font-head mb-2"><i class="fa-solid fa-star mr-2"></i> อุดมการณ์และคุณธรรม</h4>
-                    <ul class="text-sm text-gray-600 list-disc list-inside">
-                        <li>ยึดมั่นหลักพุทธธรรม (อริยสัจ ๔, มรรค ๘)</li>
-                        <li>มีความกล้าหาญทางธรรม ซื่อสัตย์สุจริต</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-600 card-hover">
-                    <h4 class="text-lg font-bold text-green-700 font-head mb-2"><i class="fa-solid fa-hands-holding-circle mr-2"></i> ทำงานเพื่อชุมชน</h4>
-                    <ul class="text-sm text-gray-600 list-disc list-inside">
-                        <li>รู้จริงในพื้นที่ เข้าใจปัญหาปากท้อง</li>
-                        <li>มีจิตอาสา รับใช้สังคม (บวร)</li>
-                    </ul>
-                </div>
-            </div>
-
             <!-- Application Section -->
             <section class="py-16 bg-white relative overflow-hidden border-t border-gray-100">
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="text-center mb-16">
                         <span class="text-orange-600 font-bold tracking-wider text-sm uppercase">JOIN OUR MISSION</span>
-                        <h2 class="text-3xl md:text-5xl font-bold font-head text-gray-800 mt-2 mb-4">ทำไมท่านต้อง "ก้าวออกมา" ร่วมกับเรา?</h2>
-                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">เราต้องการอำนาจรัฐ เพื่อสร้างเกราะคุ้มกันทางกฎหมาย</p>
+                        <h2 class="text-3xl md:text-5xl font-bold font-head text-gray-800 mt-2 mb-4">ทำไมท่านต้อง
+                            "ก้าวออกมา" ร่วมกับเรา?</h2>
+                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">เราต้องการอำนาจรัฐ
+                            เพื่อสร้างเกราะคุ้มกันทางกฎหมาย</p>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
                         <!-- Member Card -->
-                        <div class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i class="fa-solid fa-users mr-2"></i> สมัครเป็น "สมาชิกพรรค"</h3>
+                        <div
+                            class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
+                                    class="fa-solid fa-users mr-2"></i> สมัครเป็น "สมาชิกพรรค"</h3>
                             <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i> <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span></li>
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i> <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span></li>
+                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                                    <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span>
+                                </li>
+                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                                    <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span></li>
                             </ul>
-                            <button onclick="handlePublicAction('member')" class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
+                            <button onclick="handlePublicAction('member')"
+                                class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
                                 แสดงความจำนงเป็นสมาชิกพรรค
                             </button>
                         </div>
                         <!-- Candidate Card -->
-                        <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i class="fa-solid fa-user-tie mr-2"></i> อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
+                        <div
+                            class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
+                                    class="fa-solid fa-user-tie mr-2"></i> อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
                             <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-gavel text-blue-500 mt-1"></i> <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span></li>
-                                <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i> <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span></li>
+                                <li><i class="fa-solid fa-gavel text-blue-500 mt-1"></i>
+                                    <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span>
+                                </li>
+                                <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i>
+                                    <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span></li>
                             </ul>
-                            <button onclick="handlePublicAction('candidate')" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
+                            <button onclick="handlePublicAction('candidate')"
+                                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
                                 เสนอตัวเป็นผู้สมัคร ส.ส.
                             </button>
                         </div>
@@ -246,11 +435,14 @@
 
             <footer class="bg-gray-900 text-gray-400 py-8 mt-12 rounded-t-xl text-sm">
                 <div class="container mx-auto px-4 text-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad" class="w-16 h-16 mx-auto mb-4 opacity-80">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
+                        class="w-16 h-16 mx-auto mb-4 opacity-80">
                     <div class="border-t border-gray-700 my-4 pt-4 text-xs leading-relaxed">
                         <p class="font-bold text-gray-300 mb-2">ข้อมูลผู้ผลิตสื่อหาเสียงทางอิเล็กทรอนิกส์</p>
-                        <p><strong>ผู้ผลิต:</strong> นายวินัย ผันอากาศ ( ผลิตโดยผู้สมัคร ) <strong>ผู้ว่าจ้าง:</strong> พรรคแผ่นดินธรรม</p>
-                        <p><strong>วันเดือนปีที่ผลิต:</strong> 26 พ.ย. 2568 <strong>จำนวนที่ผลิต:</strong> 1 ชุด (อิเล็กทรอนิกส์)</p>
+                        <p><strong>ผู้ผลิต:</strong> นายวินัย ผันอากาศ ( ผลิตโดยผู้สมัคร ) <strong>ผู้ว่าจ้าง:</strong>
+                            พรรคแผ่นดินธรรม</p>
+                        <p><strong>วันเดือนปีที่ผลิต:</strong> 26 พ.ย. 2568 <strong>จำนวนที่ผลิต:</strong> 1 ชุด
+                            (อิเล็กทรอนิกส์)</p>
                     </div>
                     <p class="text-xs mt-2">&copy; 2025 พรรคแผ่นดินธรรม. All rights reserved.</p>
                 </div>
@@ -262,19 +454,27 @@
     <div id="view-auth" class="hidden flex-grow flex items-center justify-center p-4 bg-gray-100 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border-t-4 border-orange-600">
             <div class="p-8 text-center">
-                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad" class="w-20 h-20 mx-auto mb-4">
+                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
+                    class="w-20 h-20 mx-auto mb-4">
                 <h2 class="text-2xl font-bold text-gray-800 font-head">ลงชื่อเข้าใช้งาน</h2>
                 <form onsubmit="handleAuth(event)" class="text-left mt-6">
-                    <input type="email" id="email" class="w-full p-3 mb-4 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="อีเมล" required autocomplete="username">
+                    <input type="email" id="email"
+                        class="w-full p-3 mb-4 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                        placeholder="อีเมล" required autocomplete="username">
                     <div class="password-container mb-6">
-                        <input type="password" id="password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none pr-10" placeholder="รหัสผ่าน" required autocomplete="current-password">
+                        <input type="password" id="password"
+                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none pr-10"
+                            placeholder="รหัสผ่าน" required autocomplete="current-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
                     </div>
-                    <button class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn">เข้าสู่ระบบ</button>
+                    <button
+                        class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn">เข้าสู่ระบบ</button>
                 </form>
                 <div class="mt-4 flex justify-between text-xs text-gray-400">
-                    <span class="cursor-pointer hover:text-orange-600" onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
-                    <span class="cursor-pointer hover:text-orange-600" onclick="switchAuthMode('register')">สมัครสมาชิกแอพ</span>
+                    <span class="cursor-pointer hover:text-orange-600"
+                        onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
+                    <span class="cursor-pointer hover:text-orange-600"
+                        onclick="switchAuthMode('register')">สมัครสมาชิกแอพ</span>
                 </div>
             </div>
         </div>
@@ -287,10 +487,14 @@
                 <h2 class="text-2xl font-bold text-gray-800 font-head">ตั้งรหัสผ่านใหม่</h2>
                 <form onsubmit="handleUpdatePassword(event)" class="text-left mt-6">
                     <div class="password-container mb-6">
-                        <input type="password" id="new-password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" required minlength="6" autocomplete="new-password">
+                        <input type="password" id="new-password"
+                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10"
+                            placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" required minlength="6"
+                            autocomplete="new-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('new-password', this)"></i>
                     </div>
-                    <button class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 shadow-lg transition action-btn">ยืนยันเปลี่ยนรหัสผ่าน</button>
+                    <button
+                        class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 shadow-lg transition action-btn">ยืนยันเปลี่ยนรหัสผ่าน</button>
                 </form>
             </div>
         </div>
@@ -307,13 +511,16 @@
             <!-- NEWS & ACTIVITIES -->
             <div class="mb-12">
                 <div class="flex justify-between items-end mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 font-head border-l-4 border-orange-500 pl-3">ข่าวสารและกิจกรรม</h3>
-                    <button id="btn-create-post" onclick="openPostModal('create')" class="hidden bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition action-btn">
+                    <h3 class="text-xl font-bold text-gray-800 font-head border-l-4 border-orange-500 pl-3">
+                        ข่าวสารและกิจกรรม</h3>
+                    <button id="btn-create-post" onclick="openPostModal('create')"
+                        class="hidden bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition action-btn">
                         <i class="fa-solid fa-plus mr-1"></i> สร้างข่าวใหม่
                     </button>
                 </div>
                 <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">กำลังโหลดข่าวสาร...</div>
+                    <div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">
+                        กำลังโหลดข่าวสาร...</div>
                 </div>
             </div>
 
@@ -326,7 +533,8 @@
                         <p class="text-orange-100 text-sm">ร่วมแสดงพลังปกป้องพระพุทธศาสนา</p>
                     </div>
                     <div class="p-6">
-                        <button onclick="alert('ขอบคุณที่ร่วมลงชื่อสนับสนุนอุดมการณ์พรรค! (จำลองระบบ)')" class="w-full py-3 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition action-btn">
+                        <button onclick="alert('ขอบคุณที่ร่วมลงชื่อสนับสนุนอุดมการณ์พรรค! (จำลองระบบ)')"
+                            class="w-full py-3 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition action-btn">
                             <i class="fa-solid fa-pen-nib mr-2"></i> ลงชื่อสนับสนุน
                         </button>
                     </div>
@@ -338,7 +546,8 @@
                         <i class="fa-solid fa-book-open text-5xl mb-4"></i>
                         <h3 class="text-2xl font-bold font-head">คลังความรู้</h3>
                         <p class="text-blue-100 text-sm">นโยบาย ข้อบังคับพรรค และเอกสารเผยแพร่</p>
-                        <button id="btn-add-knowledge" onclick="document.getElementById('modal-knowledge').classList.remove('hidden'); document.getElementById('modal-knowledge').classList.add('flex');" 
+                        <button id="btn-add-knowledge"
+                            onclick="document.getElementById('modal-knowledge').classList.remove('hidden'); document.getElementById('modal-knowledge').classList.add('flex');"
                             class="hidden absolute top-4 right-4 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition backdrop-blur-sm border border-white/30">
                             <i class="fa-solid fa-plus"></i>
                         </button>
@@ -354,14 +563,16 @@
             <!-- Feedback Form -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-4xl mx-auto mb-12">
                 <div class="bg-gray-800 p-4 px-6 text-white">
-                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น / ร้องเรียน</h3>
+                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น
+                        / ร้องเรียน</h3>
                 </div>
                 <div class="p-8">
                     <form onsubmit="handleFeedbackSubmit(event)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">ประเภทเรื่อง</label>
-                                <select id="fb-type" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
+                                <select id="fb-type" required
+                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
                                     <option value="suggestion">💡 เสนอแนะ / ความคิดเห็น</option>
                                     <option value="complaint">⚠️ ร้องเรียนปัญหา / แจ้งเบาะแส</option>
                                     <option value="question">❓ สอบถามข้อมูล</option>
@@ -369,15 +580,20 @@
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อเรื่อง</label>
-                                <input id="fb-topic" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none" placeholder="สรุปใจความสำคัญสั้นๆ">
+                                <input id="fb-topic" required
+                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none"
+                                    placeholder="สรุปใจความสำคัญสั้นๆ">
                             </div>
                         </div>
                         <div class="mb-6">
                             <label class="text-xs font-bold text-gray-500 mb-1 block">รายละเอียด</label>
-                            <textarea id="fb-detail" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32" placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
+                            <textarea id="fb-detail" required
+                                class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32"
+                                placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" id="btn-feedback-submit" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
+                            <button type="submit" id="btn-feedback-submit"
+                                class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
                                 <i class="fa-solid fa-paper-plane"></i> ส่งเรื่อง
                             </button>
                         </div>
@@ -387,7 +603,8 @@
 
             <!-- Feedback Board -->
             <div class="mt-12">
-                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋 กระดานติดตามเรื่องร้องเรียนล่าสุด</h3>
+                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋
+                    กระดานติดตามเรื่องร้องเรียนล่าสุด</h3>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-600">
@@ -408,18 +625,21 @@
     </div>
 
     <!-- POST MODAL -->
-    <div id="modal-post" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-post"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3>
-                <button onclick="closePostModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closePostModal()" class="hover:text-gray-300"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form id="postForm" onsubmit="savePost(event)">
                     <input type="hidden" id="post-id">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label>
-                        <input id="inp-post-title" required class="w-full p-2 border rounded" placeholder="เช่น กิจกรรมลงพื้นที่...">
+                        <input id="inp-post-title" required class="w-full p-2 border rounded"
+                            placeholder="เช่น กิจกรรมลงพื้นที่...">
                     </div>
                     <div id="post-target-wrapper" class="mb-4 hidden">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label>
@@ -429,16 +649,21 @@
                     </div>
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">รูปภาพประกอบ (ถ้ามี)</label>
-                        <input type="file" id="inp-post-img" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm">
-                        <div id="post-img-preview" class="mt-2 hidden"><img src="" class="h-32 rounded border object-cover"></div>
+                        <input type="file" id="inp-post-img" accept="image/*"
+                            class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <div id="post-img-preview" class="mt-2 hidden"><img src=""
+                                class="h-32 rounded border object-cover"></div>
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label>
-                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32" placeholder="รายละเอียด..."></textarea>
+                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32"
+                            placeholder="รายละเอียด..."></textarea>
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closePostModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-post-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
+                        <button type="button" onclick="closePostModal()"
+                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-post-save"
+                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
                     </div>
                 </form>
             </div>
@@ -454,10 +679,12 @@
                     <p class="text-sm text-gray-500" id="user-display">User</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="handlePublicAction('member')" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                    <button onclick="handlePublicAction('member')"
+                        class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิก
                     </button>
-                    <button onclick="handlePublicAction('candidate')" class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                    <button onclick="handlePublicAction('candidate')"
+                        class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.
                     </button>
                 </div>
@@ -465,12 +692,24 @@
 
             <!-- Filters -->
             <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-                <button onclick="filterDashboard('all')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn" data-filter="all">ทั้งหมด</button>
-                <button onclick="filterDashboard('member')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="member">สมาชิกพรรค</button>
-                <button onclick="filterDashboard('candidate')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="candidate">ผู้สมัคร ส.ส.</button>
-                <button onclick="filterDashboard('feedback')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
-                <button onclick="filterDashboard('post')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="post">ข่าวสาร</button>
-                <button onclick="filterDashboard('knowledge')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="knowledge">คลังความรู้</button>
+                <button onclick="filterDashboard('all')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
+                    data-filter="all">ทั้งหมด</button>
+                <button onclick="filterDashboard('member')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                    data-filter="member">สมาชิกพรรค</button>
+                <button onclick="filterDashboard('candidate')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                    data-filter="candidate">ผู้สมัคร ส.ส.</button>
+                <button onclick="filterDashboard('feedback')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                    data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
+                <button onclick="filterDashboard('post')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                    data-filter="post">ข่าวสาร</button>
+                <button onclick="filterDashboard('knowledge')"
+                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                    data-filter="knowledge">คลังความรู้</button>
             </div>
 
             <!-- Stats -->
@@ -490,14 +729,18 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
+                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i
+                        class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="region-stats-container"></div>
             </div>
 
             <!-- Search & Table -->
             <div class="mb-4 relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
-                <input type="text" id="inp-search" onkeyup="handleSearch()" class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm" placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
+                        class="fa-solid fa-search text-gray-400"></i></div>
+                <input type="text" id="inp-search" onkeyup="handleSearch()"
+                    class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm"
+                    placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -505,14 +748,18 @@
                     <table class="w-full text-sm text-left text-gray-600">
                         <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-bold">
                             <tr>
-                                <!-- UPDATED: Split Member ID and Date Columns -->
-                                <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i
+                                        class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i
+                                        class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i
+                                        class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i
+                                        class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4">ข้อมูลติดต่อ</th>
                                 <th class="px-6 py-4">ที่อยู่ / รายละเอียด</th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด <i
+                                        class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4 text-right">จัดการ</th>
                             </tr>
                         </thead>
@@ -526,16 +773,20 @@
     </div>
 
     <!-- MODAL FORM (MEMBER - EMAIL INSTRUCTION) -->
-    <div id="modal-form" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-form"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 my-auto relative">
-            <div id="modal-header" class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
+            <div id="modal-header"
+                class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-title">ลงทะเบียน</h3>
-                <button onclick="closeModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeModal()" class="hover:text-gray-300"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <!-- Admin Tools -->
                 <div id="admin-tools" class="hidden mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">เครื่องมือผู้ดูแลระบบ</h4>
+                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">
+                        เครื่องมือผู้ดูแลระบบ</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="flex items-center gap-2 cursor-pointer font-bold text-yellow-800">
                             <input type="checkbox" id="inp-is-old" class="w-5 h-5 text-yellow-600 rounded">
@@ -543,7 +794,8 @@
                         </label>
                         <div id="admin-role-setting" class="hidden">
                             <label class="text-xs font-bold text-yellow-800 block mb-1">ตั้งค่าสิทธิ์การใช้งาน</label>
-                            <select id="inp-admin-role" class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
+                            <select id="inp-admin-role"
+                                class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
                                 <option value="">สมาชิกทั่วไป (User)</option>
                                 <option value="ALL">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
                             </select>
@@ -555,14 +807,17 @@
                     <input type="hidden" id="record-id">
                     <input type="hidden" id="inp-type">
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i> ข้อมูลส่วนตัว</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i>
+                        ข้อมูลส่วนตัว</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div class="md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">รหัสสมาชิก</label>
-                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono" placeholder="ระบุภายหลังได้">
+                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono"
+                                placeholder="ระบุภายหลังได้">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
+                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span
+                                    class="text-red-500">*</span></label>
                             <input id="inp-name" required class="w-full p-2 border rounded" placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div>
@@ -574,7 +829,8 @@
                             <input type="date" id="inp-start-date" class="w-full p-2 border rounded text-gray-500">
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
+                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span
+                                    class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
                             <input id="inp-id" maxlength="13" class="w-full p-2 border rounded" placeholder="13 หลัก">
                             <p id="id-error" class="text-xs text-red-500 mt-1 hidden">เลขบัตรประชาชนไม่ถูกต้อง</p>
                         </div>
@@ -584,14 +840,16 @@
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i> ที่อยู่</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
+                        ที่อยู่</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div class="md:col-span-2">
                             <label class="text-xs font-bold text-gray-500">ที่อยู่ (บ้านเลขที่/หมู่)</label>
                             <input id="inp-addr" class="w-full p-2 border rounded" placeholder="เช่น 99/1 หมู่ 5">
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500">จังหวัด <span class="text-red-500">*</span></label>
+                            <label class="text-xs font-bold text-gray-500">จังหวัด <span
+                                    class="text-red-500">*</span></label>
                             <select id="inp-prov" required class="w-full p-2 border rounded bg-white">
                                 <option value="">เลือกจังหวัด</option>
                             </select>
@@ -601,11 +859,13 @@
                         <div><input id="inp-zip" class="w-full p-2 border rounded" placeholder="รหัสไปรษณีย์"></div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i> การติดต่อ</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i>
+                        การติดต่อ</h4>
                     <div class="grid grid-cols-3 gap-4 mb-6">
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">เบอร์โทรศัพท์ (10 หลัก)</label>
-                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded" placeholder="0xxxxxxxxx">
+                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded"
+                                placeholder="0xxxxxxxxx">
                             <p id="phone-error" class="text-xs text-red-500 mt-1 hidden">เบอร์โทรไม่ถูกต้อง</p>
                         </div>
                         <div class="col-span-3 md:col-span-1">
@@ -614,22 +874,28 @@
                         </div>
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">อีเมล</label>
-                            <input id="inp-email" type="email" class="w-full p-2 border rounded" placeholder="email@example.com">
+                            <input id="inp-email" type="email" class="w-full p-2 border rounded"
+                                placeholder="email@example.com">
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
-                    
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i
+                            class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
+
                     <!-- Email Instruction Block -->
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                         <div class="flex flex-col gap-3">
-                            
+
                             <!-- Step 1: Download -->
                             <div class="flex items-start gap-3">
-                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-download"></i></div>
+                                <div
+                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
+                                    <i class="fa-solid fa-download"></i></div>
                                 <div>
                                     <h5 class="font-bold text-blue-900 text-sm">๑. ดาวน์โหลดและกรอกใบสมัคร</h5>
-                                    <a href="https://bhfytplqshiviuqwkvbm.supabase.co/storage/v1/object/public/ThaiDev/know_1764302915159_hyfvn.pdf" target="_blank" class="text-sm text-orange-600 hover:text-orange-700 underline font-bold mt-1 inline-block">
+                                    <a href="https://bhfytplqshiviuqwkvbm.supabase.co/storage/v1/object/public/ThaiDev/know_1764302915159_hyfvn.pdf"
+                                        target="_blank"
+                                        class="text-sm text-orange-600 hover:text-orange-700 underline font-bold mt-1 inline-block">
                                         <i class="fa-solid fa-file-pdf mr-1"></i> ดาวน์โหลดแบบฟอร์มใบสมัคร
                                     </a>
                                 </div>
@@ -637,7 +903,9 @@
 
                             <!-- Step 2: Prepare Docs -->
                             <div class="flex items-start gap-3">
-                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-paperclip"></i></div>
+                                <div
+                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
+                                    <i class="fa-solid fa-paperclip"></i></div>
                                 <div>
                                     <h5 class="font-bold text-blue-900 text-sm">๒. เตรียมเอกสารที่ต้องแนบ</h5>
                                     <ul class="list-disc list-inside text-xs text-blue-800 mt-1 ml-1">
@@ -649,11 +917,15 @@
 
                             <!-- Step 3: Send Email -->
                             <div class="flex items-start gap-3">
-                                <div class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1"><i class="fa-solid fa-envelope-circle-check"></i></div>
+                                <div
+                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
+                                    <i class="fa-solid fa-envelope-circle-check"></i></div>
                                 <div>
                                     <h5 class="font-bold text-blue-900 text-sm">๓. ส่งเอกสารมาที่อีเมล</h5>
-                                    <a href="mailto:admin@landofdharmaparty.org" class="text-base font-bold text-orange-600 underline mt-1 block">admin@landofdharmaparty.org</a>
-                                    <p class="text-[10px] text-gray-500 mt-1">*หัวข้ออีเมล: "สมัครสมาชิก - [ชื่อ-นามสกุล]"</p>
+                                    <a href="mailto:admin@landofdharmaparty.org"
+                                        class="text-base font-bold text-orange-600 underline mt-1 block">admin@landofdharmaparty.org</a>
+                                    <p class="text-[10px] text-gray-500 mt-1">*หัวข้ออีเมล: "สมัครสมาชิก -
+                                        [ชื่อ-นามสกุล]"</p>
                                 </div>
                             </div>
 
@@ -662,71 +934,85 @@
 
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500">หมายเหตุ</label>
-                        <textarea id="inp-remarks" class="w-full p-2 border rounded h-20" placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
+                        <textarea id="inp-remarks" class="w-full p-2 border rounded h-20"
+                            placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
                     </div>
 
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
+                        <button type="button" onclick="closeModal()"
+                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-save"
+                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- KNOWLEDGE MODAL (Upload) -->
-    <div id="modal-knowledge" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <!-- KNOWLEDGE MODAL -->
+    <div id="modal-knowledge"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-blue-600 text-white">
-                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร</h3>
-                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร
+                </h3>
+                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
+                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form onsubmit="saveKnowledge(event)">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ชื่อเอกสาร / หัวข้อ</label>
-                        <input id="inp-know-title" required class="w-full p-2 border rounded" placeholder="เช่น ระเบียบพรรค 2568">
+                        <input id="inp-know-title" required class="w-full p-2 border rounded"
+                            placeholder="เช่น ระเบียบพรรค 2568">
                     </div>
-                    <!-- 2 File Inputs for Knowledge -->
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 1 (PDF)</label>
-                        <input type="file" id="inp-know-file-1" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-1" accept="application/pdf"
+                            class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 2 (PDF) (ถ้ามี)</label>
-                        <input type="file" id="inp-know-file-2" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-2" accept="application/pdf"
+                            class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-know-save" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
+                        <button type="button"
+                            onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
+                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-know-save"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- KNOWLEDGE READER MODAL (NEW FOR INTERACTION) -->
-    <div id="modal-knowledge-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <!-- KNOWLEDGE READER MODAL -->
+    <div id="modal-knowledge-read"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-blue-600 p-6 text-white flex justify-between items-start">
                 <div>
                     <h3 id="kn-read-title" class="text-xl font-bold font-head leading-snug"></h3>
                     <div id="kn-read-files" class="mt-3 flex flex-wrap gap-2"></div>
                 </div>
-                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
+                    class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-0 flex-grow overflow-hidden flex flex-col">
                 <div id="kn-interaction-area" class="flex-grow overflow-y-auto bg-gray-50 p-6 reader-scroll">
-                    <!-- Interaction UI injected here -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NEWS READER MODAL (NEW) -->
-    <div id="modal-news-reader" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
+    <!-- NEWS READER MODAL -->
+    <div id="modal-news-reader"
+        class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
-            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')" 
+            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')"
                 class="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/70 flex items-center justify-center z-10 transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -734,10 +1020,12 @@
                 <img id="news-reader-img" src="" class="w-full h-full object-cover">
             </div>
             <div class="p-8 overflow-y-auto flex-grow reader-scroll">
-                <span id="news-reader-date" class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
+                <span id="news-reader-date"
+                    class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
                 <h2 id="news-reader-title" class="text-3xl font-bold font-head text-gray-900 mb-6 leading-tight"></h2>
-                <div id="news-reader-content" class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
-                
+                <div id="news-reader-content"
+                    class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
+
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="news-interaction-area"></div>
@@ -745,22 +1033,28 @@
         </div>
     </div>
 
-    <!-- FEEDBACK READER MODAL (NEW) -->
-    <div id="modal-feedback-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <!-- FEEDBACK READER MODAL -->
+    <div id="modal-feedback-read"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-gray-800 p-6 text-white flex justify-between items-start shrink-0">
                 <div>
-                    <span id="fb-read-type" class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
+                    <span id="fb-read-type"
+                        class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
                     <h3 id="fb-read-topic" class="text-xl font-bold font-head leading-snug"></h3>
                     <p id="fb-read-date" class="text-gray-400 text-xs mt-1"></p>
                 </div>
-                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6 overflow-y-auto flex-grow reader-scroll">
                 <h4 class="text-sm font-bold text-gray-500 mb-2">รายละเอียด</h4>
-                <p id="fb-read-detail" class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6"></p>
+                <p id="fb-read-detail"
+                    class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6">
+                </p>
                 <div id="fb-read-status" class="mb-6"></div>
-                
+
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="fb-interaction-area"></div>
@@ -779,9 +1073,9 @@
         let currentSession = null;
         let isEditMode = false;
         let cachedData = [];
-        let filteredData = []; 
-        let sortConfig = { key: 'created_at', direction: -1 }; 
-        const OLD_DATA_TAG = '(สมาชิกรายเดิม)'; 
+        let filteredData = [];
+        let sortConfig = { key: 'created_at', direction: -1 };
+        const OLD_DATA_TAG = '(สมาชิกรายเดิม)';
         const STATUS_APPROVED_TAG = '{{STATUS:APPROVED}}';
         let isRecoveryMode = false;
         let activeFilter = 'all';
@@ -845,6 +1139,42 @@
             return null;
         }
 
+        // --- CHART JS UTILS & INITIALIZATION ---
+        function formatLabel(str) {
+            if (str.length <= 16) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) { currentLine += ' ' + words[i]; }
+                else { lines.push(currentLine); currentLine = words[i]; }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) return label.join(' ');
+                    return label;
+                }
+            }
+        };
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: commonTooltipConfig,
+                legend: { labels: { font: { family: 'Sarabun', size: 14 } } }
+            },
+            layout: { padding: 10 }
+        };
+
+        // Initialize Charts when content loaded
         window.addEventListener('DOMContentLoaded', () => {
             const provSelect = document.getElementById('inp-prov');
             const adminRoleSelect = document.getElementById('inp-admin-role');
@@ -867,6 +1197,89 @@
                     switchView('reset');
                 }
             }
+
+            // --- CHART INITIALIZATION ---
+            
+            // 1. Ideology Radar
+            const ctxIdeology = document.getElementById('ideologyChart').getContext('2d');
+            new Chart(ctxIdeology, {
+                type: 'radar',
+                data: {
+                    labels: ['ปกป้องพุทธศาสนา', 'ประชาธิปไตย', 'ช่วยเหลือเกษตรกร', 'ปฏิรูปกฎหมาย', 'การศึกษาทันสมัย'].map(formatLabel),
+                    datasets: [{
+                        label: 'ระดับความเข้มข้นนโยบาย',
+                        data: [10, 8, 9, 7, 6],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 109, 0, 0.2)',
+                        borderColor: '#FF6D00',
+                        pointBackgroundColor: '#FF6D00',
+                        pointBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: { r: { ticks: { display: false }, suggestedMin: 0, suggestedMax: 10 } }
+                }
+            });
+
+            // 2. Monk Salary
+            const ctxMonk = document.getElementById('monkSalaryChart').getContext('2d');
+            new Chart(ctxMonk, {
+                type: 'bar',
+                data: {
+                    labels: ['ปัจจุบัน (1 เท่า)', 'นโยบายใหม่ (2 เท่า)'].map(formatLabel),
+                    datasets: [{
+                        label: 'อัตราเงินเดือน (เท่า)',
+                        data: [1, 2],
+                        backgroundColor: ['#B0BEC5', '#FF6D00'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            // 3. Social Security
+            const ctxSocial = document.getElementById('socialSecurityChart').getContext('2d');
+            new Chart(ctxSocial, {
+                type: 'doughnut',
+                data: {
+                    labels: ['อัตราปัจจุบัน (5%)', 'อัตราใหม่ (1%)'].map(formatLabel),
+                    datasets: [{
+                        data: [5, 1],
+                        backgroundColor: ['#ECEFF1', '#00B0FF'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '60%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // 4. Membership Fee
+            const ctxMember = document.getElementById('membershipChart').getContext('2d');
+            new Chart(ctxMember, {
+                type: 'bar',
+                data: {
+                    labels: ['รายปี (20บ.)', 'ตลอดชีพ (200บ.)'].map(formatLabel),
+                    datasets: [{
+                        label: 'ค่าบำรุงพรรค (บาท)',
+                        data: [20, 200],
+                        backgroundColor: ['#FFCC80', '#EF6C00'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
         });
 
         function switchView(view) {
@@ -880,8 +1293,8 @@
             if (view === 'dashboard') fetchData();
             if (view === 'member-center') {
                 fetchData().then(() => {
-                   renderNews();
-                   renderKnowledge();
+                    renderNews();
+                    renderKnowledge();
                 });
                 renderFeedbacks();
             }
@@ -945,101 +1358,62 @@
                 } catch (err) { alert("ไม่สามารถส่งอีเมลรีเซ็ตได้: " + err.message); }
             }
         }
-
-        // 🔴 INTERACTION HELPERS (FIXED & ROBUST)
+        
         function parseInteractions(remarks) {
-            // Updated regex to safely match nested JSON braces using regex non-greedy dot matching
             const match = remarks.match(/{{INTERACT:({.*?})}}/s);
-            if (match) {
-                try { return JSON.parse(match[1]); } catch (e) { console.error("Parse Error", e); }
-            }
+            if (match) { try { return JSON.parse(match[1]); } catch (e) { console.error("Parse Error", e); } }
             return { likes: [], neutrals: [], comments: [] };
         }
 
         async function updateInteraction(id, action, payload = null) {
             if (!currentSession) return alert("กรุณาเข้าสู่ระบบก่อน");
-            
-            // 1. Optimistic UI Update (Update Local Data Immediately)
             const recordIndex = cachedData.findIndex(r => r.id == id);
-            if(recordIndex === -1) return;
+            if (recordIndex === -1) return;
             const record = cachedData[recordIndex];
-            
             let remarks = record.remarks || '';
             let interactData = parseInteractions(remarks);
             const userEmail = currentSession.user.email;
-
-            // Apply Logic Locally
             if (action === 'like') {
-                if (interactData.likes.includes(userEmail)) {
-                    interactData.likes = interactData.likes.filter(e => e !== userEmail);
-                } else {
-                    interactData.likes.push(userEmail);
-                    interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail);
-                }
+                if (interactData.likes.includes(userEmail)) { interactData.likes = interactData.likes.filter(e => e !== userEmail); }
+                else { interactData.likes.push(userEmail); interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
             } else if (action === 'neutral') {
-                if (interactData.neutrals.includes(userEmail)) {
-                    interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail);
-                } else {
-                    interactData.neutrals.push(userEmail);
-                    interactData.likes = interactData.likes.filter(e => e !== userEmail);
-                }
+                if (interactData.neutrals.includes(userEmail)) { interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
+                else { interactData.neutrals.push(userEmail); interactData.likes = interactData.likes.filter(e => e !== userEmail); }
             } else if (action === 'comment') {
-                if(!payload || !payload.trim()) return;
-                interactData.comments.push({
-                    user: userEmail,
-                    text: payload,
-                    time: new Date().toISOString()
-                });
+                if (!payload || !payload.trim()) return;
+                interactData.comments.push({ user: userEmail, text: payload, time: new Date().toISOString() });
             }
-
-            // Construct new remarks string
             const newTag = `{{INTERACT:${JSON.stringify(interactData)}}}`;
-            // Remove old tag if exists, append new one
             let newRemarks = remarks.replace(/{{INTERACT:({.*?})}}/s, '').trim();
             newRemarks = (newRemarks + ' ' + newTag).trim();
-
-            // Update Cached Data
             cachedData[recordIndex].remarks = newRemarks;
-
-            // Re-render UI immediately
             const containerId = document.getElementById('modal-news-reader').classList.contains('hidden') === false ? 'news-interaction-area' :
-                                (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
+                (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
             renderInteractionUI(containerId, cachedData[recordIndex]);
-
-            // 2. Background Save to DB
-            const { error } = await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
-            if(error) {
-                console.error("Save failed", error);
-                // Optional: Revert UI if save fails (complex, skip for now)
-            }
+            await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
         }
 
         function renderInteractionUI(containerId, record) {
             const container = document.getElementById(containerId);
-            if(!container) return;
-            
+            if (!container) return;
             const data = parseInteractions(record.remarks || '');
             const likesCount = data.likes ? data.likes.length : 0;
             const neutralsCount = data.neutrals ? data.neutrals.length : 0;
             const comments = data.comments || [];
-            
             const userEmail = currentSession ? currentSession.user.email : '';
             const isLiked = data.likes && data.likes.includes(userEmail);
             const isNeutral = data.neutrals && data.neutrals.includes(userEmail);
-
             let commentsHtml = comments.map(c => `
                 <div class="mb-3">
                     <div class="flex items-center gap-2 mb-1">
-                        <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0,2).toUpperCase()}</div>
+                        <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0, 2).toUpperCase()}</div>
                         <span class="text-xs font-bold text-gray-700">${c.user}</span>
                         <span class="text-[10px] text-gray-400">${new Date(c.time).toLocaleDateString('th-TH')}</span>
                     </div>
                     <div class="comment-bubble text-gray-800">${c.text}</div>
                 </div>
             `).join('');
-
-            if(comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
-
+            if (comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
             container.innerHTML = `
                 <div class="flex items-center gap-4 mb-6">
                     <button onclick="updateInteraction('${record.id}', 'like')" class="flex items-center gap-2 px-4 py-2 rounded-full border transition ${isLiked ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}">
@@ -1049,12 +1423,8 @@
                         <i class="fa-solid fa-face-meh"></i> <span>เฉยๆ (${neutralsCount})</span>
                     </button>
                 </div>
-                
                 <h5 class="font-bold text-gray-800 mb-4"><i class="fa-regular fa-comments mr-2"></i> ความคิดเห็น (${comments.length})</h5>
-                <div class="max-h-64 overflow-y-auto mb-4 pr-2 reader-scroll">
-                    ${commentsHtml}
-                </div>
-                
+                <div class="max-h-64 overflow-y-auto mb-4 pr-2 reader-scroll">${commentsHtml}</div>
                 <div class="flex gap-2">
                     <input id="comment-input-${record.id}" class="flex-grow p-2 border rounded-lg text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-blue-500" placeholder="แสดงความคิดเห็น...">
                     <button onclick="submitComment('${record.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
@@ -1065,32 +1435,21 @@
         function submitComment(id) {
             const input = document.getElementById(`comment-input-${id}`);
             const text = input.value;
-            if(!text) return;
-            updateInteraction(id, 'comment', text).then(() => { if(input) input.value = ''; });
+            if (!text) return;
+            updateInteraction(id, 'comment', text).then(() => { if (input) input.value = ''; });
         }
 
-        // --- KNOWLEDGE LOGIC (UPDATED: 2 FILES + INTERACTION) ---
         function renderKnowledge() {
             const list = document.getElementById('knowledge-list');
             const btnAdd = document.getElementById('btn-add-knowledge');
             list.innerHTML = '';
-
             const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
-            if (adminProv) btnAdd.classList.remove('hidden');
-            else btnAdd.classList.add('hidden');
-
+            if (adminProv) btnAdd.classList.remove('hidden'); else btnAdd.classList.add('hidden');
             const docs = cachedData.filter(d => d.type === 'knowledge');
-            if (docs.length === 0) {
-                list.innerHTML = `<li class="text-center text-gray-400 text-sm py-4">ยังไม่มีเอกสารในระบบ</li>`;
-                return;
-            }
-
+            if (docs.length === 0) { list.innerHTML = `<li class="text-center text-gray-400 text-sm py-4">ยังไม่มีเอกสารในระบบ</li>`; return; }
             docs.forEach(doc => {
                 let deleteBtn = adminProv ? `<i onclick="event.stopPropagation(); deleteData('${doc.id}')" class="fa-solid fa-trash text-gray-300 hover:text-red-500 cursor-pointer ml-3 p-2" title="ลบเอกสาร"></i>` : '';
-                
-                // Safe serialization
                 const safeDoc = JSON.stringify(doc).replace(/"/g, '&quot;').replace(/'/g, "\\'");
-
                 list.innerHTML += `
                 <li onclick='openKnowledgeReader(${safeDoc})' class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition group/item cursor-pointer">
                     <div class="flex items-center gap-3 flex-grow">
@@ -1107,44 +1466,32 @@
 
         function openKnowledgeReader(doc) {
             document.getElementById('kn-read-title').innerText = doc.name;
-            
             let filesHtml = '';
             let pdfUrl1 = '#', pdfUrl2 = '#';
             const match1 = (doc.remarks || '').match(/{{PDF1:(.*?)}}/);
             const match2 = (doc.remarks || '').match(/{{PDF2:(.*?)}}/);
             const oldMatch = (doc.remarks || '').match(/{{PDF:(.*?)}}/);
-
             if (match1) pdfUrl1 = match1[1]; else if (oldMatch) pdfUrl1 = oldMatch[1];
             if (match2) pdfUrl2 = match2[1];
-
-            if(pdfUrl1 !== '#') filesHtml += `<a href="${pdfUrl1}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 1</a>`;
-            if(pdfUrl2 !== '#') filesHtml += `<a href="${pdfUrl2}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 2</a>`;
-            
+            if (pdfUrl1 !== '#') filesHtml += `<a href="${pdfUrl1}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 1</a>`;
+            if (pdfUrl2 !== '#') filesHtml += `<a href="${pdfUrl2}" target="_blank" class="bg-white/20 text-white px-3 py-1 rounded text-xs hover:bg-white/30 border border-white/30"><i class="fa-solid fa-download mr-1"></i> ดาวน์โหลดไฟล์ 2</a>`;
             document.getElementById('kn-read-files').innerHTML = filesHtml;
-            
             document.getElementById('modal-knowledge-read').classList.remove('hidden');
             document.getElementById('modal-knowledge-read').classList.add('flex');
-            
             renderInteractionUI('kn-interaction-area', doc);
         }
 
         async function saveKnowledge(e) {
             e.preventDefault();
             if (!currentSession) return;
-
             const btn = document.getElementById('btn-know-save');
             const title = document.getElementById('inp-know-title').value;
             const file1 = document.getElementById('inp-know-file-1').files[0];
             const file2 = document.getElementById('inp-know-file-2').files[0];
-
             if (!file1 && !file2) return alert("กรุณาเลือกไฟล์ PDF อย่างน้อย 1 ไฟล์");
-
             btn.disabled = true; btn.innerText = "กำลังอัปโหลด...";
-
             try {
                 let remarks = "";
-                
-                // Upload File 1
                 if (file1) {
                     const ext1 = file1.name.split('.').pop();
                     const name1 = `know1_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext1}`;
@@ -1153,8 +1500,6 @@
                     const { data: data1 } = sb.storage.from('ThaiDev').getPublicUrl(name1);
                     remarks += `{{PDF1:${data1.publicUrl}}} `;
                 }
-
-                // Upload File 2
                 if (file2) {
                     const ext2 = file2.name.split('.').pop();
                     const name2 = `know2_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext2}`;
@@ -1163,29 +1508,23 @@
                     const { data: data2 } = sb.storage.from('ThaiDev').getPublicUrl(name2);
                     remarks += `{{PDF2:${data2.publicUrl}}}`;
                 }
-
                 const payload = {
                     name: title, type: 'knowledge', remarks: remarks.trim(),
                     email: currentSession.user.email, province: 'ALL', id_card: 'KNOWLEDGE', phone: '-'
                 };
-
                 const { error: dbError } = await sb.from('members').insert([payload]);
                 if (dbError) throw dbError;
-
                 alert("อัปโหลดเอกสารเรียบร้อยแล้ว");
                 document.getElementById('modal-knowledge').classList.add('hidden');
                 e.target.reset();
                 fetchData().then(() => renderKnowledge());
-
-            } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); } 
+            } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
             finally { btn.disabled = false; btn.innerText = "อัปโหลด"; }
         }
 
-        // --- NEWS LOGIC (UPDATED: Reader View + Interaction) ---
         function renderNews() {
             const container = document.getElementById('news-container');
             container.innerHTML = '';
-
             let userProv = null;
             let adminProv = null;
             if (currentSession) {
@@ -1193,32 +1532,22 @@
                 userProv = user ? user.province : null;
                 adminProv = getAdminProvince(currentSession.user.email);
             }
-
             if (adminProv) document.getElementById('btn-create-post').classList.remove('hidden');
             else document.getElementById('btn-create-post').classList.add('hidden');
-
             const posts = cachedData.filter(m => m.type === 'post').filter(p => {
                 return p.province === 'ALL' || (userProv && p.province === userProv) || adminProv;
             });
-
             if (posts.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">ยังไม่มีข่าวสารในขณะนี้</div>`;
                 return;
             }
-
             posts.forEach(p => {
                 const date = new Date(p.created_at).toLocaleDateString('th-TH');
                 let content = p.remarks || '';
-                let imgUrl = 'https://via.placeholder.com/400x225?text=No+Image'; 
+                let imgUrl = 'https://via.placeholder.com/400x225?text=No+Image';
                 const imgMatch = content.match(/{{IMG:(.*?)}}/);
-                if (imgMatch) {
-                    imgUrl = imgMatch[1];
-                    content = content.replace(/{{IMG:(.*?)}}/g, ''); 
-                }
-                
-                // Clean interaction tag from preview
+                if (imgMatch) { imgUrl = imgMatch[1]; content = content.replace(/{{IMG:(.*?)}}/g, ''); }
                 content = content.replace(/{{INTERACT:({.*?})}}/s, '');
-
                 let controls = '';
                 const isOwner = p.email === currentSession?.user?.email;
                 if (adminProv === 'ALL' || isOwner) {
@@ -1229,14 +1558,10 @@
                         </div>
                     `;
                 }
-
                 const badge = p.province === 'ALL'
                     ? '<span class="bg-blue-600 text-white text-xs px-2 py-1 rounded absolute top-2 left-2 z-10">ส่วนกลาง</span>'
                     : `<span class="bg-orange-600 text-white text-xs px-2 py-1 rounded absolute top-2 left-2 z-10">${p.province}</span>`;
-
-                // Store object for reader - pass the whole record to ensure we get ID for interaction
                 const safePostObj = JSON.stringify(p).replace(/"/g, '&quot;');
-
                 container.innerHTML += `
                     <div class="bg-white rounded-xl shadow-sm border overflow-hidden relative group hover:shadow-lg transition cursor-pointer" onclick="openNewsReader(${safePostObj})">
                         ${badge}
@@ -1257,29 +1582,17 @@
             let content = post.remarks || '';
             const imgMatch = content.match(/{{IMG:(.*?)}}/);
             let imgUrl = null;
-            if (imgMatch) {
-                imgUrl = imgMatch[1];
-                content = content.replace(/{{IMG:(.*?)}}/g, '');
-            }
+            if (imgMatch) { imgUrl = imgMatch[1]; content = content.replace(/{{IMG:(.*?)}}/g, ''); }
             content = content.replace(/{{INTERACT:({.*?})}}/s, '');
-
             document.getElementById('news-reader-title').innerText = post.name;
             document.getElementById('news-reader-date').innerText = new Date(post.created_at).toLocaleDateString('th-TH');
             document.getElementById('news-reader-content').innerText = content;
-            
             const imgContainer = document.getElementById('news-reader-img-container');
             const img = document.getElementById('news-reader-img');
-            
-            if (imgUrl) {
-                imgContainer.classList.remove('hidden');
-                img.src = imgUrl;
-            } else {
-                imgContainer.classList.add('hidden');
-            }
-            
+            if (imgUrl) { imgContainer.classList.remove('hidden'); img.src = imgUrl; }
+            else { imgContainer.classList.add('hidden'); }
             document.getElementById('modal-news-reader').classList.remove('hidden');
             document.getElementById('modal-news-reader').classList.add('flex');
-            
             renderInteractionUI('news-interaction-area', post);
         }
 
@@ -1289,32 +1602,23 @@
             const title = document.getElementById('modal-post-title');
             const targetWrapper = document.getElementById('post-target-wrapper');
             const imgPreview = document.getElementById('post-img-preview');
-
             form.reset();
             imgPreview.classList.add('hidden');
             document.getElementById('post-id').value = '';
-
             const adminProv = getAdminProvince(currentSession.user.email);
             if (adminProv === 'ALL') targetWrapper.classList.remove('hidden');
             else targetWrapper.classList.add('hidden');
-
             if (mode === 'edit' && record) {
                 title.innerText = "แก้ไขข่าว";
                 document.getElementById('post-id').value = record.id;
                 document.getElementById('inp-post-title').value = record.name;
                 let content = record.remarks || '';
                 const imgMatch = content.match(/{{IMG:(.*?)}}/);
-                if (imgMatch) {
-                    imgPreview.classList.remove('hidden');
-                    imgPreview.querySelector('img').src = imgMatch[1];
-                    content = content.replace(/{{IMG:(.*?)}}/g, '');
-                }
+                if (imgMatch) { imgPreview.classList.remove('hidden'); imgPreview.querySelector('img').src = imgMatch[1]; content = content.replace(/{{IMG:(.*?)}}/g, ''); }
                 content = content.replace(/{{INTERACT:({.*?})}}/s, '');
                 document.getElementById('inp-post-content').value = content.trim();
                 if (adminProv === 'ALL') document.getElementById('inp-post-target').value = record.province;
-            } else {
-                title.innerText = "สร้างข่าวใหม่";
-            }
+            } else { title.innerText = "สร้างข่าวใหม่"; }
             modal.classList.remove('hidden'); modal.classList.add('flex');
         };
 
@@ -1324,7 +1628,6 @@
             e.preventDefault();
             const btn = document.getElementById('btn-post-save');
             btn.disabled = true; btn.innerText = "กำลังโพสต์...";
-
             const recordId = document.getElementById('post-id').value;
             const title = document.getElementById('inp-post-title').value;
             const content = document.getElementById('inp-post-content').value;
@@ -1332,7 +1635,6 @@
             const adminProv = getAdminProvince(currentSession.user.email);
             let targetProv = adminProv === 'ALL' ? document.getElementById('inp-post-target').value : adminProv;
             let imgUrl = null;
-
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const ext = file.name.split('.').pop();
@@ -1346,32 +1648,25 @@
                 const oldMatch = (oldRec.remarks || '').match(/{{IMG:(.*?)}}/);
                 if (oldMatch) imgUrl = oldMatch[1];
             }
-
             let finalRemarks = content;
             if (imgUrl) finalRemarks += ` {{IMG:${imgUrl}}}`;
-            
-            // Preserve interactions if editing
             if (recordId) {
                 const oldRec = cachedData.find(r => r.id == recordId);
                 const interactMatch = (oldRec.remarks || '').match(/{{INTERACT:({.*?})}}/s);
                 if (interactMatch) finalRemarks += ` ${interactMatch[0]}`;
             }
-
             const payload = {
                 name: title, remarks: finalRemarks, type: 'post', province: targetProv,
                 email: currentSession.user.email, id_card: 'POST', phone: '-'
             };
-
             let result;
             if (recordId) result = await sb.from('members').update(payload).eq('id', recordId);
             else result = await sb.from('members').insert([payload]);
-
             if (result.error) alert("บันทึกไม่สำเร็จ: " + result.error.message);
             else { closePostModal(); alert("บันทึกข่าวเรียบร้อย"); fetchData(); }
             btn.disabled = false; btn.innerText = "โพสต์ข่าว";
         }
 
-        // --- FEEDBACK LOGIC (UPDATED: Click to Read + Interaction) ---
         async function handleFeedbackSubmit(e) {
             e.preventDefault();
             if (!currentSession) { alert("กรุณาเข้าสู่ระบบก่อน"); return switchView('auth'); }
@@ -1394,7 +1689,6 @@
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-400">กำลังโหลด...</td></tr>';
             const { data, error } = await sb.from('members').select('*').eq('type', 'feedback').order('created_at', { ascending: false }).limit(10);
             tbody.innerHTML = '';
-
             if (data && data.length > 0) {
                 data.forEach(f => {
                     const date = new Date(f.created_at).toLocaleDateString('th-TH');
@@ -1403,9 +1697,7 @@
                         ? '<span class="text-green-600 font-bold">ดำเนินการแล้ว</span>'
                         : '<span class="text-orange-500 font-bold">รอตรวจสอบ</span>';
                     let typeTxt = f.province === 'suggestion' ? 'ข้อเสนอแนะ' : (f.province === 'complaint' ? 'ร้องเรียน' : 'สอบถาม');
-                    
                     const safeFbObj = JSON.stringify(f).replace(/"/g, '&quot;');
-
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-50 transition border-b cursor-pointer group" onclick="openFeedbackReader(${safeFbObj})">
                             <td class="px-6 py-4 text-gray-500 text-xs">${date}</td>
@@ -1414,32 +1706,25 @@
                             <td class="px-6 py-4 text-xs">${statusBadge}</td>
                         </tr>`;
                 });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">ยังไม่มีรายการ</td></tr>`;
-            }
+            } else { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">ยังไม่มีรายการ</td></tr>`; }
         }
 
         function openFeedbackReader(fb) {
             document.getElementById('fb-read-topic').innerText = fb.name;
             document.getElementById('fb-read-type').innerText = fb.province === 'suggestion' ? 'ข้อเสนอแนะ' : (fb.province === 'complaint' ? 'ร้องเรียน' : 'สอบถาม');
             document.getElementById('fb-read-date').innerText = new Date(fb.created_at).toLocaleDateString('th-TH');
-            
             let detail = (fb.remarks || '').replace('{{STATUS:RESOLVED}}', '');
             detail = detail.replace(/{{INTERACT:({.*?})}}/s, '').trim();
             document.getElementById('fb-read-detail').innerText = detail;
-            
             let isResolved = (fb.remarks || '').includes('{{STATUS:RESOLVED}}');
             document.getElementById('fb-read-status').innerHTML = isResolved
-                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการแล้ว</span>' 
+                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการแล้ว</span>'
                 : '<span class="text-orange-500 font-bold"><i class="fa-regular fa-clock"></i> รอตรวจสอบ</span>';
-            
             document.getElementById('modal-feedback-read').classList.remove('hidden');
             document.getElementById('modal-feedback-read').classList.add('flex');
-            
             renderInteractionUI('fb-interaction-area', fb);
         }
 
-        // --- GENERAL APP LOGIC ---
         function switchAuthMode(mode) {
             isRegisterMode = mode === 'register';
             document.querySelector('#view-auth h2').innerText = isRegisterMode ? "ลงทะเบียนสมาชิกแอพ" : "ลงชื่อเข้าใช้งาน";
@@ -1470,7 +1755,7 @@
         function filterDashboard(type) {
             activeFilter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === type) { btn.classList.remove('bg-white', 'border', 'text-gray-600'); btn.classList.add('bg-gray-200', 'text-gray-700'); } 
+                if (btn.dataset.filter === type) { btn.classList.remove('bg-white', 'border', 'text-gray-600'); btn.classList.add('bg-gray-200', 'text-gray-700'); }
                 else { btn.classList.add('bg-white', 'border', 'text-gray-600'); btn.classList.remove('bg-gray-200', 'text-gray-700'); }
             });
             handleSearch();
@@ -1482,22 +1767,16 @@
             if (activeFilter !== 'all') baseData = cachedData.filter(m => m.type === activeFilter);
             if (!txt) filteredData = [...baseData];
             else {
-                filteredData = baseData.filter(m => 
-                    (m.name || '').toLowerCase().includes(txt) || (m.member_id || '').toLowerCase().includes(txt) || 
+                filteredData = baseData.filter(m =>
+                    (m.name || '').toLowerCase().includes(txt) || (m.member_id || '').toLowerCase().includes(txt) ||
                     (m.id_card || '').includes(txt) || (m.phone || '').includes(txt) || (m.remarks || '').toLowerCase().includes(txt)
                 );
             }
             renderTable(filteredData);
         }
 
-        // --- MEMBER MODAL & SAVE (UPDATED: 2 FILES) ---
         window.openModal = (type, record = null) => {
-            // FIX: ถ้า record ส่งมาเป็น ID (String) ให้ไปค้นหา Object จริงจาก cachedData
-            // ช่วยแก้ปัญหาคลิกปุ่มแก้ไขแล้วไม่ทำงานเพราะส่ง JSON ผิดพลาด
-            if (typeof record === 'string') {
-                record = cachedData.find(r => r.id == record);
-            }
-
+            if (typeof record === 'string') { record = cachedData.find(r => r.id == record); }
             const modal = document.getElementById('modal-form');
             const title = document.getElementById('modal-title');
             const saveBtn = document.getElementById('btn-save');
@@ -1505,39 +1784,24 @@
             const form = document.getElementById('memberForm');
             const adminTools = document.getElementById('admin-tools');
             const adminRoleSetting = document.getElementById('admin-role-setting');
-            
-            // REMOVE: Removed linkFile1, linkFile2 as elements are gone.
-            // const linkFile1 = document.getElementById('link-file-1');
-            // const linkFile2 = document.getElementById('link-file-2');
-
             form.reset();
-            // REMOVE: Removed classList.add logic on null elements
-            // linkFile1.classList.add('hidden');
-            // linkFile2.classList.add('hidden');
-            
             document.getElementById('id-error').classList.add('hidden');
             document.getElementById('phone-error').classList.add('hidden');
             recordIdInput.value = '';
             isEditMode = false;
-
             const adminProv = currentSession && getAdminProvince(currentSession.user.email);
             if (adminProv) {
                 adminTools.classList.remove('hidden');
                 if (adminProv === 'ALL') adminRoleSetting.classList.remove('hidden'); else adminRoleSetting.classList.add('hidden');
-            } else {
-                adminTools.classList.add('hidden');
-            }
-
+            } else { adminTools.classList.add('hidden'); }
             if (record && record.id) {
                 isEditMode = true;
                 recordIdInput.value = record.id;
                 if (type === 'edit') type = record.type;
             }
-
-            title.innerHTML = type === 'feedback' ? '<i class="fa-regular fa-comments"></i> จัดการข้อเสนอแนะ' 
-                : (isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล' 
-                : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค'));
-
+            title.innerHTML = type === 'feedback' ? '<i class="fa-regular fa-comments"></i> จัดการข้อเสนอแนะ'
+                : (isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล'
+                    : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค'));
             if (record) {
                 document.getElementById('inp-member-id').value = record.member_id || '';
                 document.getElementById('inp-name').value = record.name || '';
@@ -1554,45 +1818,22 @@
                 document.getElementById('inp-recommender').value = record.recommender_name || '';
                 document.getElementById('inp-admin-role').value = record.admin_role || '';
                 document.getElementById('inp-start-date').value = record.start_date || '';
-
                 let remarks = record.remarks || '';
-                
-                // Removed logic trying to set href on linkFile1/linkFile2 because they are gone.
-                // However, we should probably strip out file tags from remarks when displaying to avoid clutter,
-                // or keep them if we want to show links somewhere else. 
-                // Since the prompt asked to "change upload to email instruction", 
-                // likely we don't display old file links in this modal anymore.
-                // Just cleaning up remarks display:
-                
-                if (remarks.includes(OLD_DATA_TAG)) {
-                    document.getElementById('inp-is-old').checked = true;
-                    remarks = remarks.replace(OLD_DATA_TAG, '');
-                } else {
-                    document.getElementById('inp-is-old').checked = false;
-                }
-                
-                // Clean tags for display
+                if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
+                else { document.getElementById('inp-is-old').checked = false; }
                 remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
                     .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
-                    .replace(/{{START_DATE:(.*?)}}/g, '')
-                    .replace(/{{INTERACT:({.*?})}}/s, '')
-                    .replace(/{{DOC1:(.*?)}}/g, '')
-                    .replace(/{{PDF:(.*?)}}/g, '')
-                    .replace(/{{DOC2:(.*?)}}/g, '')
-                    .trim();
-
+                    .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
+                    .replace(/{{DOC1:(.*?)}}/g, '').replace(/{{PDF:(.*?)}}/g, '').replace(/{{DOC2:(.*?)}}/g, '').trim();
                 document.getElementById('inp-remarks').value = remarks;
-
             } else if (adminProv) {
                 document.getElementById('inp-email').value = '';
                 document.getElementById('inp-is-old').checked = false;
                 document.getElementById('inp-admin-role').value = '';
             }
-
             const provSelect = document.getElementById('inp-prov');
             provSelect.disabled = false;
             if (adminProv && adminProv !== 'ALL') { provSelect.value = adminProv; provSelect.disabled = true; }
-
             saveBtn.innerText = isEditMode ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล';
             document.getElementById('inp-type').value = type;
             modal.classList.remove('hidden'); modal.classList.add('flex');
@@ -1602,209 +1843,241 @@
 
         async function saveData(e) {
             e.preventDefault();
-            const type = document.getElementById('inp-type').value;
-            const isFeedback = type === 'feedback';
-            const recordId = document.getElementById('record-id').value;
-            const btn = document.getElementById('btn-save');
-
-            // Validations
-            const idCard = document.getElementById('inp-id').value;
-            if (!isFeedback && idCard && !checkThaiID(idCard)) {
-                document.getElementById('id-error').classList.remove('hidden'); return alert("เลขบัตรประชาชนไม่ถูกต้อง");
-            } else document.getElementById('id-error').classList.add('hidden');
-
-            const phone = document.getElementById('inp-phone').value;
-            if (!isFeedback && phone && !validatePhone(phone)) {
-                document.getElementById('phone-error').classList.remove('hidden'); return alert("เบอร์โทรศัพท์ไม่ถูกต้อง");
-            } else document.getElementById('phone-error').classList.add('hidden');
-
-            const currentEmail = currentSession.user.email;
-            const adminProv = getAdminProvince(currentEmail);
-            const selectedProv = document.getElementById('inp-prov').value;
-
-            if (adminProv && adminProv !== 'ALL' && selectedProv !== adminProv && !isFeedback) {
-                alert(`คุณมีสิทธิ์จัดการข้อมูลเฉพาะจังหวัด ${adminProv} เท่านั้น`); return;
-            }
-
-            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
-
-            // No file upload anymore for member form
-            // REMOVE: Removed file upload logic and doc1Url/doc2Url logic
+            const saveBtn = document.getElementById('btn-save');
+            saveBtn.disabled = true; saveBtn.innerText = "กำลังบันทึก...";
             
-            // Construct Remarks
-            let finalRemarks = document.getElementById('inp-remarks').value || '';
-            finalRemarks = finalRemarks.replace(OLD_DATA_TAG, '').replace(/{{MID:(.*?)}}/g, '')
-                .replace(/{{ROLE:(.*?)}}/g, '').replace(/{{START_DATE:(.*?)}}/g, '').trim();
-
-            // Append old URLs if existing (preserve them)
-            if (isEditMode) {
-                const orig = cachedData.find(r => r.id == recordId);
-                // Preserve old document links if they exist in original data
-                const old1 = (orig.remarks || '').match(/{{DOC1:(.*?)}}/) || (orig.remarks || '').match(/{{PDF:(.*?)}}/);
-                if (old1) finalRemarks += ` ${old1[0]}`;
-                const old2 = (orig.remarks || '').match(/{{DOC2:(.*?)}}/);
-                if (old2) finalRemarks += ` ${old2[0]}`;
+            try {
+                const recordId = document.getElementById('record-id').value;
+                const type = document.getElementById('inp-type').value;
+                const name = document.getElementById('inp-name').value;
+                const email = document.getElementById('inp-email').value;
+                const phone = document.getElementById('inp-phone').value;
+                const idCard = document.getElementById('inp-id').value;
+                const province = document.getElementById('inp-prov').value;
                 
-                // Preserve other tags
-                if ((orig.remarks || '').includes(STATUS_APPROVED_TAG)) finalRemarks += ` ${STATUS_APPROVED_TAG}`;
-                if ((orig.remarks || '').includes('{{STATUS:RESOLVED}}')) finalRemarks += ` {{STATUS:RESOLVED}}`;
-                // Restore Interaction Tag
-                const interactMatch = (orig.remarks || '').match(/{{INTERACT:({.*?})}}/s);
-                if (interactMatch) finalRemarks += ` ${interactMatch[0]}`;
+                // Validate if not admin mode for new records
+                const adminProv = getAdminProvince(currentSession.user.email);
+                if (!adminProv && !checkThaiID(idCard)) {
+                    document.getElementById('id-error').classList.remove('hidden');
+                    throw new Error("เลขบัตรประชาชนไม่ถูกต้อง");
+                } else {
+                    document.getElementById('id-error').classList.add('hidden');
+                }
+
+                if (!adminProv && !validatePhone(phone)) {
+                    document.getElementById('phone-error').classList.remove('hidden');
+                    throw new Error("เบอร์โทรศัพท์ไม่ถูกต้อง");
+                } else {
+                    document.getElementById('phone-error').classList.add('hidden');
+                }
+
+                let remarks = document.getElementById('inp-remarks').value;
+                // Add Meta Tags
+                if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
+                if (recordId) {
+                    // Preserve existing tags when editing
+                    const oldRec = cachedData.find(r => r.id == recordId);
+                    if (oldRec) {
+                        if (oldRec.remarks.includes(STATUS_APPROVED_TAG)) remarks += ` ${STATUS_APPROVED_TAG}`;
+                        const interactMatch = (oldRec.remarks || '').match(/{{INTERACT:({.*?})}}/s);
+                        if (interactMatch) remarks += ` ${interactMatch[0]}`;
+                    }
+                }
+
+                const payload = {
+                    member_id: document.getElementById('inp-member-id').value,
+                    name: name,
+                    dob: document.getElementById('inp-dob').value,
+                    id_card: idCard,
+                    email: email,
+                    phone: phone,
+                    line_id: document.getElementById('inp-line').value,
+                    address: document.getElementById('inp-addr').value,
+                    tambon: document.getElementById('inp-tambon').value,
+                    district: document.getElementById('inp-district').value,
+                    province: province,
+                    zip: document.getElementById('inp-zip').value,
+                    recommender_name: document.getElementById('inp-recommender').value,
+                    type: type,
+                    remarks: remarks,
+                    admin_role: document.getElementById('inp-admin-role').value,
+                    start_date: document.getElementById('inp-start-date').value
+                };
+
+                let result;
+                if (recordId) {
+                    result = await sb.from('members').update(payload).eq('id', recordId);
+                } else {
+                    // If regular user, force email to match session
+                    if (!adminProv) payload.email = currentSession.user.email;
+                    result = await sb.from('members').insert([payload]);
+                }
+
+                if (result.error) throw result.error;
+
+                alert("บันทึกข้อมูลสำเร็จ");
+                closeModal();
+                fetchData();
+
+            } catch (err) {
+                alert("เกิดข้อผิดพลาด: " + err.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "บันทึกข้อมูล";
             }
-
-            if (document.getElementById('inp-is-old').checked) finalRemarks += ' ' + OLD_DATA_TAG;
-            const mid = document.getElementById('inp-member-id').value;
-            if (mid) finalRemarks += ` {{MID:${mid}}}`;
-            const role = adminProv === 'ALL' ? document.getElementById('inp-admin-role').value : null;
-            if (role) finalRemarks += ` {{ROLE:${role}}}`;
-            const sDate = document.getElementById('inp-start-date').value;
-            if (sDate) finalRemarks += ` {{START_DATE:${sDate}}}`;
-
-            const payload = {
-                name: document.getElementById('inp-name').value,
-                dob: document.getElementById('inp-dob').value || null,
-                id_card: idCard,
-                email: document.getElementById('inp-email').value,
-                phone: phone,
-                line_id: document.getElementById('inp-line').value,
-                address: document.getElementById('inp-addr').value,
-                province: selectedProv,
-                district: document.getElementById('inp-district').value,
-                tambon: document.getElementById('inp-tambon').value,
-                zip: document.getElementById('inp-zip').value,
-                type: type,
-                recommender_name: document.getElementById('inp-recommender').value || null,
-                remarks: finalRemarks.trim()
-            };
-
-            let result;
-            if (recordId) result = await sb.from('members').update(payload).eq('id', recordId);
-            else result = await sb.from('members').insert([payload]);
-
-            if (result.error) alert("บันทึกไม่สำเร็จ: " + result.error.message);
-            else { closeModal(); alert("บันทึกข้อมูลเรียบร้อย"); if (!document.getElementById('view-dashboard').classList.contains('hidden')) fetchData(); }
-            btn.disabled = false; btn.innerText = "บันทึกข้อมูล";
         }
 
         async function fetchData() {
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('table-body').innerHTML = '';
-            document.getElementById('empty-state').classList.add('hidden');
+            
+            const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
+            let query = sb.from('members').select('*');
+            
+            // Permission Logic
+            if (!adminProv) {
+                // Regular User: See own data + public posts
+                query = query.or(`email.eq.${currentSession.user.email},type.eq.post,type.eq.knowledge`);
+            } else if (adminProv !== 'ALL') {
+                // Provincial Admin: See all data in province + public posts
+                query = query.or(`province.eq.${adminProv},type.eq.post,type.eq.knowledge,province.eq.ALL`);
+            }
 
-            const { data, error } = await sb.from('members').select('*').order('created_at', { ascending: false });
+            const { data, error } = await query;
+            
             document.getElementById('loading').classList.add('hidden');
-            if (error) return alert(error.message);
+            if (error) {
+                console.error(error);
+                return;
+            }
 
-            cachedData = data.map(d => {
-                const remarks = d.remarks || '';
-                const midMatch = remarks.match(/{{MID:(.*?)}}/);
-                const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
-                
-                // Helper to check for any PDF link
-                const hasFile = remarks.includes('{{DOC1:') || remarks.includes('{{PDF:') || remarks.includes('{{DOC2:') || remarks.includes('{{PDF1:') || remarks.includes('{{PDF2:');
+            cachedData = data || [];
+            
+            // Calculate Stats
+            const users = new Set(cachedData.map(m => m.email)).size;
+            const members = cachedData.filter(m => m.type === 'member').length;
+            const candidates = cachedData.filter(m => m.type === 'candidate').length;
+            
+            document.getElementById('stat-users').innerText = users;
+            document.getElementById('stat-total').innerText = members;
+            document.getElementById('stat-candidate').innerText = candidates;
 
-                const startDateMatch = remarks.match(/{{START_DATE:(.*?)}}/);
-                const start_date = startDateMatch ? startDateMatch[1] : null;
-
-                return {
-                    ...d,
-                    region: getRegion(d.province || ''),
-                    is_old_data: remarks.includes(OLD_DATA_TAG),
-                    status_approved: remarks.includes(STATUS_APPROVED_TAG) || remarks.includes('{{STATUS:RESOLVED}}'),
-                    member_id: midMatch ? midMatch[1] : null,
-                    admin_role: roleMatch ? roleMatch[1] : null,
-                    has_file: hasFile,
-                    start_date: start_date // Ensure this is mapped for sorting
-                };
+            // Region Stats
+            const regionStats = {};
+            cachedData.filter(m => m.type === 'member').forEach(m => {
+                const region = mapToMainRegion(getRegion(m.province));
+                regionStats[region] = (regionStats[region] || 0) + 1;
             });
+            
+            const regionHTML = Object.entries(regionStats).map(([reg, count]) => `
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <span class="block text-xs text-gray-500">${reg}</span>
+                    <span class="block text-xl font-bold text-gray-800">${count}</span>
+                </div>
+            `).join('');
+            document.getElementById('region-stats-container').innerHTML = regionHTML || '<div class="text-xs text-gray-400">ยังไม่มีข้อมูล</div>';
 
-            handleSearch();
-            document.getElementById('stat-users').innerText = cachedData.length.toLocaleString();
-            const realMembers = cachedData.filter(m => m.type === 'member' || m.type === 'candidate');
-            const totalMembers = 10986 + realMembers.filter(m => !m.is_old_data).length;
-            document.getElementById('stat-total').innerText = totalMembers.toLocaleString();
-            document.getElementById('stat-candidate').innerText = cachedData.filter(m => m.type === 'candidate').length;
+            handleSearch(); // Render Table
         }
 
         function sortTable(key) {
-            if (sortConfig.key === key) sortConfig.direction *= -1; else { sortConfig.key = key; sortConfig.direction = 1; }
+            if (sortConfig.key === key) sortConfig.direction *= -1;
+            else { sortConfig.key = key; sortConfig.direction = 1; }
+            
             filteredData.sort((a, b) => {
-                const valA = a[key] || ''; const valB = b[key] || '';
-                return valA.localeCompare(valB, 'th') * sortConfig.direction;
+                let valA = a[key] || '';
+                let valB = b[key] || '';
+                return valA.toString().localeCompare(valB.toString()) * sortConfig.direction;
             });
             renderTable(filteredData);
+            
+            // Update Icons
+            document.querySelectorAll('th i').forEach(i => i.className = 'fa-solid fa-sort ml-1');
+            const activeTh = document.querySelector(`th[onclick="sortTable('${key}')"] i`);
+            if (activeTh) activeTh.className = sortConfig.direction === 1 ? 'fa-solid fa-sort-up ml-1' : 'fa-solid fa-sort-down ml-1';
         }
 
         function renderTable(data) {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
-            let currentEmail = currentSession ? currentSession.user.email : '';
-            let adminProv = currentSession ? getAdminProvince(currentEmail) : null;
+            
+            if (data.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+            }
 
-            if (data.length === 0) { document.getElementById('empty-state').classList.remove('hidden'); return; }
-            else document.getElementById('empty-state').classList.add('hidden');
+            const adminProv = getAdminProvince(currentSession.user.email);
 
-            data.forEach(m => {
-                if (m.type === 'knowledge' || m.type === 'feedback' || m.type === 'post') {
-                    // Simplified row for non-member types in dashboard (optional, or filter them out)
-                    return; 
-                }
+            data.forEach(item => {
+                // Skip if filtering hides it
+                if (activeFilter !== 'all' && item.type !== activeFilter) return;
 
-                const isOwner = m.email === currentEmail;
-                let canManage = isOwner || adminProv === 'ALL' || (adminProv && adminProv === m.province);
-
-                const badge = m.type === 'candidate' ? '<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs border border-orange-200 font-bold">ผู้สมัคร ส.ส.</span>' 
-                    : '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs border border-blue-200">สมาชิกพรรค</span>';
-                const statusBadge = m.status_approved ? '<span class="text-green-600 ml-1"><i class="fa-solid fa-circle-check"></i></span>' 
-                    : (adminProv ? `<span class="text-gray-300 ml-1 cursor-pointer hover:text-orange-500" onclick="approveItem('${m.id}', 'member')"><i class="fa-regular fa-circle"></i></span>` : '');
+                // For Feedback items, use special rendering in the "Manage" column
+                let manageBtns = '';
+                const isOwner = item.email === currentSession.user.email;
                 
-                const fileIcon = m.has_file ? `<i class="fa-solid fa-paperclip text-blue-500 ml-1" title="มีเอกสารแนบ"></i>` : '';
-
-                // Date formatting
-                let dateDisplay = '-';
-                if (m.start_date) {
-                    const d = new Date(m.start_date);
-                    dateDisplay = d.toLocaleDateString('th-TH');
+                if (adminProv || isOwner) {
+                     // Add logic: Only super admin or owner can delete posts/knowledge
+                     // Provincial admin can manage members in their province
+                    const canEdit = adminProv === 'ALL' || (adminProv && item.province === adminProv) || isOwner;
+                    
+                    if (canEdit) {
+                        manageBtns = `
+                            <button onclick="openModal('edit', '${item.id}')" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteData('${item.id}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                        `;
+                    }
                 }
+                
+                // Status Logic
+                let status = '<span class="px-2 py-1 rounded bg-gray-100 text-gray-500 text-xs">ทั่วไป</span>';
+                if (item.type === 'member') status = '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs">สมาชิก</span>';
+                if (item.type === 'candidate') status = '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs">ผู้สมัคร ส.ส.</span>';
+                if (item.type === 'feedback') status = '<span class="px-2 py-1 rounded bg-yellow-100 text-yellow-700 text-xs">ข้อเสนอแนะ</span>';
+                if (item.remarks && item.remarks.includes(OLD_DATA_TAG)) status += ' <span class="text-xs text-gray-400">(เดิม)</span>';
 
-                // FIX: เปลี่ยน onclick ให้ส่งแค่ ID (m.id) แทนที่จะส่งทั้ง object เพื่อป้องกัน error
+                // Format Date
+                const date = new Date(item.start_date || item.created_at).toLocaleDateString('th-TH');
+
                 tbody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 text-gray-500 font-mono font-bold text-orange-600">${m.member_id || '-'}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm">${dateDisplay}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900">${m.name} ${m.is_old_data ? '(เดิม)' : ''} ${statusBadge} ${fileIcon}</td>
-                        <td class="px-6 py-4">${badge}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm font-mono">${(adminProv || isOwner) ? (m.phone || '-') : (m.phone ? m.phone.substring(0,3)+'-xxx' : '-')}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm">${m.district || '-'}</td>
-                        <td class="px-6 py-4 text-gray-500 text-sm">${m.province}</td>
-                        <td class="px-6 py-4 text-right whitespace-nowrap">
-                            ${canManage ? `<button onclick="openModal('edit', '${m.id}')" class="text-blue-500 p-2"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
-                            ${(adminProv === 'ALL' || isOwner) ? `<button onclick="deleteData('${m.id}')" class="text-red-500 p-2"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="px-6 py-4 font-mono text-xs">${item.member_id || '-'}</td>
+                        <td class="px-6 py-4">${date}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900">${item.name}</td>
+                        <td class="px-6 py-4">${status}</td>
+                        <td class="px-6 py-4 text-xs">
+                            <div class="flex flex-col gap-1">
+                                <span><i class="fa-solid fa-phone w-4"></i> ${item.phone || '-'}</span>
+                                <span><i class="fa-brands fa-line w-4"></i> ${item.line_id || '-'}</span>
+                            </div>
                         </td>
-                    </tr>`;
+                        <td class="px-6 py-4 text-xs truncate max-w-xs" title="${item.address || ''} ${item.tambon || ''} ${item.district || ''}">
+                            ${item.address || '-'} ${item.tambon || ''} ${item.district || ''}
+                        </td>
+                        <td class="px-6 py-4 text-xs">${item.province}</td>
+                        <td class="px-6 py-4 text-right">
+                            ${manageBtns}
+                        </td>
+                    </tr>
+                `;
             });
         }
 
-        async function approveItem(id, type) {
-            if (!confirm("ยืนยันการอนุมัติ?")) return;
-            const record = cachedData.find(r => r.id == id);
-            let newRemarks = record.remarks || '';
-            const tag = type === 'feedback' ? '{{STATUS:RESOLVED}}' : STATUS_APPROVED_TAG;
-            if (!newRemarks.includes(tag)) {
-                newRemarks += ` ${tag}`;
-                const { error } = await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
-                if (error) alert("Error: " + error.message); else fetchData();
+        async function deleteData(id) {
+            if (!confirm("คุณต้องการลบข้อมูลนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้")) return;
+            try {
+                const { error } = await sb.from('members').delete().eq('id', id);
+                if (error) throw error;
+                alert("ลบข้อมูลเรียบร้อยแล้ว");
+                fetchData();
+            } catch (err) {
+                alert("เกิดข้อผิดพลาดในการลบ: " + err.message);
             }
         }
 
-        async function deleteData(id) {
-            if (confirm("ยืนยันการลบ?")) {
-                await sb.from('members').delete().eq('id', id);
-                fetchData();
-            }
-        }
+        // Initial fetch handled by auth state change or view switch
     </script>
 </body>
-
 </html>
