@@ -128,7 +128,7 @@
             line-height: 1.5;
         }
 
-        /* Chart Container Styling (Added from Infographic) */
+        /* Chart Container Styling */
         .chart-container {
             position: relative;
             width: 100%;
@@ -210,7 +210,7 @@
             </div>
         </header>
 
-        <!-- INSERTED: INFOGRAPHIC CONTENT START -->
+        <!-- INFOGRAPHIC CONTENT -->
         <div class="container mx-auto px-4 py-4 max-w-6xl space-y-16">
             
             <!-- Intro Section: Identity & Radar -->
@@ -381,7 +381,6 @@
                 </div>
             </section>
         </div>
-        <!-- INSERTED: INFOGRAPHIC CONTENT END -->
 
         <div class="container mx-auto px-4 py-12 max-w-6xl">
             <!-- Application Section -->
@@ -610,10 +609,11 @@
                         <table class="w-full text-sm text-left text-gray-600">
                             <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-bold">
                                 <tr>
-                                    <th class="px-6 py-3">วันที่</th>
-                                    <th class="px-6 py-3">ประเภท</th>
+                                    <th class="px-6 py-3 w-24">Ticket ID</th>
+                                    <th class="px-6 py-3 w-32">วันที่</th>
+                                    <th class="px-6 py-3 w-32">ประเภท</th>
                                     <th class="px-6 py-3">หัวข้อ (คลิกเพื่ออ่าน)</th>
-                                    <th class="px-6 py-3">สถานะ</th>
+                                    <th class="px-6 py-3 text-right">สถานะ</th>
                                 </tr>
                             </thead>
                             <tbody id="feedback-table-body" class="divide-y divide-gray-100"></tbody>
@@ -772,6 +772,46 @@
         </div>
     </div>
 
+    <!-- NEW MODAL: FEEDBACK MANAGER (SEPARATED) -->
+    <div id="modal-feedback-manage"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-auto relative">
+            <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-purple-600 text-white">
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ</h3>
+                <button onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')" class="hover:text-gray-300"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <input type="hidden" id="fb-manage-id">
+                
+                <div class="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                         <span id="fb-manage-type" class="text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600">Type</span>
+                         <span id="fb-manage-date" class="text-xs text-gray-400">Date</span>
+                    </div>
+                    <h4 id="fb-manage-topic" class="font-bold text-gray-800 text-lg mb-2">Topic</h4>
+                    <p id="fb-manage-detail" class="text-sm text-gray-600 whitespace-pre-line">Detail...</p>
+                    <p class="text-xs text-gray-400 mt-2">โดย: <span id="fb-manage-by">User</span></p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="text-xs font-bold text-gray-500 mb-1 block">การดำเนินการ (สถานะ)</label>
+                    <select id="fb-manage-status" class="w-full p-2 border rounded bg-white mb-2">
+                        <option value="PENDING">รอการตอบกลับ (Pending)</option>
+                        <option value="RESOLVED">ดำเนินการเสร็จสิ้น (Resolved)</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
+                        class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ปิด</button>
+                    <button type="button" onclick="saveFeedbackStatus(event)"
+                        class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 shadow font-bold action-btn">บันทึกสถานะ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL FORM (MEMBER - EMAIL INSTRUCTION) -->
     <div id="modal-form"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
@@ -881,56 +921,6 @@
 
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i
                             class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
-
-                    <!-- Email Instruction Block -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                        <div class="flex flex-col gap-3">
-
-                            <!-- Step 1: Download -->
-                            <div class="flex items-start gap-3">
-                                <div
-                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
-                                    <i class="fa-solid fa-download"></i></div>
-                                <div>
-                                    <h5 class="font-bold text-blue-900 text-sm">๑. ดาวน์โหลดและกรอกใบสมัคร</h5>
-                                    <a href="https://bhfytplqshiviuqwkvbm.supabase.co/storage/v1/object/public/ThaiDev/know_1764302915159_hyfvn.pdf"
-                                        target="_blank"
-                                        class="text-sm text-orange-600 hover:text-orange-700 underline font-bold mt-1 inline-block">
-                                        <i class="fa-solid fa-file-pdf mr-1"></i> ดาวน์โหลดแบบฟอร์มใบสมัคร
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- Step 2: Prepare Docs -->
-                            <div class="flex items-start gap-3">
-                                <div
-                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
-                                    <i class="fa-solid fa-paperclip"></i></div>
-                                <div>
-                                    <h5 class="font-bold text-blue-900 text-sm">๒. เตรียมเอกสารที่ต้องแนบ</h5>
-                                    <ul class="list-disc list-inside text-xs text-blue-800 mt-1 ml-1">
-                                        <li>ใบสมัครที่กรอกข้อมูลครบถ้วน</li>
-                                        <li>สำเนาบัตรประจำตัวประชาชน (รับรองสำเนาถูกต้อง)</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: Send Email -->
-                            <div class="flex items-start gap-3">
-                                <div
-                                    class="bg-white p-2 rounded-full text-blue-600 shadow-sm border border-blue-100 mt-1">
-                                    <i class="fa-solid fa-envelope-circle-check"></i></div>
-                                <div>
-                                    <h5 class="font-bold text-blue-900 text-sm">๓. ส่งเอกสารมาที่อีเมล</h5>
-                                    <a href="mailto:admin@landofdharmaparty.org"
-                                        class="text-base font-bold text-orange-600 underline mt-1 block">admin@landofdharmaparty.org</a>
-                                    <p class="text-[10px] text-gray-500 mt-1">*หัวข้ออีเมล: "สมัครสมาชิก -
-                                        [ชื่อ-นามสกุล]"</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
 
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500">หมายเหตุ</label>
@@ -1134,7 +1124,12 @@
             if (ADMIN_ROLES[email]) return ADMIN_ROLES[email];
             if (cachedData.length > 0) {
                 const userRecord = cachedData.find(m => m.email === email && m.type !== 'feedback');
-                if (userRecord && userRecord.admin_role) return userRecord.admin_role;
+                if (userRecord) {
+                    if (userRecord.admin_role) return userRecord.admin_role;
+                    // Fallback: Check remarks for ROLE tag
+                    const match = (userRecord.remarks || '').match(/{{ROLE:(.*?)}}/);
+                    if (match) return match[1];
+                }
             }
             return null;
         }
@@ -1671,7 +1666,7 @@
             e.preventDefault();
             if (!currentSession) { alert("กรุณาเข้าสู่ระบบก่อน"); return switchView('auth'); }
             const btn = document.getElementById('btn-feedback-submit');
-            btn.disabled = true; btn.innerText = "กำลังส่ง...";
+            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังส่ง...';
             const type = document.getElementById('fb-type').value;
             const topic = document.getElementById('fb-topic').value;
             const detail = document.getElementById('fb-detail').value;
@@ -1680,33 +1675,46 @@
             };
             const { error } = await sb.from('members').insert([payload]);
             if (error) alert("ส่งเรื่องไม่สำเร็จ: " + error.message);
-            else { alert("ระบบได้รับเรื่องแล้ว"); e.target.reset(); renderFeedbacks(); }
-            btn.disabled = false; btn.innerText = "ส่งเรื่อง";
+            else { 
+                alert("✅ ระบบได้รับเรื่องเรียบร้อยแล้ว\nเจ้าหน้าที่จะดำเนินการตรวจสอบและตอบกลับโดยเร็วที่สุด"); 
+                e.target.reset(); 
+                renderFeedbacks(); 
+            }
+            btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> ส่งเรื่อง';
         }
 
         async function renderFeedbacks() {
             const tbody = document.getElementById('feedback-table-body');
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-400">กำลังโหลด...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-400">กำลังโหลด...</td></tr>';
             const { data, error } = await sb.from('members').select('*').eq('type', 'feedback').order('created_at', { ascending: false }).limit(10);
             tbody.innerHTML = '';
             if (data && data.length > 0) {
                 data.forEach(f => {
                     const date = new Date(f.created_at).toLocaleDateString('th-TH');
                     let isResolved = (f.remarks || '').includes('{{STATUS:RESOLVED}}');
+                    // ปรับคำแสดงสถานะให้เป็นมาตรฐาน Ticket
                     let statusBadge = isResolved
-                        ? '<span class="text-green-600 font-bold">ดำเนินการแล้ว</span>'
-                        : '<span class="text-orange-500 font-bold">รอตรวจสอบ</span>';
-                    let typeTxt = f.province === 'suggestion' ? 'ข้อเสนอแนะ' : (f.province === 'complaint' ? 'ร้องเรียน' : 'สอบถาม');
+                        ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs border border-green-200 font-bold"><i class="fa-solid fa-check-circle mr-1"></i>เสร็จสิ้น</span>'
+                        : '<span class="bg-orange-50 text-orange-700 px-2 py-1 rounded text-xs border border-orange-200 font-bold"><i class="fa-regular fa-clock mr-1"></i>รอการตอบกลับ</span>';
+                    
+                    let typeTxt = f.province === 'suggestion' ? '<span class="text-blue-600"><i class="fa-regular fa-lightbulb"></i> ข้อเสนอแนะ</span>' 
+                        : (f.province === 'complaint' ? '<span class="text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> ร้องเรียน</span>' 
+                        : '<span class="text-gray-600"><i class="fa-solid fa-circle-question"></i> สอบถาม</span>');
+                    
+                    // สร้าง Ticket ID จำลองจาก ID จริง เพื่อความดูดีและเป็นมาตรฐาน
+                    const ticketId = '#' + f.id.substring(0, 6).toUpperCase();
                     const safeFbObj = JSON.stringify(f).replace(/"/g, '&quot;');
+                    
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-50 transition border-b cursor-pointer group" onclick="openFeedbackReader(${safeFbObj})">
+                            <td class="px-6 py-4 text-gray-400 text-xs font-mono font-bold">${ticketId}</td>
                             <td class="px-6 py-4 text-gray-500 text-xs">${date}</td>
-                            <td class="px-6 py-4 text-sm">${typeTxt}</td>
-                            <td class="px-6 py-4 font-medium text-gray-800 text-sm group-hover:text-blue-600 underline decoration-dotted">${f.name}</td>
-                            <td class="px-6 py-4 text-xs">${statusBadge}</td>
+                            <td class="px-6 py-4 text-sm whitespace-nowrap">${typeTxt}</td>
+                            <td class="px-6 py-4 font-medium text-gray-800 text-sm group-hover:text-blue-600 truncate max-w-xs">${f.name}</td>
+                            <td class="px-6 py-4 text-right">${statusBadge}</td>
                         </tr>`;
                 });
-            } else { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">ยังไม่มีรายการ</td></tr>`; }
+            } else { tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-400">ยังไม่มีรายการ</td></tr>`; }
         }
 
         function openFeedbackReader(fb) {
@@ -1718,8 +1726,8 @@
             document.getElementById('fb-read-detail').innerText = detail;
             let isResolved = (fb.remarks || '').includes('{{STATUS:RESOLVED}}');
             document.getElementById('fb-read-status').innerHTML = isResolved
-                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการแล้ว</span>'
-                : '<span class="text-orange-500 font-bold"><i class="fa-regular fa-clock"></i> รอตรวจสอบ</span>';
+                ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-circle-check"></i> ดำเนินการเสร็จสิ้นแล้ว</span>'
+                : '<span class="text-orange-500 font-bold"><i class="fa-regular fa-clock"></i> อยู่ระหว่างรอเจ้าหน้าที่ตอบกลับ</span>';
             document.getElementById('modal-feedback-read').classList.remove('hidden');
             document.getElementById('modal-feedback-read').classList.add('flex');
             renderInteractionUI('fb-interaction-area', fb);
@@ -1775,7 +1783,81 @@
             renderTable(filteredData);
         }
 
+        // --- SEPARATED LOGIC FOR FEEDBACK MANAGEMENT ---
+
+        window.openFeedbackManageModal = (record) => {
+            const modal = document.getElementById('modal-feedback-manage');
+            
+            document.getElementById('fb-manage-id').value = record.id;
+            document.getElementById('fb-manage-type').innerText = record.province.toUpperCase();
+            document.getElementById('fb-manage-date').innerText = new Date(record.created_at).toLocaleDateString('th-TH');
+            document.getElementById('fb-manage-topic').innerText = record.name;
+            document.getElementById('fb-manage-by').innerText = record.email;
+
+            // Handle Detail (Remove system tags)
+            let detail = (record.remarks || '').replace('{{STATUS:RESOLVED}}', '').replace(/{{INTERACT:({.*?})}}/s, '').trim();
+            document.getElementById('fb-manage-detail').innerText = detail;
+
+            // Handle Status
+            const isResolved = (record.remarks || '').includes('{{STATUS:RESOLVED}}');
+            document.getElementById('fb-manage-status').value = isResolved ? 'RESOLVED' : 'PENDING';
+
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        }
+
+        async function saveFeedbackStatus(e) {
+            e.preventDefault();
+            const btn = e.target;
+            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+            
+            try {
+                const id = document.getElementById('fb-manage-id').value;
+                const newStatus = document.getElementById('fb-manage-status').value;
+                
+                // Fetch current remarks to preserve other data
+                const record = cachedData.find(r => r.id == id);
+                if (!record) throw new Error("Record not found");
+
+                let remarks = record.remarks || '';
+                
+                // Remove old status tag
+                remarks = remarks.replace('{{STATUS:RESOLVED}}', '').trim();
+
+                // Add new status tag if resolved
+                if (newStatus === 'RESOLVED') {
+                    remarks = remarks + ' {{STATUS:RESOLVED}}';
+                }
+
+                const { error } = await sb.from('members').update({ remarks: remarks }).eq('id', id);
+                if (error) throw error;
+
+                alert("อัปเดตสถานะเรียบร้อยแล้ว");
+                document.getElementById('modal-feedback-manage').classList.add('hidden');
+                fetchData();
+
+            } catch(err) {
+                alert("เกิดข้อผิดพลาด: " + err.message);
+            } finally {
+                btn.disabled = false; btn.innerText = "บันทึกสถานะ";
+            }
+        }
+
+        // --- EXISTING MODAL LOGIC (ONLY FOR MEMBERS/CANDIDATES NOW) ---
+
         window.openModal = (type, record = null) => {
+            // ** SAFETY CHECK: If type is feedback, use the new modal instead **
+            if (type === 'edit' && record && typeof record === 'string') {
+                const r = cachedData.find(d => d.id == record);
+                if (r && r.type === 'feedback') {
+                    openFeedbackManageModal(r);
+                    return; 
+                }
+            } else if (type === 'edit' && record && record.type === 'feedback') {
+                 openFeedbackManageModal(record);
+                 return;
+            }
+
+            // Normal Member Logic Continues...
             if (typeof record === 'string') { record = cachedData.find(r => r.id == record); }
             const modal = document.getElementById('modal-form');
             const title = document.getElementById('modal-title');
@@ -1799,9 +1881,9 @@
                 recordIdInput.value = record.id;
                 if (type === 'edit') type = record.type;
             }
-            title.innerHTML = type === 'feedback' ? '<i class="fa-regular fa-comments"></i> จัดการข้อเสนอแนะ'
-                : (isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล'
-                    : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค'));
+            title.innerHTML = isEditMode ? '<i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลสมาชิก'
+                    : (type === 'candidate' ? '<i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.' : '<i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิกพรรค');
+            
             if (record) {
                 document.getElementById('inp-member-id').value = record.member_id || '';
                 document.getElementById('inp-name').value = record.name || '';
@@ -1816,11 +1898,17 @@
                 document.getElementById('inp-prov').value = record.province || '';
                 document.getElementById('inp-zip').value = record.zip || '';
                 document.getElementById('inp-recommender').value = record.recommender_name || '';
-                document.getElementById('inp-admin-role').value = record.admin_role || '';
                 document.getElementById('inp-start-date').value = record.start_date || '';
+                
                 let remarks = record.remarks || '';
+                let adminRole = record.admin_role || '';
+                const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
+                if (roleMatch) adminRole = roleMatch[1];
+                document.getElementById('inp-admin-role').value = adminRole;
+
                 if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
                 else { document.getElementById('inp-is-old').checked = false; }
+                
                 remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
                     .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
                     .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
@@ -1849,13 +1937,16 @@
             try {
                 const recordId = document.getElementById('record-id').value;
                 const type = document.getElementById('inp-type').value;
+                
+                // Double Check: If somehow type is feedback, stop here
+                if (type === 'feedback') throw new Error("Please use the Feedback Manager to edit feedback items.");
+
                 const name = document.getElementById('inp-name').value;
                 const email = document.getElementById('inp-email').value;
                 const phone = document.getElementById('inp-phone').value;
                 const idCard = document.getElementById('inp-id').value;
                 const province = document.getElementById('inp-prov').value;
                 
-                // Validate if not admin mode for new records
                 const adminProv = getAdminProvince(currentSession.user.email);
                 if (!adminProv && !checkThaiID(idCard)) {
                     document.getElementById('id-error').classList.remove('hidden');
@@ -1872,10 +1963,11 @@
                 }
 
                 let remarks = document.getElementById('inp-remarks').value;
-                // Add Meta Tags
                 if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
+                const adminRoleVal = document.getElementById('inp-admin-role').value;
+                if (adminRoleVal) remarks += ` {{ROLE:${adminRoleVal}}}`;
+
                 if (recordId) {
-                    // Preserve existing tags when editing
                     const oldRec = cachedData.find(r => r.id == recordId);
                     if (oldRec) {
                         if (oldRec.remarks.includes(STATUS_APPROVED_TAG)) remarks += ` ${STATUS_APPROVED_TAG}`;
@@ -1900,7 +1992,6 @@
                     recommender_name: document.getElementById('inp-recommender').value,
                     type: type,
                     remarks: remarks,
-                    admin_role: document.getElementById('inp-admin-role').value,
                     start_date: document.getElementById('inp-start-date').value
                 };
 
@@ -1908,7 +1999,6 @@
                 if (recordId) {
                     result = await sb.from('members').update(payload).eq('id', recordId);
                 } else {
-                    // If regular user, force email to match session
                     if (!adminProv) payload.email = currentSession.user.email;
                     result = await sb.from('members').insert([payload]);
                 }
@@ -2019,8 +2109,6 @@
                 const isOwner = item.email === currentSession.user.email;
                 
                 if (adminProv || isOwner) {
-                     // Add logic: Only super admin or owner can delete posts/knowledge
-                     // Provincial admin can manage members in their province
                     const canEdit = adminProv === 'ALL' || (adminProv && item.province === adminProv) || isOwner;
                     
                     if (canEdit) {
@@ -2035,7 +2123,12 @@
                 let status = '<span class="px-2 py-1 rounded bg-gray-100 text-gray-500 text-xs">ทั่วไป</span>';
                 if (item.type === 'member') status = '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs">สมาชิก</span>';
                 if (item.type === 'candidate') status = '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs">ผู้สมัคร ส.ส.</span>';
-                if (item.type === 'feedback') status = '<span class="px-2 py-1 rounded bg-yellow-100 text-yellow-700 text-xs">ข้อเสนอแนะ</span>';
+                if (item.type === 'feedback') {
+                     const isResolved = (item.remarks || '').includes('{{STATUS:RESOLVED}}');
+                     status = isResolved 
+                        ? '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-bold">เสร็จสิ้น</span>'
+                        : '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs font-bold">รอการตอบกลับ</span>';
+                }
                 if (item.remarks && item.remarks.includes(OLD_DATA_TAG)) status += ' <span class="text-xs text-gray-400">(เดิม)</span>';
 
                 // Format Date
