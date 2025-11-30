@@ -682,6 +682,21 @@
     <!-- DASHBOARD PAGE -->
     <div id="view-dashboard" class="hidden flex-grow bg-gray-50 fade-in">
         <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <!-- NEW SECTION: EXECUTIVE COMMITTEE -->
+            <div class="mb-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="bg-orange-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow">
+                        <i class="fa-solid fa-users-gear text-lg"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 font-head">คณะกรรมการบริหารพรรค</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="executive-container">
+                    <!-- Executives will be rendered here via JS -->
+                </div>
+            </div>
+
+            <hr class="border-gray-200 mb-8">
+
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 font-head">จัดการฐานข้อมูล</h2>
@@ -940,6 +955,23 @@
                             placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
                     </div>
 
+                    <!-- PDPA Consent Checkbox -->
+                    <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <label class="flex items-start gap-3 cursor-pointer group">
+                            <div class="relative flex items-center pt-1">
+                                <input type="checkbox" required id="inp-pdpa"
+                                    class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white shadow-sm checked:bg-orange-600 checked:border-orange-600 focus:ring-2 focus:ring-orange-500 transition-all">
+                                <i
+                                    class="fa-solid fa-check text-white absolute left-1/2 top-1/2 pt-1 -translate-x-1/2 -translate-y-1/2 text-xs opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></i>
+                            </div>
+                            <span class="text-sm text-gray-600 leading-tight group-hover:text-gray-800 transition">
+                                ข้าพเจ้ายินยอมให้พรรคแผ่นดินธรรมเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้
+                                เพื่อวัตถุประสงค์ในการดำเนินกิจกรรมทางการเมืองและการติดต่อประสานงานตามข้อบังคับพรรค
+                                <span class="text-red-500">*</span>
+                            </span>
+                        </label>
+                    </div>
+
                     <div class="flex justify-end gap-2 pt-4 border-t">
                         <button type="button" onclick="closeModal()"
                             class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
@@ -1081,6 +1113,16 @@
         const STATUS_APPROVED_TAG = '{{STATUS:APPROVED}}';
         let isRecoveryMode = false;
         let activeFilter = 'all';
+
+        // 🟢 EXECUTIVE DATA STRUCTURE (HARDCODED AS REQUESTED)
+        const executiveData = [
+            { id: 1, name: "นาย บุณยติเลิศ สาระ", pos: "หัวหน้าพรรค", date: "6 เมษายน 2568" },
+            { id: 2, name: "นาย สุริยา โคตรภูธร", pos: "เลขาธิการพรรค", date: "6 เมษายน 2568" },
+            { id: 3, name: "นางสาว รยาพา เนขขัมม์", pos: "เหรัญญิกพรรค", date: "6 เมษายน 2568" },
+            { id: 4, name: "นาง จิราภรณ์ สารตันติพงศ์", pos: "นายทะเบียนสมาชิกพรรค", date: "6 เมษายน 2568" },
+            { id: 5, name: "นาย ฐิติเมธินทร์ หลุ่นประพันธ์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" },
+            { id: 6, name: "นาย อภิเกียรติ ประสงค์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" }
+        ];
 
         // 🔴🔴🔴 ADMIN ROLES 🔴🔴🔴
         const ADMIN_ROLES = {
@@ -1297,7 +1339,10 @@
             const target = document.getElementById('view-' + view);
             if (target) target.classList.remove('hidden');
             window.scrollTo(0, 0);
-            if (view === 'dashboard') fetchData();
+            if (view === 'dashboard') {
+                fetchData();
+                renderExecutives(); // Render the executive team
+            }
             if (view === 'member-center') {
                 fetchData().then(() => {
                     renderNews();
@@ -1305,6 +1350,25 @@
                 });
                 renderFeedbacks();
             }
+        }
+
+        function renderExecutives() {
+            const container = document.getElementById('executive-container');
+            container.innerHTML = '';
+            executiveData.forEach(p => {
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition flex items-start gap-4">
+                        <div class="bg-orange-50 text-orange-600 w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border border-orange-100">
+                            ${p.id}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg leading-tight">${p.name}</h4>
+                            <div class="bg-orange-600 text-white text-xs px-2 py-1 rounded inline-block mt-2 mb-1">${p.pos}</div>
+                            <p class="text-xs text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> เริ่ม: ${p.date}</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         sb.auth.onAuthStateChange((event, session) => {
@@ -1911,6 +1975,8 @@
                 document.getElementById('inp-zip').value = record.zip || '';
                 document.getElementById('inp-recommender').value = record.recommender_name || '';
                 document.getElementById('inp-start-date').value = record.start_date || '';
+                // Checkbox PDPA doesn't need to be filled from DB as it's a submission consent, not stored state usually, but let's reset it
+                document.getElementById('inp-pdpa').checked = false;
 
                 let remarks = record.remarks || '';
                 let adminRole = record.admin_role || '';
@@ -1930,6 +1996,7 @@
                 document.getElementById('inp-email').value = '';
                 document.getElementById('inp-is-old').checked = false;
                 document.getElementById('inp-admin-role').value = '';
+                document.getElementById('inp-pdpa').checked = false;
             }
             const provSelect = document.getElementById('inp-prov');
             provSelect.disabled = false;
@@ -1945,6 +2012,13 @@
             e.preventDefault();
             const saveBtn = document.getElementById('btn-save');
             saveBtn.disabled = true; saveBtn.innerText = "กำลังบันทึก...";
+
+            // PDPA Check (Explicit check in JS though HTML required handles it)
+            if (!document.getElementById('inp-pdpa').checked) {
+                alert("กรุณายอมรับเงื่อนไขการเก็บรวบรวมข้อมูลส่วนบุคคล (PDPA)");
+                saveBtn.disabled = false; saveBtn.innerText = "บันทึกข้อมูล";
+                return;
+            }
 
             try {
                 const recordId = document.getElementById('record-id').value;
