@@ -8,7 +8,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- เพิ่ม Chart.js สำหรับกราฟ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link
@@ -441,18 +440,28 @@
                 </div>
             </section>
 
-            <footer class="bg-gray-900 text-gray-400 py-8 mt-12 rounded-t-xl text-sm">
-                <div class="container mx-auto px-4 text-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
-                        class="w-16 h-16 mx-auto mb-4 opacity-80">
-                    <div class="border-t border-gray-700 my-4 pt-4 text-xs leading-relaxed">
-                        <p class="font-bold text-gray-300 mb-2">ข้อมูลผู้ผลิตสื่อหาเสียงทางอิเล็กทรอนิกส์</p>
-                        <p><strong>ผู้ผลิต:</strong> นายวินัย ผันอากาศ ( ผลิตโดยผู้สมัคร ) <strong>ผู้ว่าจ้าง:</strong>
-                            พรรคแผ่นดินธรรม</p>
-                        <p><strong>วันเดือนปีที่ผลิต:</strong> 26 พ.ย. 2568 <strong>จำนวนที่ผลิต:</strong> 1 ชุด
-                            (อิเล็กทรอนิกส์)</p>
+            <!-- FOOTER WITH STATIC ADDRESS -->
+            <footer class="bg-gray-900 text-gray-400 py-10 mt-12 text-sm">
+                <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center md:text-left">
+                        <h4 class="text-white font-bold text-lg mb-4 font-head">พรรคแผ่นดินธรรม</h4>
+                        <p class="mb-4">90/37 ม. 7 ต.คลองสอง อ.คลองหลวง จ.ปทุมธานี 12120</p>
+                        <p class="text-orange-500 font-bold text-lg"><i class="fa-solid fa-phone mr-2"></i>
+                            082-222-3615</p>
                     </div>
-                    <p class="text-xs mt-2">&copy; 2025 พรรคแผ่นดินธรรม. All rights reserved.</p>
+                    <div class="text-center">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
+                            class="w-20 h-20 mx-auto mb-4 opacity-80">
+                        <p class="text-xs">"ศีลธรรมนำชาติ"</p>
+                    </div>
+                    <div class="text-center md:text-right">
+                        <p class="font-bold text-gray-300 mb-2">ข้อมูลผู้ผลิตสื่อหาเสียงทางอิเล็กทรอนิกส์</p>
+                        <p class="text-xs leading-relaxed">
+                            ผู้ผลิต: นายวินัย ผันอากาศ<br>
+                            ผู้ว่าจ้าง: พรรคแผ่นดินธรรม<br>
+                            ผลิตเมื่อ: 26 พ.ย. 2568 จำนวน 1 ชุด
+                        </p>
+                    </div>
                 </div>
             </footer>
         </div>
@@ -682,7 +691,7 @@
     <!-- DASHBOARD PAGE -->
     <div id="view-dashboard" class="hidden flex-grow bg-gray-50 fade-in">
         <div class="container mx-auto px-4 py-8 max-w-6xl">
-            <!-- NEW SECTION: EXECUTIVE COMMITTEE -->
+            <!-- EXECUTIVE SECTION -->
             <div class="mb-10">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-orange-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow">
@@ -691,7 +700,72 @@
                     <h2 class="text-2xl font-bold text-gray-800 font-head">คณะกรรมการบริหารพรรค</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="executive-container">
-                    <!-- Executives will be rendered here via JS -->
+                    <!-- Executives loaded via JS -->
+                </div>
+            </div>
+
+            <!-- ✅ ECT REALTIME DATA (DASHBOARD ONLY) ✅ -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm border p-6 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 border-b pb-4">
+                    <div class="flex items-center gap-2">
+                        <!-- Use FontAwesome Icon instead of Image to prevent broken link -->
+                        <div
+                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                            <i class="fa-solid fa-landmark text-sm"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 font-head">ข้อมูลสถิติพรรค (Live จาก กกต.)</h3>
+                    </div>
+                    <span
+                        class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold border border-green-200"><i
+                            class="fa-solid fa-signal mr-1"></i>Realtime</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Members -->
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="text-xs text-blue-800 font-bold mb-1">สมาชิกทั้งหมด</div>
+                        <div class="text-2xl font-bold text-blue-600 mb-2" id="dash-ect-member-total">-</div>
+                        <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] text-gray-500">
+                            <div>เหนือ: <strong id="dash-ect-member-n" class="text-gray-700">-</strong></div>
+                            <div>กลาง: <strong id="dash-ect-member-c" class="text-gray-700">-</strong></div>
+                            <div>อีสาน: <strong id="dash-ect-member-ne" class="text-gray-700">-</strong></div>
+                            <div>ใต้: <strong id="dash-ect-member-s" class="text-gray-700">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Branches -->
+                    <div class="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <div class="text-xs text-orange-800 font-bold mb-1">สาขา / ตัวแทน</div>
+                        <div class="flex gap-4 mb-2">
+                            <div>
+                                <span class="text-[10px] text-gray-500 block">สาขา</span>
+                                <span class="text-xl font-bold text-orange-600" id="dash-ect-branch-total">-</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-500 block">ตัวแทน</span>
+                                <span class="text-xl font-bold text-orange-600" id="dash-ect-rep-total">-</span>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-orange-400"><i
+                                class="fa-solid fa-check-circle mr-1"></i>สถานะสมบูรณ์
+                        </div>
+                    </div>
+
+                    <!-- Monthly -->
+                    <div class="p-4 bg-green-50 rounded-lg border border-green-100">
+                        <div class="text-xs text-green-800 font-bold mb-1" id="dash-ect-month-name">ความเคลื่อนไหว</div>
+                        <div class="flex items-center justify-around h-16">
+                            <div class="text-center">
+                                <div class="text-green-600 text-xl font-bold" id="dash-ect-month-inc">-</div>
+                                <div class="text-[10px] text-gray-400">เพิ่ม</div>
+                            </div>
+                            <div class="h-6 w-px bg-gray-300"></div>
+                            <div class="text-center">
+                                <div class="text-red-500 text-xl font-bold" id="dash-ect-month-dec">-</div>
+                                <div class="text-[10px] text-gray-400">ลด</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
