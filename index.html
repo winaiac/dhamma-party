@@ -8,6 +8,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- เพิ่ม Chart.js สำหรับกราฟ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link
@@ -142,6 +143,14 @@
             .chart-container {
                 height: 350px;
             }
+        }
+
+        /* Table Cell Text Wrapping for Address */
+        td.address-cell {
+            white-space: normal;
+            min-width: 200px;
+            max-width: 300px;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -855,8 +864,8 @@
                                 <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i
                                         class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4">ข้อมูลติดต่อ</th>
-                                <th class="px-6 py-4">ที่อยู่ / รายละเอียด</th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด <i
+                                <th class="px-6 py-4">ที่อยู่ (ละเอียด)</th>
+                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด/ภาค <i
                                         class="fa-solid fa-sort ml-1"></i></th>
                                 <th class="px-6 py-4 text-right">จัดการ</th>
                             </tr>
@@ -981,23 +990,51 @@
                         </div>
                     </div>
 
+                    <!-- ✅✅ UPDATED ADDRESS SECTION ✅✅ -->
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
-                        ที่อยู่</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div class="md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500">ที่อยู่ (บ้านเลขที่/หมู่)</label>
-                            <input id="inp-addr" class="w-full p-2 border rounded" placeholder="เช่น 99/1 หมู่ 5">
+                        ที่อยู่ตามทะเบียนบ้าน</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div class="col-span-1">
+                            <label class="text-xs font-bold text-gray-500">บ้านเลขที่</label>
+                            <input id="inp-house-no" class="w-full p-2 border rounded" placeholder="เช่น 99/1">
                         </div>
+                        <div class="col-span-1">
+                            <label class="text-xs font-bold text-gray-500">หมู่ที่ / หมู่บ้าน</label>
+                            <input id="inp-village" class="w-full p-2 border rounded" placeholder="หมู่ 1 บ้าน...">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-xs font-bold text-gray-500">ถนน / ซอย</label>
+                            <input id="inp-road" class="w-full p-2 border rounded" placeholder="ถ. ... ซ. ...">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div>
                             <label class="text-xs font-bold text-gray-500">จังหวัด <span
                                     class="text-red-500">*</span></label>
-                            <select id="inp-prov" required class="w-full p-2 border rounded bg-white">
+                            <select id="inp-prov" required class="w-full p-2 border rounded bg-white"
+                                onchange="autoFillRegion()">
                                 <option value="">เลือกจังหวัด</option>
                             </select>
                         </div>
-                        <div><input id="inp-district" class="w-full p-2 border rounded" placeholder="อำเภอ"></div>
-                        <div><input id="inp-tambon" class="w-full p-2 border rounded" placeholder="ตำบล"></div>
-                        <div><input id="inp-zip" class="w-full p-2 border rounded" placeholder="รหัสไปรษณีย์"></div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">อำเภอ/เขต</label>
+                            <input id="inp-district" class="w-full p-2 border rounded" placeholder="อำเภอ">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ตำบล/แขวง</label>
+                            <input id="inp-tambon" class="w-full p-2 border rounded" placeholder="ตำบล">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">รหัสไปรษณีย์</label>
+                            <input id="inp-zip" class="w-full p-2 border rounded" placeholder="xxxxx">
+                        </div>
+                    </div>
+                    <div class="mb-6 bg-gray-50 p-3 rounded border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <label class="text-xs font-bold text-gray-500 whitespace-nowrap">ภูมิภาค (Region):</label>
+                            <input id="inp-region" class="w-full p-2 border rounded bg-white text-gray-600 font-bold"
+                                placeholder="ระบุภาค (หรือเลือกจังหวัดเพื่อเติมอัตโนมัติ)">
+                        </div>
                     </div>
 
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i>
