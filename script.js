@@ -20,7 +20,11 @@ let map = null;
 let markers = [];
 let isMapView = false;
 
-// 🟢 EXECUTIVE DATA & PROVINCE COORDINATES
+// Form Map Variables
+let formMap = null;
+let formMarker = null;
+
+// 🟢 EXECUTIVE DATA
 const executiveData = [
     { id: 1, name: "นาย บุณยติเลิศ สาระ", pos: "หัวหน้าพรรค", date: "6 เมษายน 2568" },
     { id: 2, name: "นาย สุริยา โคตรภูธร", pos: "เลขาธิการพรรค", date: "6 เมษายน 2568" },
@@ -30,6 +34,7 @@ const executiveData = [
     { id: 6, name: "นาย อภิเกียรติ ประสงค์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" }
 ];
 
+// 🟢 PROVINCE COORDINATES (Default centers)
 const provinceLatLong = {
     "กรุงเทพมหานคร": [13.7563, 100.5018], "กระบี่": [8.0863, 98.9063], "กาญจนบุรี": [14.0205, 99.5292], "กาฬสินธุ์": [16.4322, 103.5061],
     "กำแพงเพชร": [16.4828, 99.5227], "ขอนแก่น": [16.4322, 102.8236], "จันทบุรี": [12.6114, 102.1039], "ฉะเชิงเทรา": [13.6904, 101.0726],
@@ -85,11 +90,24 @@ function mapToMainRegion(region) {
     return "ภาคกลาง/อื่นๆ";
 }
 
-// ✅ EXPORTED HELPER FUNCTIONS
 window.autoFillRegion = function() {
     const prov = document.getElementById('inp-prov').value;
     const region = getRegion(prov);
     document.getElementById('inp-region').value = region;
+    
+    // 🟢 Update Form Map Center (Only if lat/lng is empty or user just selected province)
+    if (formMap && prov && provinceLatLong[prov]) {
+        const coords = provinceLatLong[prov];
+        formMap.setView(coords, 12);
+        if (formMarker) {
+            // If creating new or no specific coords set yet, move marker to province center
+            // NOTE: Ideally, don't overwrite if editing and user already has custom coords.
+            // But for 'autoFill' usually implies user changed province manually.
+            formMarker.setLatLng(coords);
+            document.getElementById('inp-lat').value = coords[0];
+            document.getElementById('inp-lng').value = coords[1];
+        }
+    }
 };
 
 function checkThaiID(id) {
@@ -149,14 +167,9 @@ const commonOptions = {
 // --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
     const provSelect = document.getElementById('inp-prov');
-    const adminRoleSelect = document.getElementById('inp-admin-role');
-    const postTargetSelect = document.getElementById('inp-post-target');
-
     if(provSelect) {
         PROVINCES.sort().forEach(p => {
             provSelect.innerHTML += `<option value="${p}">${p}</option>`;
-            if(adminRoleSelect) adminRoleSelect.innerHTML += `<option value="${p}">Admin ${p}</option>`;
-            if(postTargetSelect) postTargetSelect.innerHTML += `<option value="${p}">${p}</option>`;
         });
     }
 
@@ -254,24 +267,23 @@ function initCharts() {
     }
 }
 
-// 🟢 GLOBAL FUNCTIONS (Attached to window for HTML access) 🟢
+// 🟢 GLOBAL FUNCTIONS (Attached to window)
 
+// 🟢 MAP FUNCTIONS
 window.toggleMapView = function() {
     isMapView = !isMapView;
     const tableDiv = document.getElementById('dashboard-table-view');
     const mapDiv = document.getElementById('dashboard-map-view');
     const btnText = document.getElementById('btn-map-text');
-    const filters = document.getElementById('dashboard-filters');
 
     if (isMapView) {
         tableDiv.classList.add('hidden');
         mapDiv.classList.remove('hidden');
         btnText.innerText = "ดูแบบตาราง";
-        // Initialize map if first time
         if (!map) initMap();
         else {
             setTimeout(() => { map.invalidateSize(); }, 200); 
-            updateMapMarkers();
+            updateMapMarkers(); // Ensure markers are fresh
         }
     } else {
         tableDiv.classList.remove('hidden');
@@ -281,59 +293,108 @@ window.toggleMapView = function() {
 };
 
 function initMap() {
-    map = L.map('map').setView([13.7563, 100.5018], 6); // Center on Bangkok
+    map = L.map('map').setView([13.7563, 100.5018], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     updateMapMarkers();
 }
 
+// ✅✅ UPDATED: Show individual markers based on saved lat/lng if available
 function updateMapMarkers() {
     if (!map) return;
     
-    // Clear existing markers
+    // Clear markers
     markers.forEach(m => map.removeLayer(m));
     markers = [];
 
-    // Group members by province
+    // Group for province fallback
     const provinceCounts = {};
-    const provinceMembers = {};
-
+    
     cachedData.forEach(m => {
         if (activeFilter !== 'all' && m.type !== activeFilter) return;
-        
-        const prov = m.province;
-        if (prov && provinceLatLong[prov]) {
-            if (!provinceCounts[prov]) {
-                provinceCounts[prov] = 0;
-                provinceMembers[prov] = [];
-            }
-            provinceCounts[prov]++;
-            provinceMembers[prov].push(m.name);
+
+        // 🟢 PRIORITIZE: Use specific lat/lng if available
+        if (m.lat && m.lng && !isNaN(parseFloat(m.lat)) && !isNaN(parseFloat(m.lng))) {
+            const lat = parseFloat(m.lat);
+            const lng = parseFloat(m.lng);
+            const marker = L.marker([lat, lng]).addTo(map);
+            
+            // Popup content
+            let popupContent = `
+                <div class="text-center">
+                    <h4 class="text-blue-600 font-bold">${m.name}</h4>
+                    <p class="text-xs text-gray-600">${m.address || ''} ${m.tambon || ''} ${m.province || ''}</p>
+                    <span class="bg-green-100 text-green-800 text-[10px] px-2 py-1 rounded mt-1 inline-block">พิกัดระบุเอง</span>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            markers.push(marker);
+        } 
+        // 🔴 FALLBACK: Use Province Center if no specific coords
+        else if (m.province && provinceLatLong[m.province]) {
+            if (!provinceCounts[m.province]) provinceCounts[m.province] = 0;
+            provinceCounts[m.province]++;
         }
     });
 
-    // Add Markers
+    // Draw Province Aggregate Markers (Fallback)
     for (const [prov, count] of Object.entries(provinceCounts)) {
         const coords = provinceLatLong[prov];
-        const marker = L.marker(coords).addTo(map);
-        const memberList = provinceMembers[prov].slice(0, 5).join('<br>- ');
-        const moreCount = provinceMembers[prov].length > 5 ? `<br>...และอีก ${provinceMembers[prov].length - 5} คน` : '';
+        // Use a different icon color or style for aggregate markers could be nice, but standard is fine
+        const marker = L.marker(coords, { opacity: 0.7 }).addTo(map); // Slightly transparent to distinguish
         
         marker.bindPopup(`
             <div class="text-center">
-                <h4>${prov}</h4>
-                <div class="text-2xl font-bold text-blue-600 mb-2">${count} คน</div>
-                <div class="text-left text-xs text-gray-600 border-t pt-2">
-                    <strong>สมาชิกบางส่วน:</strong><br>
-                    - ${memberList}
-                    ${moreCount}
-                </div>
+                <h4>${prov} (รวม)</h4>
+                <div class="text-xl font-bold text-orange-600 mb-1">${count} คน</div>
+                <div class="text-xs text-gray-500">* พิกัดกลางจังหวัด (ไม่ได้ระบุพิกัดบ้าน)</div>
             </div>
         `);
         markers.push(marker);
     }
 }
+
+// 🟢 FORM MAP (Draggable)
+window.initFormMap = function(lat, lng) {
+    const defaultLat = lat || 13.7563;
+    const defaultLng = lng || 100.5018;
+    const zoomLevel = lat ? 15 : 10;
+
+    if (!formMap) {
+        formMap = L.map('form-map').setView([defaultLat, defaultLng], zoomLevel);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'OpenStreetMap'
+        }).addTo(formMap);
+
+        formMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(formMap);
+        
+        formMarker.on('dragend', function(e) {
+            const position = formMarker.getLatLng();
+            document.getElementById('inp-lat').value = position.lat;
+            document.getElementById('inp-lng').value = position.lng;
+        });
+        
+        // Allow clicking on map to move marker
+        formMap.on('click', function(e) {
+            formMarker.setLatLng(e.latlng);
+            document.getElementById('inp-lat').value = e.latlng.lat;
+            document.getElementById('inp-lng').value = e.latlng.lng;
+        });
+
+    } else {
+        formMap.setView([defaultLat, defaultLng], zoomLevel);
+        formMarker.setLatLng([defaultLat, defaultLng]);
+    }
+    
+    setTimeout(() => { formMap.invalidateSize(); }, 300);
+    
+    // Set hidden inputs
+    if(lat && lng) {
+        document.getElementById('inp-lat').value = lat;
+        document.getElementById('inp-lng').value = lng;
+    }
+};
 
 window.switchView = function(view) {
     ['landing', 'auth', 'dashboard', 'reset', 'member-center'].forEach(id => {
@@ -471,6 +532,7 @@ window.sortTable = function(key) {
 };
 
 window.openModal = function(type, record = null) {
+    // Handle feedback special case
     if (type === 'edit' && record && typeof record === 'string') {
         const r = cachedData.find(d => d.id == record);
         if (r && r.type === 'feedback') { window.openFeedbackManageModal(r); return; }
@@ -483,13 +545,16 @@ window.openModal = function(type, record = null) {
     form.reset();
     document.getElementById('record-id').value = '';
     
+    // Default Title
     document.getElementById('modal-title').innerText = type === 'candidate' ? 'เพิ่มผู้สมัคร ส.ส.' : 'ลงทะเบียนสมาชิก';
     document.getElementById('inp-type').value = type;
 
+    // Reset UI states
     document.getElementById('id-error').classList.add('hidden');
     document.getElementById('phone-error').classList.add('hidden');
     document.getElementById('admin-tools').classList.add('hidden');
 
+    // Admin Logic
     const adminProv = currentSession && getAdminProvince(currentSession.user.email);
     if (adminProv) {
         document.getElementById('admin-tools').classList.remove('hidden');
@@ -497,7 +562,10 @@ window.openModal = function(type, record = null) {
         if (adminProv === 'ALL') roleSetting.classList.remove('hidden'); else roleSetting.classList.add('hidden');
     }
 
-    if (record) {
+    // Init map vars
+    let mapLat = null, mapLng = null;
+
+    if (record) { // Editing existing record
         document.getElementById('record-id').value = record.id;
         document.getElementById('inp-member-id').value = record.member_id || '';
         document.getElementById('inp-name').value = record.name || '';
@@ -507,19 +575,30 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-phone').value = record.phone || '';
         document.getElementById('inp-line').value = record.line_id || '';
         
-        document.getElementById('inp-house-no').value = record.address || '';
-        document.getElementById('inp-village').value = record.village || '';
-        document.getElementById('inp-road').value = record.road || '';
+        // ✅ Load Detailed Address
+        document.getElementById('inp-house-no').value = record.address || ''; // Use 'address' column for house no
+        document.getElementById('inp-village').value = record.village || ''; // New col
+        document.getElementById('inp-road').value = record.road || '';       // New col
         document.getElementById('inp-tambon').value = record.tambon || '';
         document.getElementById('inp-district').value = record.district || '';
         document.getElementById('inp-prov').value = record.province || '';
         document.getElementById('inp-zip').value = record.zip || '';
         document.getElementById('inp-region').value = record.region || getRegion(record.province || '');
 
+        // ✅ Load Lat/Lng for Map
+        if (record.lat && record.lng) {
+            mapLat = parseFloat(record.lat);
+            mapLng = parseFloat(record.lng);
+        } else if (record.province && provinceLatLong[record.province]) {
+            mapLat = provinceLatLong[record.province][0];
+            mapLng = provinceLatLong[record.province][1];
+        }
+
         document.getElementById('inp-recommender').value = record.recommender_name || '';
         document.getElementById('inp-start-date').value = record.start_date || '';
-        document.getElementById('inp-pdpa').checked = false;
+        document.getElementById('inp-pdpa').checked = false; // Reset consent
 
+        // Remarks & Role
         let remarks = record.remarks || '';
         let adminRole = record.admin_role || '';
         const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
@@ -529,6 +608,7 @@ window.openModal = function(type, record = null) {
         if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
         else { document.getElementById('inp-is-old').checked = false; }
 
+        // Clean remarks tags
         remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
             .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
             .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
@@ -536,14 +616,21 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-remarks').value = remarks;
 
     } else {
+        // New Record
         if(!adminProv) document.getElementById('inp-email').value = currentSession.user.email;
     }
     
+    // Province Dropdown Logic
     const provSelect = document.getElementById('inp-prov');
     provSelect.disabled = false;
     if (adminProv && adminProv !== 'ALL') { provSelect.value = adminProv; provSelect.disabled = true; window.autoFillRegion(); }
 
     modal.classList.remove('hidden'); modal.classList.add('flex');
+
+    // 🟢 Initialize Form Map after modal is visible
+    setTimeout(() => {
+        window.initFormMap(mapLat, mapLng);
+    }, 100);
 };
 
 window.closeModal = function() { document.getElementById('modal-form').classList.add('hidden'); };
@@ -563,6 +650,7 @@ window.saveData = async function(e) {
         const recordId = document.getElementById('record-id').value;
         const type = document.getElementById('inp-type').value;
         
+        // Validation
         const phone = document.getElementById('inp-phone').value;
         const idCard = document.getElementById('inp-id').value;
         const adminProv = currentSession && getAdminProvince(currentSession.user.email);
@@ -575,6 +663,7 @@ window.saveData = async function(e) {
             document.getElementById('phone-error').classList.remove('hidden'); throw new Error("เบอร์โทรศัพท์ไม่ถูกต้อง");
         } else { document.getElementById('phone-error').classList.add('hidden'); }
 
+        // Remarks processing
         let remarks = document.getElementById('inp-remarks').value;
         if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
         const adminRoleVal = document.getElementById('inp-admin-role').value;
@@ -589,6 +678,7 @@ window.saveData = async function(e) {
             }
         }
 
+        // ✅ Prepare Payload with Detailed Address & MAP COORDS
         const payload = {
             member_id: document.getElementById('inp-member-id').value,
             name: document.getElementById('inp-name').value,
@@ -598,7 +688,8 @@ window.saveData = async function(e) {
             phone: phone,
             line_id: document.getElementById('inp-line').value,
             
-            address: document.getElementById('inp-house-no').value,
+            // Detailed Address Mapping
+            address: document.getElementById('inp-house-no').value, // Map House No to 'address'
             village: document.getElementById('inp-village').value,
             road: document.getElementById('inp-road').value,
             tambon: document.getElementById('inp-tambon').value,
@@ -606,6 +697,10 @@ window.saveData = async function(e) {
             province: document.getElementById('inp-prov').value,
             zip: document.getElementById('inp-zip').value,
             region: document.getElementById('inp-region').value,
+            
+            // 🟢 Map Coordinates (Read hidden inputs)
+            lat: document.getElementById('inp-lat').value || null,
+            lng: document.getElementById('inp-lng').value || null,
 
             recommender_name: document.getElementById('inp-recommender').value,
             type: type,
@@ -627,7 +722,7 @@ window.saveData = async function(e) {
         window.closeModal();
         fetchData();
     } catch (err) {
-        alert("เกิดข้อผิดพลาด: " + err.message + "\n(ตรวจสอบคอลัมน์ใน Supabase: village, road, region)");
+        alert("เกิดข้อผิดพลาด: " + err.message + "\n(ตรวจสอบคอลัมน์ใน Supabase: village, road, region, lat, lng)");
     } finally {
         saveBtn.disabled = false; saveBtn.innerText = "บันทึกข้อมูล";
     }
@@ -642,6 +737,8 @@ window.deleteData = async function(id) {
         fetchData();
     } catch (err) { alert("เกิดข้อผิดพลาดในการลบ: " + err.message); }
 };
+
+// --- DATA FETCHING & RENDERING ---
 
 function updateNavState() {
     if (currentSession) {
@@ -696,6 +793,8 @@ async function fetchData() {
     const rC = document.getElementById('region-stats-container'); if(rC) rC.innerHTML = regionHTML || '<div class="text-xs text-gray-400">ยังไม่มีข้อมูล</div>';
     
     window.handleSearch();
+    
+    // 🟢 Update Dashboard Map if active
     if(isMapView && map) updateMapMarkers();
 }
 
@@ -820,6 +919,88 @@ function renderPartyInfo(info) {
     update(dashIds.mName, info.month_name);
     update(dashIds.mInc, '+' + fmt(info.month_inc));
     update(dashIds.mDec, '-' + fmt(info.month_dec));
+}
+
+// --- FEEDBACK & POSTS FUNCTIONS ---
+
+function parseInteractions(remarks) {
+    const match = remarks.match(/{{INTERACT:({.*?})}}/s);
+    if (match) { try { return JSON.parse(match[1]); } catch (e) { console.error("Parse Error", e); } }
+    return { likes: [], neutrals: [], comments: [] };
+}
+
+async function updateInteraction(id, action, payload = null) {
+    if (!currentSession) return alert("กรุณาเข้าสู่ระบบก่อน");
+    const recordIndex = cachedData.findIndex(r => r.id == id);
+    if (recordIndex === -1) return;
+    const record = cachedData[recordIndex];
+    let remarks = record.remarks || '';
+    let interactData = parseInteractions(remarks);
+    const userEmail = currentSession.user.email;
+    if (action === 'like') {
+        if (interactData.likes.includes(userEmail)) { interactData.likes = interactData.likes.filter(e => e !== userEmail); }
+        else { interactData.likes.push(userEmail); interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
+    } else if (action === 'neutral') {
+        if (interactData.neutrals.includes(userEmail)) { interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
+        else { interactData.neutrals.push(userEmail); interactData.likes = interactData.likes.filter(e => e !== userEmail); }
+    } else if (action === 'comment') {
+        if (!payload || !payload.trim()) return;
+        interactData.comments.push({ user: userEmail, text: payload, time: new Date().toISOString() });
+    }
+    const newTag = `{{INTERACT:${JSON.stringify(interactData)}}}`;
+    let newRemarks = remarks.replace(/{{INTERACT:({.*?})}}/s, '').trim();
+    newRemarks = (newRemarks + ' ' + newTag).trim();
+    cachedData[recordIndex].remarks = newRemarks;
+    const containerId = document.getElementById('modal-news-reader').classList.contains('hidden') === false ? 'news-interaction-area' :
+        (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
+    renderInteractionUI(containerId, cachedData[recordIndex]);
+    await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
+}
+
+function renderInteractionUI(containerId, record) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const data = parseInteractions(record.remarks || '');
+    const likesCount = data.likes ? data.likes.length : 0;
+    const neutralsCount = data.neutrals ? data.neutrals.length : 0;
+    const comments = data.comments || [];
+    const userEmail = currentSession ? currentSession.user.email : '';
+    const isLiked = data.likes && data.likes.includes(userEmail);
+    const isNeutral = data.neutrals && data.neutrals.includes(userEmail);
+    let commentsHtml = comments.map(c => `
+        <div class="mb-3">
+            <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0, 2).toUpperCase()}</div>
+                <span class="text-xs font-bold text-gray-700">${c.user}</span>
+                <span class="text-[10px] text-gray-400">${new Date(c.time).toLocaleDateString('th-TH')}</span>
+            </div>
+            <div class="comment-bubble text-gray-800">${c.text}</div>
+        </div>
+    `).join('');
+    if (comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
+    container.innerHTML = `
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="updateInteraction('${record.id}', 'like')" class="flex items-center gap-2 px-4 py-2 rounded-full border transition ${isLiked ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}">
+                <i class="fa-solid fa-thumbs-up"></i> <span>ถูกใจ (${likesCount})</span>
+            </button>
+            <button onclick="updateInteraction('${record.id}', 'neutral')" class="flex items-center gap-2 px-4 py-2 rounded-full border transition ${isNeutral ? 'bg-gray-600 text-white border-gray-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}">
+                <i class="fa-solid fa-face-meh"></i> <span>เฉยๆ (${neutralsCount})</span>
+            </button>
+        </div>
+        <h5 class="font-bold text-gray-800 mb-4"><i class="fa-regular fa-comments mr-2"></i> ความคิดเห็น (${comments.length})</h5>
+        <div class="max-h-64 overflow-y-auto mb-4 pr-2 reader-scroll">${commentsHtml}</div>
+        <div class="flex gap-2">
+            <input id="comment-input-${record.id}" class="flex-grow p-2 border rounded-lg text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-blue-500" placeholder="แสดงความคิดเห็น...">
+            <button onclick="submitComment('${record.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    `;
+}
+
+function submitComment(id) {
+    const input = document.getElementById(`comment-input-${id}`);
+    const text = input.value;
+    if (!text) return;
+    updateInteraction(id, 'comment', text).then(() => { if (input) input.value = ''; });
 }
 
 window.handleFeedbackSubmit = async function(e) {
