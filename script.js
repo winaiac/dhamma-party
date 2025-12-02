@@ -34,7 +34,7 @@ const executiveData = [
     { id: 6, name: "นาย อภิเกียรติ ประสงค์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" }
 ];
 
-// 🟢 PROVINCE COORDINATES (Default centers)
+// 🟢 PROVINCE COORDINATES
 const provinceLatLong = {
     "กรุงเทพมหานคร": [13.7563, 100.5018], "กระบี่": [8.0863, 98.9063], "กาญจนบุรี": [14.0205, 99.5292], "กาฬสินธุ์": [16.4322, 103.5061],
     "กำแพงเพชร": [16.4828, 99.5227], "ขอนแก่น": [16.4322, 102.8236], "จันทบุรี": [12.6114, 102.1039], "ฉะเชิงเทรา": [13.6904, 101.0726],
@@ -95,14 +95,10 @@ window.autoFillRegion = function() {
     const region = getRegion(prov);
     document.getElementById('inp-region').value = region;
     
-    // 🟢 Update Form Map Center (Only if lat/lng is empty or user just selected province)
     if (formMap && prov && provinceLatLong[prov]) {
         const coords = provinceLatLong[prov];
         formMap.setView(coords, 12);
         if (formMarker) {
-            // If creating new or no specific coords set yet, move marker to province center
-            // NOTE: Ideally, don't overwrite if editing and user already has custom coords.
-            // But for 'autoFill' usually implies user changed province manually.
             formMarker.setLatLng(coords);
             document.getElementById('inp-lat').value = coords[0];
             document.getElementById('inp-lng').value = coords[1];
@@ -173,6 +169,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Check for password recovery or errors in URL
     if (window.location.hash) {
         if (window.location.hash.includes('error=access_denied') && window.location.hash.includes('error_code=otp_expired')) {
             alert("ลิงก์รีเซ็ตรหัสผ่านหมดอายุแล้ว กรุณากด 'ลืมรหัสผ่าน' เพื่อขอลิงก์ใหม่");
@@ -267,7 +264,7 @@ function initCharts() {
     }
 }
 
-// 🟢 GLOBAL FUNCTIONS (Attached to window)
+// 🟢 GLOBAL FUNCTIONS (Attached to window for HTML access)
 
 // 🟢 MAP FUNCTIONS
 window.toggleMapView = function() {
@@ -283,7 +280,7 @@ window.toggleMapView = function() {
         if (!map) initMap();
         else {
             setTimeout(() => { map.invalidateSize(); }, 200); 
-            updateMapMarkers(); // Ensure markers are fresh
+            updateMapMarkers(); 
         }
     } else {
         tableDiv.classList.remove('hidden');
@@ -300,27 +297,17 @@ function initMap() {
     updateMapMarkers();
 }
 
-// ✅✅ UPDATED: Show individual markers based on saved lat/lng if available
 function updateMapMarkers() {
     if (!map) return;
-    
-    // Clear markers
     markers.forEach(m => map.removeLayer(m));
     markers = [];
-
-    // Group for province fallback
     const provinceCounts = {};
-    
     cachedData.forEach(m => {
         if (activeFilter !== 'all' && m.type !== activeFilter) return;
-
-        // 🟢 PRIORITIZE: Use specific lat/lng if available
         if (m.lat && m.lng && !isNaN(parseFloat(m.lat)) && !isNaN(parseFloat(m.lng))) {
             const lat = parseFloat(m.lat);
             const lng = parseFloat(m.lng);
             const marker = L.marker([lat, lng]).addTo(map);
-            
-            // Popup content
             let popupContent = `
                 <div class="text-center">
                     <h4 class="text-blue-600 font-bold">${m.name}</h4>
@@ -331,19 +318,14 @@ function updateMapMarkers() {
             marker.bindPopup(popupContent);
             markers.push(marker);
         } 
-        // 🔴 FALLBACK: Use Province Center if no specific coords
         else if (m.province && provinceLatLong[m.province]) {
             if (!provinceCounts[m.province]) provinceCounts[m.province] = 0;
             provinceCounts[m.province]++;
         }
     });
-
-    // Draw Province Aggregate Markers (Fallback)
     for (const [prov, count] of Object.entries(provinceCounts)) {
         const coords = provinceLatLong[prov];
-        // Use a different icon color or style for aggregate markers could be nice, but standard is fine
-        const marker = L.marker(coords, { opacity: 0.7 }).addTo(map); // Slightly transparent to distinguish
-        
+        const marker = L.marker(coords, { opacity: 0.7 }).addTo(map);
         marker.bindPopup(`
             <div class="text-center">
                 <h4>${prov} (รวม)</h4>
@@ -355,7 +337,6 @@ function updateMapMarkers() {
     }
 }
 
-// 🟢 FORM MAP (Draggable)
 window.initFormMap = function(lat, lng) {
     const defaultLat = lat || 13.7563;
     const defaultLng = lng || 100.5018;
@@ -375,7 +356,6 @@ window.initFormMap = function(lat, lng) {
             document.getElementById('inp-lng').value = position.lng;
         });
         
-        // Allow clicking on map to move marker
         formMap.on('click', function(e) {
             formMarker.setLatLng(e.latlng);
             document.getElementById('inp-lat').value = e.latlng.lat;
@@ -389,7 +369,6 @@ window.initFormMap = function(lat, lng) {
     
     setTimeout(() => { formMap.invalidateSize(); }, 300);
     
-    // Set hidden inputs
     if(lat && lng) {
         document.getElementById('inp-lat').value = lat;
         document.getElementById('inp-lng').value = lng;
@@ -425,6 +404,7 @@ window.handleLogout = async function() {
     updateNavState();
 };
 
+// ✅✅✅ Updated handleAuth with Thai messages and Email instructions
 window.handleAuth = async function(e) {
     e.preventDefault();
     const email = document.getElementById('email').value;
@@ -433,15 +413,22 @@ window.handleAuth = async function(e) {
         if (isRegisterMode) {
             const { error } = await sb.auth.signUp({ email, password: pass });
             if (error) throw error;
-            alert("ลงทะเบียนสมาชิกแอพสำเร็จ! กรุณาเข้าสู่ระบบ");
+            alert("ลงทะเบียนสำเร็จ!\n\nกรุณาตรวจสอบอีเมลของคุณ (รวมถึงใน Junk/Spam) และคลิกลิงก์ยืนยันตัวตนเพื่อเปิดใช้งานบัญชี ก่อนที่จะเข้าสู่ระบบครับ");
             window.switchAuthMode('login');
         } else {
             const { error } = await sb.auth.signInWithPassword({ email, password: pass });
             if (error) throw error;
         }
-    } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
+    } catch (err) {
+        // Translate common errors
+        let msg = err.message;
+        if(msg.includes("Invalid login credentials")) msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+        else if(msg.includes("User already registered")) msg = "อีเมลนี้ถูกลงทะเบียนไว้แล้ว";
+        alert("เกิดข้อผิดพลาด: " + msg);
+    }
 };
 
+// ✅✅✅ Updated handleUpdatePassword with Thai messages
 window.handleUpdatePassword = async function(e) {
     e.preventDefault();
     const newPassword = document.getElementById('new-password').value;
@@ -449,19 +436,26 @@ window.handleUpdatePassword = async function(e) {
     try {
         const { data, error } = await sb.auth.updateUser({ password: newPassword });
         if (error) throw error;
-        alert("เปลี่ยนรหัสผ่านสำเร็จ! ระบบจะพาคุณไปหน้าหลัก");
+        alert("เปลี่ยนรหัสผ่านสำเร็จเรียบร้อย!\nระบบจะพาคุณไปที่หน้าหลัก...");
         isRecoveryMode = false; window.location.hash = ''; window.switchView('dashboard');
-    } catch (err) { alert("ไม่สามารถเปลี่ยนรหัสผ่านได้: " + err.message); }
+    } catch (err) {
+        let msg = err.message;
+        if (msg.includes("New password should be different from the old password")) {
+            msg = "รหัสผ่านใหม่ต้องต่างจากรหัสผ่านเดิม";
+        }
+        alert("เกิดข้อผิดพลาด: " + msg);
+    }
 };
 
+// ✅✅✅ Updated handleForgotPassword with Thai messages and Email instructions
 window.handleForgotPassword = async function() {
     const email = prompt("กรุณาระบุอีเมลที่ต้องการรีเซ็ตรหัสผ่าน:");
     if (email) {
         try {
             const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
             if (error) throw error;
-            alert(`ระบบได้ส่งลิงก์รีเซ็ตรหัสผ่านไปที่ ${email} แล้ว`);
-        } catch (err) { alert("ไม่สามารถส่งอีเมลรีเซ็ตได้: " + err.message); }
+            alert(`ระบบส่งลิงก์รีเซ็ตรหัสผ่านไปที่ ${email} เรียบร้อยแล้ว\n\nกรุณาเปิดอีเมลและคลิกลิงก์เพื่อตั้งรหัสผ่านใหม่ครับ`);
+        } catch (err) { alert("ไม่สามารถส่งอีเมลได้: " + err.message); }
     }
 };
 
@@ -532,7 +526,6 @@ window.sortTable = function(key) {
 };
 
 window.openModal = function(type, record = null) {
-    // Handle feedback special case
     if (type === 'edit' && record && typeof record === 'string') {
         const r = cachedData.find(d => d.id == record);
         if (r && r.type === 'feedback') { window.openFeedbackManageModal(r); return; }
@@ -545,16 +538,13 @@ window.openModal = function(type, record = null) {
     form.reset();
     document.getElementById('record-id').value = '';
     
-    // Default Title
     document.getElementById('modal-title').innerText = type === 'candidate' ? 'เพิ่มผู้สมัคร ส.ส.' : 'ลงทะเบียนสมาชิก';
     document.getElementById('inp-type').value = type;
 
-    // Reset UI states
     document.getElementById('id-error').classList.add('hidden');
     document.getElementById('phone-error').classList.add('hidden');
     document.getElementById('admin-tools').classList.add('hidden');
 
-    // Admin Logic
     const adminProv = currentSession && getAdminProvince(currentSession.user.email);
     if (adminProv) {
         document.getElementById('admin-tools').classList.remove('hidden');
@@ -562,10 +552,9 @@ window.openModal = function(type, record = null) {
         if (adminProv === 'ALL') roleSetting.classList.remove('hidden'); else roleSetting.classList.add('hidden');
     }
 
-    // Init map vars
     let mapLat = null, mapLng = null;
 
-    if (record) { // Editing existing record
+    if (record) {
         document.getElementById('record-id').value = record.id;
         document.getElementById('inp-member-id').value = record.member_id || '';
         document.getElementById('inp-name').value = record.name || '';
@@ -575,17 +564,15 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-phone').value = record.phone || '';
         document.getElementById('inp-line').value = record.line_id || '';
         
-        // ✅ Load Detailed Address
-        document.getElementById('inp-house-no').value = record.address || ''; // Use 'address' column for house no
-        document.getElementById('inp-village').value = record.village || ''; // New col
-        document.getElementById('inp-road').value = record.road || '';       // New col
+        document.getElementById('inp-house-no').value = record.address || ''; 
+        document.getElementById('inp-village').value = record.village || '';
+        document.getElementById('inp-road').value = record.road || '';
         document.getElementById('inp-tambon').value = record.tambon || '';
         document.getElementById('inp-district').value = record.district || '';
         document.getElementById('inp-prov').value = record.province || '';
         document.getElementById('inp-zip').value = record.zip || '';
         document.getElementById('inp-region').value = record.region || getRegion(record.province || '');
 
-        // ✅ Load Lat/Lng for Map
         if (record.lat && record.lng) {
             mapLat = parseFloat(record.lat);
             mapLng = parseFloat(record.lng);
@@ -596,9 +583,8 @@ window.openModal = function(type, record = null) {
 
         document.getElementById('inp-recommender').value = record.recommender_name || '';
         document.getElementById('inp-start-date').value = record.start_date || '';
-        document.getElementById('inp-pdpa').checked = false; // Reset consent
+        document.getElementById('inp-pdpa').checked = false; 
 
-        // Remarks & Role
         let remarks = record.remarks || '';
         let adminRole = record.admin_role || '';
         const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
@@ -608,7 +594,6 @@ window.openModal = function(type, record = null) {
         if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
         else { document.getElementById('inp-is-old').checked = false; }
 
-        // Clean remarks tags
         remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
             .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
             .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
@@ -616,18 +601,15 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-remarks').value = remarks;
 
     } else {
-        // New Record
         if(!adminProv) document.getElementById('inp-email').value = currentSession.user.email;
     }
     
-    // Province Dropdown Logic
     const provSelect = document.getElementById('inp-prov');
     provSelect.disabled = false;
     if (adminProv && adminProv !== 'ALL') { provSelect.value = adminProv; provSelect.disabled = true; window.autoFillRegion(); }
 
     modal.classList.remove('hidden'); modal.classList.add('flex');
 
-    // 🟢 Initialize Form Map after modal is visible
     setTimeout(() => {
         window.initFormMap(mapLat, mapLng);
     }, 100);
@@ -650,7 +632,6 @@ window.saveData = async function(e) {
         const recordId = document.getElementById('record-id').value;
         const type = document.getElementById('inp-type').value;
         
-        // Validation
         const phone = document.getElementById('inp-phone').value;
         const idCard = document.getElementById('inp-id').value;
         const adminProv = currentSession && getAdminProvince(currentSession.user.email);
@@ -663,7 +644,6 @@ window.saveData = async function(e) {
             document.getElementById('phone-error').classList.remove('hidden'); throw new Error("เบอร์โทรศัพท์ไม่ถูกต้อง");
         } else { document.getElementById('phone-error').classList.add('hidden'); }
 
-        // Remarks processing
         let remarks = document.getElementById('inp-remarks').value;
         if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
         const adminRoleVal = document.getElementById('inp-admin-role').value;
@@ -678,7 +658,6 @@ window.saveData = async function(e) {
             }
         }
 
-        // ✅ Prepare Payload with Detailed Address & MAP COORDS
         const payload = {
             member_id: document.getElementById('inp-member-id').value,
             name: document.getElementById('inp-name').value,
@@ -688,8 +667,7 @@ window.saveData = async function(e) {
             phone: phone,
             line_id: document.getElementById('inp-line').value,
             
-            // Detailed Address Mapping
-            address: document.getElementById('inp-house-no').value, // Map House No to 'address'
+            address: document.getElementById('inp-house-no').value,
             village: document.getElementById('inp-village').value,
             road: document.getElementById('inp-road').value,
             tambon: document.getElementById('inp-tambon').value,
@@ -698,7 +676,6 @@ window.saveData = async function(e) {
             zip: document.getElementById('inp-zip').value,
             region: document.getElementById('inp-region').value,
             
-            // 🟢 Map Coordinates (Read hidden inputs)
             lat: document.getElementById('inp-lat').value || null,
             lng: document.getElementById('inp-lng').value || null,
 
@@ -737,8 +714,6 @@ window.deleteData = async function(id) {
         fetchData();
     } catch (err) { alert("เกิดข้อผิดพลาดในการลบ: " + err.message); }
 };
-
-// --- DATA FETCHING & RENDERING ---
 
 function updateNavState() {
     if (currentSession) {
@@ -793,8 +768,6 @@ async function fetchData() {
     const rC = document.getElementById('region-stats-container'); if(rC) rC.innerHTML = regionHTML || '<div class="text-xs text-gray-400">ยังไม่มีข้อมูล</div>';
     
     window.handleSearch();
-    
-    // 🟢 Update Dashboard Map if active
     if(isMapView && map) updateMapMarkers();
 }
 
