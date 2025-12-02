@@ -15,7 +15,12 @@ const STATUS_APPROVED_TAG = '{{STATUS:APPROVED}}';
 let isRecoveryMode = false;
 let activeFilter = 'all';
 
-// 🟢 EXECUTIVE DATA STRUCTURE
+// Map Variables
+let map = null;
+let markers = [];
+let isMapView = false;
+
+// 🟢 EXECUTIVE DATA & PROVINCE COORDINATES
 const executiveData = [
     { id: 1, name: "นาย บุณยติเลิศ สาระ", pos: "หัวหน้าพรรค", date: "6 เมษายน 2568" },
     { id: 2, name: "นาย สุริยา โคตรภูธร", pos: "เลขาธิการพรรค", date: "6 เมษายน 2568" },
@@ -25,7 +30,29 @@ const executiveData = [
     { id: 6, name: "นาย อภิเกียรติ ประสงค์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" }
 ];
 
-// 🔴🔴🔴 ADMIN ROLES 🔴🔴🔴
+const provinceLatLong = {
+    "กรุงเทพมหานคร": [13.7563, 100.5018], "กระบี่": [8.0863, 98.9063], "กาญจนบุรี": [14.0205, 99.5292], "กาฬสินธุ์": [16.4322, 103.5061],
+    "กำแพงเพชร": [16.4828, 99.5227], "ขอนแก่น": [16.4322, 102.8236], "จันทบุรี": [12.6114, 102.1039], "ฉะเชิงเทรา": [13.6904, 101.0726],
+    "ชลบุรี": [13.3611, 100.9847], "ชัยนาท": [15.1935, 100.1250], "ชัยภูมิ": [15.8105, 102.0289], "ชุมพร": [10.4930, 99.1800],
+    "เชียงราย": [19.9105, 99.8406], "เชียงใหม่": [18.7883, 98.9853], "ตรัง": [7.5645, 99.6232], "ตราด": [12.2339, 102.5117],
+    "ตาก": [16.8837, 99.1170], "นครนายก": [14.2069, 101.2130], "นครปฐม": [13.8188, 100.0373], "นครพนม": [17.3996, 104.7936],
+    "นครราชสีมา": [14.9751, 102.0987], "นครศรีธรรมราช": [8.4309, 99.9631], "นครสวรรค์": [15.7042, 100.1372], "นนทบุรี": [13.8591, 100.5217],
+    "นราธิวาส": [6.4255, 101.8253], "น่าน": [18.7838, 100.7813], "บึงกาฬ": [18.3610, 103.6465], "บุรีรัมย์": [14.9930, 103.1029],
+    "ปทุมธานี": [14.0208, 100.5250], "ประจวบคีรีขันธ์": [11.8124, 99.7950], "ปราจีนบุรี": [14.0509, 101.3716], "ปัตตานี": [6.8696, 101.2501],
+    "พระนครศรีอยุธยา": [14.3532, 100.5684], "พะเยา": [19.1963, 99.9022], "พังงา": [8.4503, 98.5255], "พัทลุง": [7.6167, 100.0740],
+    "พิจิตร": [16.4429, 100.3493], "พิษณุโลก": [16.8211, 100.2659], "เพชรบุรี": [13.1129, 99.9412], "เพชรบูรณ์": [16.4190, 101.1567],
+    "แพร่": [18.1446, 100.1403], "ภูเก็ต": [7.8804, 98.3923], "มหาสารคาม": [16.1863, 103.3015], "มุกดาหาร": [16.5436, 104.7176],
+    "แม่ฮ่องสอน": [19.3020, 97.9654], "ยโสธร": [15.7924, 104.1451], "ยะลา": [6.5413, 101.2803], "ร้อยเอ็ด": [16.0538, 103.6520],
+    "ระนอง": [9.9658, 98.6348], "ระยอง": [12.6828, 101.2816], "ราชบุรี": [13.5283, 99.8135], "ลพบุรี": [14.7995, 100.6534],
+    "ลำปาง": [18.2883, 99.4928], "ลำพูน": [18.5748, 99.0087], "เลย": [17.4860, 101.7223], "ศรีสะเกษ": [15.1186, 104.3227],
+    "สกลนคร": [17.1546, 104.1349], "สงขลา": [7.1988, 100.5951], "สตูล": [6.6238, 100.0674], "สมุทรปราการ": [13.5991, 100.5967],
+    "สมุทรสงคราม": [13.4098, 99.9977], "สมุทรสาคร": [13.5475, 100.2744], "สระแก้ว": [13.8240, 102.0646], "สระบุรี": [14.5289, 100.9101],
+    "สิงห์บุรี": [14.8906, 100.3967], "สุโขทัย": [17.0094, 99.8264], "สุพรรณบุรี": [14.4745, 100.1177], "สุราษฎร์ธานี": [9.1418, 99.3303],
+    "สุรินทร์": [14.8818, 103.4936], "หนองคาย": [17.8785, 102.7413], "หนองบัวลำภู": [17.2026, 102.4413], "อ่างทอง": [14.5896, 100.4551],
+    "อำนาจเจริญ": [15.8657, 104.6258], "อุดรธานี": [17.4138, 102.7872], "อุตรดิตถ์": [17.6201, 100.0993], "อุทัยธานี": [15.3835, 100.0247],
+    "อุบลราชธานี": [15.2448, 104.8473]
+};
+
 const ADMIN_ROLES = {
     'winayo@gmail.com': 'ALL',
     'pramahaweera@gmail.com': 'ALL',
@@ -34,18 +61,9 @@ const ADMIN_ROLES = {
     'winai0615322117@gmail.com': 'ร้อยเอ็ด'
 };
 
-const PROVINCES = ["กรุงเทพมหานคร", "กระบี่", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร", "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท", "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา", "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์", "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน", "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง", "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย", "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ", "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี", "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย", "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์", "อุทัยธานี", "อุบลราชธานี"];
+const PROVINCES = Object.keys(provinceLatLong).sort();
 
 // --- HELPER FUNCTIONS ---
-
-function togglePassword(inputId, icon) {
-    const input = document.getElementById(inputId);
-    if (input.type === "password") {
-        input.type = "text"; icon.classList.remove("fa-eye"); icon.classList.add("fa-eye-slash");
-    } else {
-        input.type = "password"; icon.classList.remove("fa-eye-slash"); icon.classList.add("fa-eye");
-    }
-}
 
 function getRegion(province) {
     const regions = {
@@ -67,12 +85,12 @@ function mapToMainRegion(region) {
     return "ภาคกลาง/อื่นๆ";
 }
 
-// Global function for HTML onchange event
+// ✅ EXPORTED HELPER FUNCTIONS
 window.autoFillRegion = function() {
     const prov = document.getElementById('inp-prov').value;
     const region = getRegion(prov);
     document.getElementById('inp-region').value = region;
-}
+};
 
 function checkThaiID(id) {
     if (id.length != 13) return false;
@@ -96,7 +114,19 @@ function getAdminProvince(email) {
     return null;
 }
 
-// --- CHART JS UTILS ---
+function formatLabel(str) {
+    if (str.length <= 16) return str;
+    const words = str.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+    for (let i = 1; i < words.length; i++) {
+        if (currentLine.length + 1 + words[i].length <= 16) { currentLine += ' ' + words[i]; }
+        else { lines.push(currentLine); currentLine = words[i]; }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
 const commonOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -116,22 +146,8 @@ const commonOptions = {
     layout: { padding: 10 }
 };
 
-function formatLabel(str) {
-    if (str.length <= 16) return str;
-    const words = str.split(' ');
-    const lines = [];
-    let currentLine = words[0];
-    for (let i = 1; i < words.length; i++) {
-        if (currentLine.length + 1 + words[i].length <= 16) { currentLine += ' ' + words[i]; }
-        else { lines.push(currentLine); currentLine = words[i]; }
-    }
-    lines.push(currentLine);
-    return lines;
-}
-
 // --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
-    // Dropdown Initialization
     const provSelect = document.getElementById('inp-prov');
     const adminRoleSelect = document.getElementById('inp-admin-role');
     const postTargetSelect = document.getElementById('inp-post-target');
@@ -144,7 +160,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Hash handling (Password Reset)
     if (window.location.hash) {
         if (window.location.hash.includes('error=access_denied') && window.location.hash.includes('error_code=otp_expired')) {
             alert("ลิงก์รีเซ็ตรหัสผ่านหมดอายุแล้ว กรุณากด 'ลืมรหัสผ่าน' เพื่อขอลิงก์ใหม่");
@@ -157,18 +172,17 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Chart Initialization
     if(document.getElementById('ideologyChart')) {
         initCharts();
     }
 
-    // Auth & Realtime Check
     sb.auth.getSession().then(({ data: { session } }) => {
         currentSession = session;
         updateNavState();
         if(session) {
             renderExecutives();
             initPartyInfo();
+            fetchData();
         }
     });
 
@@ -178,6 +192,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if(session) {
             renderExecutives();
             initPartyInfo();
+            fetchData();
         }
     });
 });
@@ -239,7 +254,87 @@ function initCharts() {
     }
 }
 
-// 🟡 GLOBAL FUNCTIONS ATTACHED TO WINDOW (For HTML calls)
+// 🟢 GLOBAL FUNCTIONS (Attached to window for HTML access) 🟢
+
+window.toggleMapView = function() {
+    isMapView = !isMapView;
+    const tableDiv = document.getElementById('dashboard-table-view');
+    const mapDiv = document.getElementById('dashboard-map-view');
+    const btnText = document.getElementById('btn-map-text');
+    const filters = document.getElementById('dashboard-filters');
+
+    if (isMapView) {
+        tableDiv.classList.add('hidden');
+        mapDiv.classList.remove('hidden');
+        btnText.innerText = "ดูแบบตาราง";
+        // Initialize map if first time
+        if (!map) initMap();
+        else {
+            setTimeout(() => { map.invalidateSize(); }, 200); 
+            updateMapMarkers();
+        }
+    } else {
+        tableDiv.classList.remove('hidden');
+        mapDiv.classList.add('hidden');
+        btnText.innerText = "ดูบนแผนที่";
+    }
+};
+
+function initMap() {
+    map = L.map('map').setView([13.7563, 100.5018], 6); // Center on Bangkok
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    updateMapMarkers();
+}
+
+function updateMapMarkers() {
+    if (!map) return;
+    
+    // Clear existing markers
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+
+    // Group members by province
+    const provinceCounts = {};
+    const provinceMembers = {};
+
+    cachedData.forEach(m => {
+        if (activeFilter !== 'all' && m.type !== activeFilter) return;
+        
+        const prov = m.province;
+        if (prov && provinceLatLong[prov]) {
+            if (!provinceCounts[prov]) {
+                provinceCounts[prov] = 0;
+                provinceMembers[prov] = [];
+            }
+            provinceCounts[prov]++;
+            provinceMembers[prov].push(m.name);
+        }
+    });
+
+    // Add Markers
+    for (const [prov, count] of Object.entries(provinceCounts)) {
+        const coords = provinceLatLong[prov];
+        const marker = L.marker(coords).addTo(map);
+        const memberList = provinceMembers[prov].slice(0, 5).join('<br>- ');
+        const moreCount = provinceMembers[prov].length > 5 ? `<br>...และอีก ${provinceMembers[prov].length - 5} คน` : '';
+        
+        marker.bindPopup(`
+            <div class="text-center">
+                <h4>${prov}</h4>
+                <div class="text-2xl font-bold text-blue-600 mb-2">${count} คน</div>
+                <div class="text-left text-xs text-gray-600 border-t pt-2">
+                    <strong>สมาชิกบางส่วน:</strong><br>
+                    - ${memberList}
+                    ${moreCount}
+                </div>
+            </div>
+        `);
+        markers.push(marker);
+    }
+}
+
 window.switchView = function(view) {
     ['landing', 'auth', 'dashboard', 'reset', 'member-center'].forEach(id => {
         const el = document.getElementById('view-' + id);
@@ -278,7 +373,7 @@ window.handleAuth = async function(e) {
             const { error } = await sb.auth.signUp({ email, password: pass });
             if (error) throw error;
             alert("ลงทะเบียนสมาชิกแอพสำเร็จ! กรุณาเข้าสู่ระบบ");
-            switchAuthMode('login');
+            window.switchAuthMode('login');
         } else {
             const { error } = await sb.auth.signInWithPassword({ email, password: pass });
             if (error) throw error;
@@ -375,10 +470,7 @@ window.sortTable = function(key) {
     if (activeTh) activeTh.className = sortConfig.direction === 1 ? 'fa-solid fa-sort-up ml-1' : 'fa-solid fa-sort-down ml-1';
 };
 
-// 🟢 MODAL FUNCTIONS (Open/Close/Save)
-
 window.openModal = function(type, record = null) {
-    // Handle feedback special case
     if (type === 'edit' && record && typeof record === 'string') {
         const r = cachedData.find(d => d.id == record);
         if (r && r.type === 'feedback') { window.openFeedbackManageModal(r); return; }
@@ -391,16 +483,13 @@ window.openModal = function(type, record = null) {
     form.reset();
     document.getElementById('record-id').value = '';
     
-    // Default Title
     document.getElementById('modal-title').innerText = type === 'candidate' ? 'เพิ่มผู้สมัคร ส.ส.' : 'ลงทะเบียนสมาชิก';
     document.getElementById('inp-type').value = type;
 
-    // Reset UI states
     document.getElementById('id-error').classList.add('hidden');
     document.getElementById('phone-error').classList.add('hidden');
     document.getElementById('admin-tools').classList.add('hidden');
 
-    // Admin Logic
     const adminProv = currentSession && getAdminProvince(currentSession.user.email);
     if (adminProv) {
         document.getElementById('admin-tools').classList.remove('hidden');
@@ -408,7 +497,7 @@ window.openModal = function(type, record = null) {
         if (adminProv === 'ALL') roleSetting.classList.remove('hidden'); else roleSetting.classList.add('hidden');
     }
 
-    if (record) { // Editing existing record
+    if (record) {
         document.getElementById('record-id').value = record.id;
         document.getElementById('inp-member-id').value = record.member_id || '';
         document.getElementById('inp-name').value = record.name || '';
@@ -418,10 +507,9 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-phone').value = record.phone || '';
         document.getElementById('inp-line').value = record.line_id || '';
         
-        // ✅ Load Detailed Address
-        document.getElementById('inp-house-no').value = record.address || ''; // Use 'address' column for house no
-        document.getElementById('inp-village').value = record.village || ''; // New col
-        document.getElementById('inp-road').value = record.road || '';       // New col
+        document.getElementById('inp-house-no').value = record.address || '';
+        document.getElementById('inp-village').value = record.village || '';
+        document.getElementById('inp-road').value = record.road || '';
         document.getElementById('inp-tambon').value = record.tambon || '';
         document.getElementById('inp-district').value = record.district || '';
         document.getElementById('inp-prov').value = record.province || '';
@@ -430,9 +518,8 @@ window.openModal = function(type, record = null) {
 
         document.getElementById('inp-recommender').value = record.recommender_name || '';
         document.getElementById('inp-start-date').value = record.start_date || '';
-        document.getElementById('inp-pdpa').checked = false; // Reset consent
+        document.getElementById('inp-pdpa').checked = false;
 
-        // Remarks & Role
         let remarks = record.remarks || '';
         let adminRole = record.admin_role || '';
         const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
@@ -442,7 +529,6 @@ window.openModal = function(type, record = null) {
         if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
         else { document.getElementById('inp-is-old').checked = false; }
 
-        // Clean remarks tags
         remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
             .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
             .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
@@ -450,11 +536,9 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-remarks').value = remarks;
 
     } else {
-        // New Record
         if(!adminProv) document.getElementById('inp-email').value = currentSession.user.email;
     }
     
-    // Province Dropdown Logic
     const provSelect = document.getElementById('inp-prov');
     provSelect.disabled = false;
     if (adminProv && adminProv !== 'ALL') { provSelect.value = adminProv; provSelect.disabled = true; window.autoFillRegion(); }
@@ -479,7 +563,6 @@ window.saveData = async function(e) {
         const recordId = document.getElementById('record-id').value;
         const type = document.getElementById('inp-type').value;
         
-        // Validation
         const phone = document.getElementById('inp-phone').value;
         const idCard = document.getElementById('inp-id').value;
         const adminProv = currentSession && getAdminProvince(currentSession.user.email);
@@ -492,7 +575,6 @@ window.saveData = async function(e) {
             document.getElementById('phone-error').classList.remove('hidden'); throw new Error("เบอร์โทรศัพท์ไม่ถูกต้อง");
         } else { document.getElementById('phone-error').classList.add('hidden'); }
 
-        // Remarks processing
         let remarks = document.getElementById('inp-remarks').value;
         if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
         const adminRoleVal = document.getElementById('inp-admin-role').value;
@@ -507,7 +589,6 @@ window.saveData = async function(e) {
             }
         }
 
-        // ✅ Prepare Payload with Detailed Address
         const payload = {
             member_id: document.getElementById('inp-member-id').value,
             name: document.getElementById('inp-name').value,
@@ -517,8 +598,7 @@ window.saveData = async function(e) {
             phone: phone,
             line_id: document.getElementById('inp-line').value,
             
-            // Detailed Address Mapping
-            address: document.getElementById('inp-house-no').value, // Map House No to 'address'
+            address: document.getElementById('inp-house-no').value,
             village: document.getElementById('inp-village').value,
             road: document.getElementById('inp-road').value,
             tambon: document.getElementById('inp-tambon').value,
@@ -547,7 +627,7 @@ window.saveData = async function(e) {
         window.closeModal();
         fetchData();
     } catch (err) {
-        alert("เกิดข้อผิดพลาด: " + err.message + "\n(หากเป็น Error เรื่อง Column ให้ตรวจสอบว่าสร้างคอลัมน์ village, road, region ใน Supabase หรือยัง)");
+        alert("เกิดข้อผิดพลาด: " + err.message + "\n(ตรวจสอบคอลัมน์ใน Supabase: village, road, region)");
     } finally {
         saveBtn.disabled = false; saveBtn.innerText = "บันทึกข้อมูล";
     }
@@ -562,8 +642,6 @@ window.deleteData = async function(id) {
         fetchData();
     } catch (err) { alert("เกิดข้อผิดพลาดในการลบ: " + err.message); }
 };
-
-// --- DATA FETCHING & RENDERING ---
 
 function updateNavState() {
     if (currentSession) {
@@ -597,7 +675,6 @@ async function fetchData() {
     if (error) { console.error(error); return; }
     cachedData = data || [];
     
-    // Stats Update
     const users = new Set(cachedData.map(m => m.email)).size;
     const members = cachedData.filter(m => m.type === 'member').length;
     const candidates = cachedData.filter(m => m.type === 'candidate').length;
@@ -605,7 +682,6 @@ async function fetchData() {
     const sT = document.getElementById('stat-total'); if(sT) sT.innerText = members;
     const sC = document.getElementById('stat-candidate'); if(sC) sC.innerText = candidates;
 
-    // Region Stats Update
     const regionStats = {};
     cachedData.filter(m => m.type === 'member').forEach(m => {
         const region = mapToMainRegion(getRegion(m.province));
@@ -620,9 +696,9 @@ async function fetchData() {
     const rC = document.getElementById('region-stats-container'); if(rC) rC.innerHTML = regionHTML || '<div class="text-xs text-gray-400">ยังไม่มีข้อมูล</div>';
     
     window.handleSearch();
+    if(isMapView && map) updateMapMarkers();
 }
 
-// 🟢 RENDER TABLE WITH DETAILED ADDRESS
 function renderTable(data) {
     const tbody = document.getElementById('table-body');
     if(!tbody) return;
@@ -662,8 +738,7 @@ function renderTable(data) {
         
         const date = new Date(item.start_date || item.created_at).toLocaleDateString('th-TH');
         
-        // Construct Full Address String
-        let fullAddr = `<b>${item.address || '-'}</b>`; // House No
+        let fullAddr = `<b>${item.address || '-'}</b>`; 
         if(item.village) fullAddr += ` <span class="text-gray-500">ม.${item.village}</span>`;
         if(item.road) fullAddr += ` <span class="text-gray-500">ถ.${item.road}</span>`;
         fullAddr += `<br>ต.${item.tambon || '-'} อ.${item.district || '-'}`;
@@ -731,7 +806,6 @@ function renderPartyInfo(info) {
     if (!info) return;
     const fmt = (n) => n ? n.toLocaleString() : '0';
 
-    // Update ONLY Dashboard Elements (dash-ect-...)
     const dashIds = {
         total: 'dash-ect-member-total', n: 'dash-ect-member-n', c: 'dash-ect-member-c', ne: 'dash-ect-member-ne', s: 'dash-ect-member-s',
         branch: 'dash-ect-branch-total', rep: 'dash-ect-rep-total',
@@ -741,94 +815,11 @@ function renderPartyInfo(info) {
     const update = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
 
     update(dashIds.total, fmt(info.member_total));
-    // update(dashIds.n, fmt(info.member_north)); ... (Uncomment if detail elements exist in dashboard)
     update(dashIds.branch, fmt(info.branch_total));
     update(dashIds.rep, fmt(info.rep_total));
     update(dashIds.mName, info.month_name);
     update(dashIds.mInc, '+' + fmt(info.month_inc));
     update(dashIds.mDec, '-' + fmt(info.month_dec));
-}
-
-// --- FEEDBACK & POSTS FUNCTIONS ---
-
-function parseInteractions(remarks) {
-    const match = remarks.match(/{{INTERACT:({.*?})}}/s);
-    if (match) { try { return JSON.parse(match[1]); } catch (e) { console.error("Parse Error", e); } }
-    return { likes: [], neutrals: [], comments: [] };
-}
-
-async function updateInteraction(id, action, payload = null) {
-    if (!currentSession) return alert("กรุณาเข้าสู่ระบบก่อน");
-    const recordIndex = cachedData.findIndex(r => r.id == id);
-    if (recordIndex === -1) return;
-    const record = cachedData[recordIndex];
-    let remarks = record.remarks || '';
-    let interactData = parseInteractions(remarks);
-    const userEmail = currentSession.user.email;
-    if (action === 'like') {
-        if (interactData.likes.includes(userEmail)) { interactData.likes = interactData.likes.filter(e => e !== userEmail); }
-        else { interactData.likes.push(userEmail); interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
-    } else if (action === 'neutral') {
-        if (interactData.neutrals.includes(userEmail)) { interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
-        else { interactData.neutrals.push(userEmail); interactData.likes = interactData.likes.filter(e => e !== userEmail); }
-    } else if (action === 'comment') {
-        if (!payload || !payload.trim()) return;
-        interactData.comments.push({ user: userEmail, text: payload, time: new Date().toISOString() });
-    }
-    const newTag = `{{INTERACT:${JSON.stringify(interactData)}}}`;
-    let newRemarks = remarks.replace(/{{INTERACT:({.*?})}}/s, '').trim();
-    newRemarks = (newRemarks + ' ' + newTag).trim();
-    cachedData[recordIndex].remarks = newRemarks;
-    const containerId = document.getElementById('modal-news-reader').classList.contains('hidden') === false ? 'news-interaction-area' :
-        (document.getElementById('modal-feedback-read').classList.contains('hidden') === false ? 'fb-interaction-area' : 'kn-interaction-area');
-    renderInteractionUI(containerId, cachedData[recordIndex]);
-    await sb.from('members').update({ remarks: newRemarks }).eq('id', id);
-}
-
-function renderInteractionUI(containerId, record) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const data = parseInteractions(record.remarks || '');
-    const likesCount = data.likes ? data.likes.length : 0;
-    const neutralsCount = data.neutrals ? data.neutrals.length : 0;
-    const comments = data.comments || [];
-    const userEmail = currentSession ? currentSession.user.email : '';
-    const isLiked = data.likes && data.likes.includes(userEmail);
-    const isNeutral = data.neutrals && data.neutrals.includes(userEmail);
-    let commentsHtml = comments.map(c => `
-        <div class="mb-3">
-            <div class="flex items-center gap-2 mb-1">
-                <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-600 font-bold">${c.user.substring(0, 2).toUpperCase()}</div>
-                <span class="text-xs font-bold text-gray-700">${c.user}</span>
-                <span class="text-[10px] text-gray-400">${new Date(c.time).toLocaleDateString('th-TH')}</span>
-            </div>
-            <div class="comment-bubble text-gray-800">${c.text}</div>
-        </div>
-    `).join('');
-    if (comments.length === 0) commentsHtml = '<p class="text-gray-400 text-sm text-center py-4">ยังไม่มีความคิดเห็น</p>';
-    container.innerHTML = `
-        <div class="flex items-center gap-4 mb-6">
-            <button onclick="updateInteraction('${record.id}', 'like')" class="flex items-center gap-2 px-4 py-2 rounded-full border transition ${isLiked ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}">
-                <i class="fa-solid fa-thumbs-up"></i> <span>ถูกใจ (${likesCount})</span>
-            </button>
-            <button onclick="updateInteraction('${record.id}', 'neutral')" class="flex items-center gap-2 px-4 py-2 rounded-full border transition ${isNeutral ? 'bg-gray-600 text-white border-gray-600' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'}">
-                <i class="fa-solid fa-face-meh"></i> <span>เฉยๆ (${neutralsCount})</span>
-            </button>
-        </div>
-        <h5 class="font-bold text-gray-800 mb-4"><i class="fa-regular fa-comments mr-2"></i> ความคิดเห็น (${comments.length})</h5>
-        <div class="max-h-64 overflow-y-auto mb-4 pr-2 reader-scroll">${commentsHtml}</div>
-        <div class="flex gap-2">
-            <input id="comment-input-${record.id}" class="flex-grow p-2 border rounded-lg text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-blue-500" placeholder="แสดงความคิดเห็น...">
-            <button onclick="submitComment('${record.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    `;
-}
-
-function submitComment(id) {
-    const input = document.getElementById(`comment-input-${id}`);
-    const text = input.value;
-    if (!text) return;
-    updateInteraction(id, 'comment', text).then(() => { if (input) input.value = ''; });
 }
 
 window.handleFeedbackSubmit = async function(e) {
@@ -926,8 +917,6 @@ window.saveFeedbackStatus = async function(e) {
         fetchData();
     } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); } finally { btn.disabled = false; btn.innerText = "บันทึกสถานะ"; }
 };
-
-// --- NEWS & KNOWLEDGE FUNCTIONS ---
 
 function renderNews() {
     const container = document.getElementById('news-container');
@@ -1075,7 +1064,6 @@ window.savePost = async function(e) {
     btn.disabled = false; btn.innerText = "โพสต์ข่าว";
 };
 
-// Knowledge Functions
 function renderKnowledge() {
     const list = document.getElementById('knowledge-list');
     const btnAdd = document.getElementById('btn-add-knowledge');
