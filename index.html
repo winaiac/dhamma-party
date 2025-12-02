@@ -6,152 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>พรรคแผ่นดินธรรม - ระบบรับสมัครสมาชิก (Pre-Register)</title>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- เพิ่ม Chart.js สำหรับกราฟ -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <!-- Leaflet CSS & JS (สำหรับแผนที่) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="data:,">
 
     <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #fcfbf9;
-            color: #4e342e;
-        }
-
-        h1,
-        h2,
-        h3,
-        .font-head {
-            font-family: 'Prompt', sans-serif;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-
-        th.sortable {
-            cursor: pointer;
-            transition: background-color 0.2s;
-            user-select: none;
-        }
-
-        th.sortable:hover {
-            background-color: #f3f4f6;
-            color: #ea580c;
-        }
-
-        .checkbox-wrapper input:checked+div {
-            background-color: #16a34a;
-            border-color: #16a34a;
-        }
-
-        .checkbox-wrapper input:checked+div svg {
-            display: block;
-        }
-
-        .password-container {
-            position: relative;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #9ca3af;
-            z-index: 10;
-        }
-
-        .password-toggle:hover {
-            color: #ea580c;
-        }
-
-        .aspect-video {
-            aspect-ratio: 16 / 9;
-        }
-
-        .action-btn {
-            z-index: 20;
-            position: relative;
-        }
-
-        /* Custom Scrollbar for Reader */
-        .reader-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .reader-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .reader-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .reader-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Comments Section */
-        .comment-bubble {
-            background-color: #f3f4f6;
-            border-radius: 1rem;
-            border-top-left-radius: 0;
-            padding: 0.75rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        /* Chart Container Styling */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-
+        body { font-family: 'Sarabun', sans-serif; background-color: #fcfbf9; color: #4e342e; }
+        h1, h2, h3, .font-head { font-family: 'Prompt', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); transition: all 0.3s; }
+        th.sortable { cursor: pointer; transition: background-color 0.2s; user-select: none; }
+        th.sortable:hover { background-color: #f3f4f6; color: #ea580c; }
+        .checkbox-wrapper input:checked+div { background-color: #16a34a; border-color: #16a34a; }
+        .checkbox-wrapper input:checked+div svg { display: block; }
+        .password-container { position: relative; }
+        .password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #9ca3af; z-index: 10; }
+        .password-toggle:hover { color: #ea580c; }
+        .aspect-video { aspect-ratio: 16 / 9; }
+        .action-btn { z-index: 20; position: relative; }
+        /* Custom Scrollbar */
+        .reader-scroll::-webkit-scrollbar { width: 8px; }
+        .reader-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .reader-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .reader-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        /* Comments */
+        .comment-bubble { background-color: #f3f4f6; border-radius: 1rem; border-top-left-radius: 0; padding: 0.75rem; font-size: 0.9rem; line-height: 1.5; }
+        /* Chart */
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
         /* Table Cell Text Wrapping for Address */
-        td.address-cell {
-            white-space: normal;
-            min-width: 200px;
-            max-width: 300px;
-            line-height: 1.4;
-        }
+        td.address-cell { white-space: normal; min-width: 200px; max-width: 300px; line-height: 1.4; }
+        /* Map specific styles */
+        #map { height: 500px; width: 100%; z-index: 1; border-radius: 0.75rem; }
+        .leaflet-popup-content-wrapper { font-family: 'Sarabun', sans-serif; border-radius: 0.5rem; }
+        .leaflet-popup-content h4 { font-family: 'Prompt', sans-serif; font-weight: bold; color: #ea580c; margin-bottom: 0.25rem; }
     </style>
 </head>
 
@@ -170,26 +70,20 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="switchView('landing')"
-                    class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
+                <button onclick="switchView('landing')" class="text-gray-600 hover:text-orange-600 font-bold text-sm hidden md:block action-btn">หน้าหลัก</button>
                 <div id="nav-guest">
-                    <button onclick="switchView('auth')"
-                        class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('auth')" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-right-to-bracket"></i> <span>ลงชื่อเข้าใช้งาน</span>
                     </button>
                 </div>
                 <div id="nav-user" class="hidden flex gap-2 items-center">
-                    <button onclick="switchView('member-center')"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('member-center')" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-hand-holding-heart"></i> <span class="hidden sm:inline">ศูนย์สมาชิก</span>
                     </button>
-                    <button onclick="switchView('dashboard')"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
+                    <button onclick="switchView('dashboard')" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition shadow-md flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-database"></i> <span class="hidden sm:inline">ฐานข้อมูล</span>
                     </button>
-                    <button onclick="handleLogout()"
-                        class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn"
-                        title="ออกจากระบบ">
+                    <button onclick="handleLogout()" class="bg-gray-100 w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center shadow-sm action-btn" title="ออกจากระบบ">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
                 </div>
@@ -204,81 +98,61 @@
                 <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
                     class="w-32 h-32 mx-auto mb-6 drop-shadow-xl animate-pulse">
                 <h1 class="text-4xl md:text-6xl font-bold mb-6 text-gray-900 font-head leading-tight">
-                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span
-                        class="text-blue-700">นำชาติ</span>
+                    พรรค<span class="text-orange-600">แผ่นดินธรรม</span><br>ศีลธรรม <span class="text-blue-700">นำชาติ</span>
                 </h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
                     "ปกป้องพระพุทธศาสนา พัฒนาสังคมด้วยธรรม<br>สร้างการเมืองที่โปร่งใส เพื่อประโยชน์สุขของปวงชน"
                 </p>
-                <div
-                    class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
-                    <i class="fa-solid fa-circle-info mr-1"></i>
-                    เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded-lg inline-block text-sm mb-6">
+                    <i class="fa-solid fa-circle-info mr-1"></i> เว็บไซต์นี้จัดทำขึ้นเพื่อการสื่อสารนโยบายและรับเรื่องร้องเรียนตามระเบียบ กกต.
                 </div>
             </div>
         </header>
 
-        <!-- INFOGRAPHIC CONTENT -->
+        <!-- INFOGRAPHIC CONTENT (FULL CONTENT RESTORED) -->
         <div class="container mx-auto px-4 py-4 max-w-6xl space-y-16">
 
             <!-- Intro Section: Identity & Radar -->
             <section class="bg-white rounded-2xl shadow-md p-6 md:p-8 border-t-4 border-orange-500">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800 mb-4 font-head">
-                            จุดยืนทางนโยบายที่ชัดเจน
-                        </h2>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4 font-head">จุดยืนทางนโยบายที่ชัดเจน</h2>
                         <p class="text-lg text-gray-600 mb-6 leading-relaxed">
                             เราคือนวัตกรรมทางการเมืองที่ผสมผสาน <strong>"หลักธรรม"</strong>
-                            เข้ากับการบริหารจัดการสมัยใหม่
-                            โดยให้น้ำหนักสูงสุดกับการปกป้องพระพุทธศาสนาและแก้ปัญหาปากท้องเกษตรกร
+                            เข้ากับการบริหารจัดการสมัยใหม่ โดยให้น้ำหนักสูงสุดกับการปกป้องพระพุทธศาสนาและแก้ปัญหาปากท้องเกษตรกร
                         </p>
                         <div class="bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500 mb-4">
                             <h4 class="font-bold text-orange-800 font-head">ค่านิยมหลัก</h4>
-                            <p class="text-sm text-gray-600">ซื่อสัตย์ สุจริต ยึดมั่นในธรรม กล้าหาญที่จะทำสิ่งที่ถูกต้อง
-                            </p>
+                            <p class="text-sm text-gray-600">ซื่อสัตย์ สุจริต ยึดมั่นในธรรม กล้าหาญที่จะทำสิ่งที่ถูกต้อง</p>
                         </div>
                     </div>
-                    <!-- Chart: Party Focus Radar -->
                     <div class="flex flex-col items-center">
-                        <div class="chart-container">
-                            <canvas id="ideologyChart"></canvas>
-                        </div>
+                        <div class="chart-container"><canvas id="ideologyChart"></canvas></div>
                         <p class="text-center text-sm text-gray-400 mt-2">แผนภาพแสดงน้ำหนักความสำคัญของนโยบาย</p>
                     </div>
                 </div>
             </section>
 
             <!-- Section: Religious & Ethical Policies -->
-            <section
-                class="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-orange-500">
+            <section class="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-orange-500">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-vihara text-4xl text-orange-500 mr-3"></i>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">นโยบายด้านศาสนาและสังคม</h2>
                 </div>
-                <p class="text-gray-700 mb-8 max-w-3xl">
-                    ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ จัดตั้งธนาคารพุทธ และปฏิรูปสวัสดิการเพื่อความเป็นธรรม
-                </p>
+                <p class="text-gray-700 mb-8 max-w-3xl">ผลักดันให้พระพุทธศาสนาเป็นศาสนาประจำชาติ จัดตั้งธนาคารพุทธ และปฏิรูปสวัสดิการเพื่อความเป็นธรรม</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Viz: Monk Salary Increase -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                         <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">สวัสดิการพระสงฆ์</h3>
-                        <p class="text-sm text-gray-500 mb-4 h-10">เพิ่ม "ค่านิตยภัต" (เงินเดือนพระสังฆาธิการ)
-                            เพื่อคุณภาพชีวิตที่ดีขึ้น</p>
-                        <div class="chart-container" style="height: 250px;">
-                            <canvas id="monkSalaryChart"></canvas>
-                        </div>
+                        <p class="text-sm text-gray-500 mb-4 h-10">เพิ่ม "ค่านิตยภัต" (เงินเดือนพระสังฆาธิการ) เพื่อคุณภาพชีวิตที่ดีขึ้น</p>
+                        <div class="chart-container" style="height: 250px;"><canvas id="monkSalaryChart"></canvas></div>
                     </div>
-
                     <!-- Viz: Social Security Reform -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                         <h3 class="font-bold text-lg text-gray-800 mb-2 border-b pb-2 font-head">ลดภาระประชาชน</h3>
-                        <p class="text-sm text-gray-500 mb-4 h-10">ลดเงินสมทบประกันสังคม เหลือ 1% เพื่อเพิ่มสภาพคล่อง
-                        </p>
-                        <div class="chart-container" style="height: 250px;">
-                            <canvas id="socialSecurityChart"></canvas>
-                        </div>
+                        <p class="text-sm text-gray-500 mb-4 h-10">ลดเงินสมทบประกันสังคม เหลือ 1% เพื่อเพิ่มสภาพคล่อง</p>
+                        <div class="chart-container" style="height: 250px;"><canvas id="socialSecurityChart"></canvas></div>
                     </div>
                 </div>
 
@@ -302,52 +176,38 @@
             </section>
 
             <!-- Section: Economy & Farmers -->
-            <section
-                class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-green-500">
+            <section class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-md p-6 md:p-8 border-l-4 border-green-500">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-seedling text-4xl text-green-600 mr-3"></i>
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-head">เศรษฐกิจรากหญ้าและเกษตรกร</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- HTML Diagram: New Ministries -->
+                    <!-- New Ministries -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
                         <h3 class="font-bold text-xl text-gray-800 mb-4 font-head">การปรับโครงสร้างภาครัฐ</h3>
                         <div class="space-y-4">
                             <div class="flex items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
                                 <i class="fa-solid fa-wheat-awn text-2xl text-green-600 mr-4"></i>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">กระทรวงชาวนา</h4>
-                                    <p class="text-xs text-gray-500">ดูแลชาวนาโดยตรง ประกันราคา</p>
-                                </div>
+                                <div><h4 class="font-bold text-gray-800">กระทรวงชาวนา</h4><p class="text-xs text-gray-500">ดูแลชาวนาโดยตรง ประกันราคา</p></div>
                             </div>
                             <div class="flex items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-600">
                                 <i class="fa-solid fa-tree text-2xl text-green-700 mr-4"></i>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">กระทรวงยางพารา</h4>
-                                    <p class="text-xs text-gray-500">บริหารจัดการราคายางครบวงจร</p>
-                                </div>
+                                <div><h4 class="font-bold text-gray-800">กระทรวงยางพารา</h4><p class="text-xs text-gray-500">บริหารจัดการราคายางครบวงจร</p></div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- HTML Diagram: Mega Projects -->
+                    <!-- Mega Projects -->
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
                         <h3 class="font-bold text-xl text-gray-800 mb-4 font-head">โครงการเศรษฐกิจพิเศษ</h3>
                         <div class="grid grid-cols-1 gap-4">
                             <div class="flex items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                                 <i class="fa-solid fa-ship text-2xl text-blue-600 mr-4"></i>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">ขุด "คลองไทย"</h4>
-                                    <p class="text-xs text-gray-500">เส้นทางเดินเรือสมุทร สร้างรายได้มหาศาล</p>
-                                </div>
+                                <div><h4 class="font-bold text-gray-800">ขุด "คลองไทย"</h4><p class="text-xs text-gray-500">เส้นทางเดินเรือสมุทร สร้างรายได้มหาศาล</p></div>
                             </div>
                             <div class="flex items-center p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
                                 <i class="fa-solid fa-solar-panel text-2xl text-yellow-600 mr-4"></i>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">โซล่าเซลล์เสรี</h4>
-                                    <p class="text-xs text-gray-500">ประชาชนติดตั้งเองได้ ไม่ต้องขออนุญาต</p>
-                                </div>
+                                <div><h4 class="font-bold text-gray-800">โซล่าเซลล์เสรี</h4><p class="text-xs text-gray-500">ประชาชนติดตั้งเองได้ ไม่ต้องขออนุญาต</p></div>
                             </div>
                         </div>
                     </div>
@@ -380,19 +240,14 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Structure Column -->
                 <div class="md:col-span-1 bg-white rounded-2xl shadow-md p-6 border-t-4 border-gray-600">
                     <div class="flex items-center mb-4">
                         <i class="fa-solid fa-handshake text-3xl text-gray-600 mr-3"></i>
                         <h2 class="text-2xl font-bold text-gray-800 font-head">ค่าสมาชิก</h2>
                     </div>
-                    <div class="chart-container" style="height: 200px;">
-                        <canvas id="membershipChart"></canvas>
-                    </div>
-                    <div class="text-center mt-2">
-                        <p class="text-xs text-gray-500">เปรียบเทียบค่าบำรุงพรรค (บาท)</p>
-                    </div>
+                    <div class="chart-container" style="height: 200px;"><canvas id="membershipChart"></canvas></div>
+                    <div class="text-center mt-2"><p class="text-xs text-gray-500">เปรียบเทียบค่าบำรุงพรรค (บาท)</p></div>
                 </div>
             </section>
         </div>
@@ -400,49 +255,19 @@
         <div class="container mx-auto px-4 py-12 max-w-6xl">
             <!-- Application Section -->
             <section class="py-16 bg-white relative overflow-hidden border-t border-gray-100">
-                <div class="container mx-auto px-4 relative z-10">
-                    <div class="text-center mb-16">
-                        <span class="text-orange-600 font-bold tracking-wider text-sm uppercase">JOIN OUR MISSION</span>
-                        <h2 class="text-3xl md:text-5xl font-bold font-head text-gray-800 mt-2 mb-4">ทำไมท่านต้อง
-                            "ก้าวออกมา" ร่วมกับเรา?</h2>
-                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">เราต้องการอำนาจรัฐ
-                            เพื่อสร้างเกราะคุ้มกันทางกฎหมาย</p>
-                    </div>
+                <div class="container mx-auto px-4 relative z-10 text-center">
+                    <h2 class="text-3xl font-bold font-head text-gray-800 mb-8">ร่วมเป็นส่วนหนึ่งกับเรา</h2>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                        <!-- Member Card -->
-                        <div
-                            class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
-                                    class="fa-solid fa-users mr-2"></i> สมัครเป็น "สมาชิกพรรค"</h3>
-                            <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
-                                    <span><strong>บัญญัติศาสนาประจำชาติ:</strong> สร้างความมั่นคงทางจิตวิญญาณ</span>
-                                </li>
-                                <li><i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
-                                    <span><strong>ตั้งธนาคารพุทธ:</strong> ระบบการเงินที่เป็นธรรม</span>
-                                </li>
-                            </ul>
-                            <button onclick="handlePublicAction('member')"
-                                class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
-                                แสดงความจำนงเป็นสมาชิกพรรค
+                        <div class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg transition transform hover:-translate-y-1">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4 font-head">สมัครเป็น "สมาชิกพรรค"</h3>
+                            <button onclick="handlePublicAction('member')" class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
+                                แสดงความจำนง
                             </button>
                         </div>
-                        <!-- Candidate Card -->
-                        <div
-                            class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                            <h3 class="text-2xl font-bold font-head text-gray-800 mb-4"><i
-                                    class="fa-solid fa-user-tie mr-2"></i> อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
-                            <ul class="space-y-3 text-gray-700 mb-8 text-sm">
-                                <li><i class="fa-solid fa-gavel text-blue-500 mt-1"></i>
-                                    <span><strong>เป็นปากเสียงให้พระสงฆ์:</strong> เพราะท่านพูดเองไม่ได้ในสภา</span>
-                                </li>
-                                <li><i class="fa-solid fa-hand-holding-heart text-blue-500 mt-1"></i>
-                                    <span><strong>สร้างการเมืองสีขาว:</strong> บริหารด้วยความซื่อสัตย์</span>
-                                </li>
-                            </ul>
-                            <button onclick="handlePublicAction('candidate')"
-                                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg transition action-btn">
-                                เสนอตัวเป็นผู้สมัคร ส.ส.
+                        <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg transition transform hover:-translate-y-1">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4 font-head">อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"</h3>
+                            <button onclick="handlePublicAction('candidate')" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg action-btn">
+                                เสนอตัว
                             </button>
                         </div>
                     </div>
@@ -455,8 +280,7 @@
                     <div class="text-center md:text-left">
                         <h4 class="text-white font-bold text-lg mb-4 font-head">พรรคแผ่นดินธรรม</h4>
                         <p class="mb-4">90/37 ม. 7 ต.คลองสอง อ.คลองหลวง จ.ปทุมธานี 12120</p>
-                        <p class="text-orange-500 font-bold text-lg"><i class="fa-solid fa-phone mr-2"></i>
-                            082-222-3615</p>
+                        <p class="text-orange-500 font-bold text-lg"><i class="fa-solid fa-phone mr-2"></i> 082-222-3615</p>
                     </div>
                     <div class="text-center">
                         <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
@@ -515,8 +339,7 @@
                     <div class="password-container mb-6">
                         <input type="password" id="new-password"
                             class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10"
-                            placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" required minlength="6"
-                            autocomplete="new-password">
+                            placeholder="รหัสผ่านใหม่" required minlength="6" autocomplete="new-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('new-password', this)"></i>
                     </div>
                     <button
@@ -565,8 +388,7 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Knowledge Library (Updated) -->
+                <!-- Knowledge Library -->
                 <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 relative group">
                     <div class="bg-blue-600 p-6 text-white text-center relative">
                         <i class="fa-solid fa-book-open text-5xl mb-4"></i>
@@ -589,16 +411,14 @@
             <!-- Feedback Form -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-4xl mx-auto mb-12">
                 <div class="bg-gray-800 p-4 px-6 text-white">
-                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น
-                        / ร้องเรียน</h3>
+                    <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น / ร้องเรียน</h3>
                 </div>
                 <div class="p-8">
                     <form onsubmit="handleFeedbackSubmit(event)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">ประเภทเรื่อง</label>
-                                <select id="fb-type" required
-                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
+                                <select id="fb-type" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
                                     <option value="suggestion">💡 เสนอแนะ / ความคิดเห็น</option>
                                     <option value="complaint">⚠️ ร้องเรียนปัญหา / แจ้งเบาะแส</option>
                                     <option value="question">❓ สอบถามข้อมูล</option>
@@ -606,20 +426,15 @@
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อเรื่อง</label>
-                                <input id="fb-topic" required
-                                    class="w-full p-3 border rounded-lg bg-gray-50 outline-none"
-                                    placeholder="สรุปใจความสำคัญสั้นๆ">
+                                <input id="fb-topic" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none" placeholder="สรุปใจความสำคัญสั้นๆ">
                             </div>
                         </div>
                         <div class="mb-6">
                             <label class="text-xs font-bold text-gray-500 mb-1 block">รายละเอียด</label>
-                            <textarea id="fb-detail" required
-                                class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32"
-                                placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
+                            <textarea id="fb-detail" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32" placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" id="btn-feedback-submit"
-                                class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
+                            <button type="submit" id="btn-feedback-submit" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn">
                                 <i class="fa-solid fa-paper-plane"></i> ส่งเรื่อง
                             </button>
                         </div>
@@ -629,8 +444,7 @@
 
             <!-- Feedback Board -->
             <div class="mt-12">
-                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋
-                    กระดานติดตามการเสนอความคิดเห็นล่าสุด</h3>
+                <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋 กระดานติดตามการเสนอความคิดเห็นล่าสุด</h3>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-600">
@@ -652,21 +466,18 @@
     </div>
 
     <!-- POST MODAL -->
-    <div id="modal-post"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-post" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3>
-                <button onclick="closePostModal()" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closePostModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form id="postForm" onsubmit="savePost(event)">
                     <input type="hidden" id="post-id">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label>
-                        <input id="inp-post-title" required class="w-full p-2 border rounded"
-                            placeholder="เช่น กิจกรรมลงพื้นที่...">
+                        <input id="inp-post-title" required class="w-full p-2 border rounded" placeholder="เช่น กิจกรรมลงพื้นที่...">
                     </div>
                     <div id="post-target-wrapper" class="mb-4 hidden">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label>
@@ -676,21 +487,16 @@
                     </div>
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">รูปภาพประกอบ (ถ้ามี)</label>
-                        <input type="file" id="inp-post-img" accept="image/*"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
-                        <div id="post-img-preview" class="mt-2 hidden"><img src=""
-                                class="h-32 rounded border object-cover"></div>
+                        <input type="file" id="inp-post-img" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <div id="post-img-preview" class="mt-2 hidden"><img src="" class="h-32 rounded border object-cover"></div>
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label>
-                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32"
-                            placeholder="รายละเอียด..."></textarea>
+                        <textarea id="inp-post-content" required class="w-full p-2 border rounded h-32" placeholder="รายละเอียด..."></textarea>
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closePostModal()"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-post-save"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
+                        <button type="button" onclick="closePostModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-post-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
                     </div>
                 </form>
             </div>
@@ -718,61 +524,30 @@
                 <div class="flex items-center justify-between mb-4 border-b pb-4">
                     <div class="flex items-center gap-2">
                         <!-- Use FontAwesome Icon instead of Image to prevent broken link -->
-                        <div
-                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                            <i class="fa-solid fa-landmark text-sm"></i>
-                        </div>
+                        <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i class="fa-solid fa-landmark text-sm"></i></div>
                         <h3 class="text-lg font-bold text-gray-800 font-head">ข้อมูลสถิติพรรค (Live จาก กกต.)</h3>
                     </div>
-                    <span
-                        class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold border border-green-200"><i
-                            class="fa-solid fa-signal mr-1"></i>Realtime</span>
+                    <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold border border-green-200"><i class="fa-solid fa-signal mr-1"></i>Realtime</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- Members -->
                     <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
                         <div class="text-xs text-blue-800 font-bold mb-1">สมาชิกทั้งหมด</div>
                         <div class="text-2xl font-bold text-blue-600 mb-2" id="dash-ect-member-total">-</div>
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] text-gray-500">
-                            <div>เหนือ: <strong id="dash-ect-member-n" class="text-gray-700">-</strong></div>
-                            <div>กลาง: <strong id="dash-ect-member-c" class="text-gray-700">-</strong></div>
-                            <div>อีสาน: <strong id="dash-ect-member-ne" class="text-gray-700">-</strong></div>
-                            <div>ใต้: <strong id="dash-ect-member-s" class="text-gray-700">-</strong></div>
-                        </div>
                     </div>
-
-                    <!-- Branches -->
                     <div class="p-4 bg-orange-50 rounded-lg border border-orange-100">
                         <div class="text-xs text-orange-800 font-bold mb-1">สาขา / ตัวแทน</div>
                         <div class="flex gap-4 mb-2">
-                            <div>
-                                <span class="text-[10px] text-gray-500 block">สาขา</span>
-                                <span class="text-xl font-bold text-orange-600" id="dash-ect-branch-total">-</span>
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-gray-500 block">ตัวแทน</span>
-                                <span class="text-xl font-bold text-orange-600" id="dash-ect-rep-total">-</span>
-                            </div>
-                        </div>
-                        <div class="text-[10px] text-orange-400"><i
-                                class="fa-solid fa-check-circle mr-1"></i>สถานะสมบูรณ์
+                            <div><span class="text-[10px] text-gray-500 block">สาขา</span><span class="text-xl font-bold text-orange-600" id="dash-ect-branch-total">-</span></div>
+                            <div><span class="text-[10px] text-gray-500 block">ตัวแทน</span><span class="text-xl font-bold text-orange-600" id="dash-ect-rep-total">-</span></div>
                         </div>
                     </div>
-
-                    <!-- Monthly -->
                     <div class="p-4 bg-green-50 rounded-lg border border-green-100">
                         <div class="text-xs text-green-800 font-bold mb-1" id="dash-ect-month-name">ความเคลื่อนไหว</div>
                         <div class="flex items-center justify-around h-16">
-                            <div class="text-center">
-                                <div class="text-green-600 text-xl font-bold" id="dash-ect-month-inc">-</div>
-                                <div class="text-[10px] text-gray-400">เพิ่ม</div>
-                            </div>
+                            <div class="text-center"><div class="text-green-600 text-xl font-bold" id="dash-ect-month-inc">-</div><div class="text-[10px] text-gray-400">เพิ่ม</div></div>
                             <div class="h-6 w-px bg-gray-300"></div>
-                            <div class="text-center">
-                                <div class="text-red-500 text-xl font-bold" id="dash-ect-month-dec">-</div>
-                                <div class="text-[10px] text-gray-400">ลด</div>
-                            </div>
+                            <div class="text-center"><div class="text-red-500 text-xl font-bold" id="dash-ect-month-dec">-</div><div class="text-[10px] text-gray-400">ลด</div></div>
                         </div>
                     </div>
                 </div>
@@ -785,38 +560,28 @@
                     <h2 class="text-2xl font-bold text-gray-800 font-head">จัดการฐานข้อมูล</h2>
                     <p class="text-sm text-gray-500" id="user-display">User</p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="handlePublicAction('member')"
-                        class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                <div class="flex gap-2 flex-wrap">
+                    <!-- ✅ NEW MAP BUTTON ✅ -->
+                    <button onclick="toggleMapView()" id="btn-toggle-map" class="bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                        <i class="fa-solid fa-map-location-dot"></i> <span id="btn-map-text">ดูบนแผนที่</span>
+                    </button>
+                    <button onclick="handlePublicAction('member')" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-plus"></i> เพิ่มสมาชิก
                     </button>
-                    <button onclick="handlePublicAction('candidate')"
-                        class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
+                    <button onclick="handlePublicAction('candidate')" class="bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 action-btn">
                         <i class="fa-solid fa-user-tie"></i> เพิ่มผู้สมัคร ส.ส.
                     </button>
                 </div>
             </div>
 
             <!-- Filters -->
-            <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-                <button onclick="filterDashboard('all')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
-                    data-filter="all">ทั้งหมด</button>
-                <button onclick="filterDashboard('member')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="member">สมาชิกพรรค</button>
-                <button onclick="filterDashboard('candidate')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="candidate">ผู้สมัคร ส.ส.</button>
-                <button onclick="filterDashboard('feedback')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
-                <button onclick="filterDashboard('post')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="post">ข่าวสาร</button>
-                <button onclick="filterDashboard('knowledge')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="knowledge">คลังความรู้</button>
+            <div class="flex gap-2 mb-6 overflow-x-auto pb-2" id="dashboard-filters">
+                <button onclick="filterDashboard('all')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn" data-filter="all">ทั้งหมด</button>
+                <button onclick="filterDashboard('member')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="member">สมาชิกพรรค</button>
+                <button onclick="filterDashboard('candidate')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="candidate">ผู้สมัคร ส.ส.</button>
+                <button onclick="filterDashboard('feedback')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="feedback">ข้อเสนอแนะ/ร้องเรียน</button>
+                <button onclick="filterDashboard('post')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="post">ข่าวสาร</button>
+                <button onclick="filterDashboard('knowledge')" class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn" data-filter="knowledge">คลังความรู้</button>
             </div>
 
             <!-- Stats -->
@@ -836,73 +601,71 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i
-                        class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
+                <h3 class="text-lg font-bold text-gray-800 font-head mb-4"><i class="fa-solid fa-map-location-dot text-orange-600 mr-2"></i> สถิติสมาชิกรายภาค</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="region-stats-container"></div>
             </div>
 
-            <!-- Search & Table -->
-            <div class="mb-4 relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
-                        class="fa-solid fa-search text-gray-400"></i></div>
-                <input type="text" id="inp-search" onkeyup="handleSearch()"
-                    class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm"
-                    placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
+            <!-- ✅ TABLE VIEW (Toggleable) ✅ -->
+            <div id="dashboard-table-view">
+                <div class="mb-4 relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+                    <input type="text" id="inp-search" onkeyup="handleSearch()" class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm" placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เลขบัตร, เบอร์โทร)">
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i class="fa-solid fa-sort ml-1"></i></th>
+                                    <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i class="fa-solid fa-sort ml-1"></i></th>
+                                    <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i class="fa-solid fa-sort ml-1"></i></th>
+                                    <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i class="fa-solid fa-sort ml-1"></i></th>
+                                    <th class="px-6 py-4">ข้อมูลติดต่อ</th>
+                                    <th class="px-6 py-4">ที่อยู่ (ละเอียด)</th>
+                                    <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด/ภาค <i class="fa-solid fa-sort ml-1"></i></th>
+                                    <th class="px-6 py-4 text-right">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                    <div id="loading" class="hidden py-12 text-center text-gray-400">กำลังโหลด...</div>
+                    <div id="empty-state" class="hidden py-12 text-center text-gray-400">ไม่พบข้อมูล</div>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-600">
-                        <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-bold">
-                            <tr>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('member_id')">รหัสสมาชิก <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('start_date')">วันที่สมัคร <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('name')">ชื่อ-นามสกุล / หัวข้อ <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('type')">สถานะ <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4">ข้อมูลติดต่อ</th>
-                                <th class="px-6 py-4">ที่อยู่ (ละเอียด)</th>
-                                <th class="px-6 py-4 sortable" onclick="sortTable('province')">จังหวัด/ภาค <i
-                                        class="fa-solid fa-sort ml-1"></i></th>
-                                <th class="px-6 py-4 text-right">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
-                    </table>
+            <!-- ✅ MAP VIEW CONTAINER (Hidden by default) ✅ -->
+            <div id="dashboard-map-view" class="hidden bg-white rounded-xl shadow-sm border p-4 h-[600px]">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-gray-800 text-lg font-head"><i class="fa-solid fa-map text-purple-600 mr-2"></i> แผนที่แสดงตำแหน่งสมาชิก (แยกตามจังหวัด)</h3>
+                    <div class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        <i class="fa-solid fa-info-circle mr-1"></i> แสดงตามจังหวัดที่ระบุ
+                    </div>
                 </div>
-                <div id="loading" class="hidden py-12 text-center text-gray-400">กำลังโหลด...</div>
-                <div id="empty-state" class="hidden py-12 text-center text-gray-400">ไม่พบข้อมูล</div>
+                <div id="map"></div>
             </div>
         </div>
     </div>
 
     <!-- NEW MODAL: FEEDBACK MANAGER (SEPARATED) -->
-    <div id="modal-feedback-manage"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-feedback-manage" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-purple-600 text-white">
-                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ
-                </h3>
-                <button onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
-                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ</h3>
+                <button onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <input type="hidden" id="fb-manage-id">
-
                 <div class="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
                     <div class="flex justify-between items-start mb-2">
-                        <span id="fb-manage-type"
-                            class="text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600">Type</span>
+                        <span id="fb-manage-type" class="text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600">Type</span>
                         <span id="fb-manage-date" class="text-xs text-gray-400">Date</span>
                     </div>
                     <h4 id="fb-manage-topic" class="font-bold text-gray-800 text-lg mb-2">Topic</h4>
                     <p id="fb-manage-detail" class="text-sm text-gray-600 whitespace-pre-line">Detail...</p>
                     <p class="text-xs text-gray-400 mt-2">โดย: <span id="fb-manage-by">User</span></p>
                 </div>
-
                 <div class="mb-6">
                     <label class="text-xs font-bold text-gray-500 mb-1 block">การดำเนินการ (สถานะ)</label>
                     <select id="fb-manage-status" class="w-full p-2 border rounded bg-white mb-2">
@@ -910,33 +673,25 @@
                         <option value="RESOLVED">ดำเนินการเสร็จสิ้น (Resolved)</option>
                     </select>
                 </div>
-
                 <div class="flex justify-end gap-2 pt-4 border-t">
-                    <button type="button"
-                        onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')"
-                        class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ปิด</button>
-                    <button type="button" onclick="saveFeedbackStatus(event)"
-                        class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 shadow font-bold action-btn">บันทึกสถานะ</button>
+                    <button type="button" onclick="document.getElementById('modal-feedback-manage').classList.add('hidden')" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ปิด</button>
+                    <button type="button" onclick="saveFeedbackStatus(event)" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 shadow font-bold action-btn">บันทึกสถานะ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MODAL FORM (MEMBER - EMAIL INSTRUCTION) -->
-    <div id="modal-form"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-form" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 my-auto relative">
-            <div id="modal-header"
-                class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
+            <div id="modal-header" class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-gray-800 text-white">
                 <h3 class="text-lg font-bold font-head" id="modal-title">ลงทะเบียน</h3>
-                <button onclick="closeModal()" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeModal()" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <!-- Admin Tools -->
                 <div id="admin-tools" class="hidden mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">
-                        เครื่องมือผู้ดูแลระบบ</h4>
+                    <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">เครื่องมือผู้ดูแลระบบ</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="flex items-center gap-2 cursor-pointer font-bold text-yellow-800">
                             <input type="checkbox" id="inp-is-old" class="w-5 h-5 text-yellow-600 rounded">
@@ -944,8 +699,7 @@
                         </label>
                         <div id="admin-role-setting" class="hidden">
                             <label class="text-xs font-bold text-yellow-800 block mb-1">ตั้งค่าสิทธิ์การใช้งาน</label>
-                            <select id="inp-admin-role"
-                                class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
+                            <select id="inp-admin-role" class="w-full p-2 border border-yellow-300 rounded bg-white text-sm">
                                 <option value="">สมาชิกทั่วไป (User)</option>
                                 <option value="ALL">ผู้ดูแลระบบสูงสุด (Super Admin)</option>
                             </select>
@@ -957,17 +711,14 @@
                     <input type="hidden" id="record-id">
                     <input type="hidden" id="inp-type">
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i>
-                        ข้อมูลส่วนตัว</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i> ข้อมูลส่วนตัว</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div class="md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">รหัสสมาชิก</label>
-                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono"
-                                placeholder="ระบุภายหลังได้">
+                            <input id="inp-member-id" class="w-full p-2 border rounded font-mono" placeholder="ระบุภายหลังได้">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span
-                                    class="text-red-500">*</span></label>
+                            <label class="text-xs font-bold text-gray-500">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
                             <input id="inp-name" required class="w-full p-2 border rounded" placeholder="ชื่อ-นามสกุล">
                         </div>
                         <div>
@@ -979,8 +730,7 @@
                             <input type="date" id="inp-start-date" class="w-full p-2 border rounded text-gray-500">
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span
-                                    class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
+                            <label class="text-xs font-bold text-gray-500 flex justify-between">เลขบัตรประชาชน <span class="text-xs text-orange-500 font-normal">ตรวจสอบอัตโนมัติ</span></label>
                             <input id="inp-id" maxlength="13" class="w-full p-2 border rounded" placeholder="13 หลัก">
                             <p id="id-error" class="text-xs text-red-500 mt-1 hidden">เลขบัตรประชาชนไม่ถูกต้อง</p>
                         </div>
@@ -991,8 +741,7 @@
                     </div>
 
                     <!-- ✅✅ UPDATED ADDRESS SECTION ✅✅ -->
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
-                        ที่อยู่ตามทะเบียนบ้าน</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i> ที่อยู่ตามทะเบียนบ้าน</h4>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div class="col-span-1">
                             <label class="text-xs font-bold text-gray-500">บ้านเลขที่</label>
@@ -1009,10 +758,8 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div>
-                            <label class="text-xs font-bold text-gray-500">จังหวัด <span
-                                    class="text-red-500">*</span></label>
-                            <select id="inp-prov" required class="w-full p-2 border rounded bg-white"
-                                onchange="autoFillRegion()">
+                            <label class="text-xs font-bold text-gray-500">จังหวัด <span class="text-red-500">*</span></label>
+                            <select id="inp-prov" required class="w-full p-2 border rounded bg-white" onchange="autoFillRegion()">
                                 <option value="">เลือกจังหวัด</option>
                             </select>
                         </div>
@@ -1032,18 +779,15 @@
                     <div class="mb-6 bg-gray-50 p-3 rounded border border-gray-100">
                         <div class="flex items-center gap-3">
                             <label class="text-xs font-bold text-gray-500 whitespace-nowrap">ภูมิภาค (Region):</label>
-                            <input id="inp-region" class="w-full p-2 border rounded bg-white text-gray-600 font-bold"
-                                placeholder="ระบุภาค (หรือเลือกจังหวัดเพื่อเติมอัตโนมัติ)">
+                            <input id="inp-region" class="w-full p-2 border rounded bg-white text-gray-600 font-bold" placeholder="ระบุภาค (หรือเลือกจังหวัดเพื่อเติมอัตโนมัติ)" readonly>
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i>
-                        การติดต่อ</h4>
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i> การติดต่อ</h4>
                     <div class="grid grid-cols-3 gap-4 mb-6">
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">เบอร์โทรศัพท์ (10 หลัก)</label>
-                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded"
-                                placeholder="0xxxxxxxxx">
+                            <input id="inp-phone" maxlength="10" class="w-full p-2 border rounded" placeholder="0xxxxxxxxx">
                             <p id="phone-error" class="text-xs text-red-500 mt-1 hidden">เบอร์โทรไม่ถูกต้อง</p>
                         </div>
                         <div class="col-span-3 md:col-span-1">
@@ -1052,42 +796,32 @@
                         </div>
                         <div class="col-span-3 md:col-span-1">
                             <label class="text-xs font-bold text-gray-500">อีเมล</label>
-                            <input id="inp-email" type="email" class="w-full p-2 border rounded"
-                                placeholder="email@example.com">
+                            <input id="inp-email" type="email" class="w-full p-2 border rounded" placeholder="email@example.com">
                         </div>
                     </div>
 
-                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i
-                            class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
-
+                    <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-comment-dots"></i> เอกสารแนบ / หมายเหตุ</h4>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500">หมายเหตุ</label>
-                        <textarea id="inp-remarks" class="w-full p-2 border rounded h-20"
-                            placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
+                        <textarea id="inp-remarks" class="w-full p-2 border rounded h-20" placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
                     </div>
 
                     <!-- PDPA Consent Checkbox -->
                     <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
                         <label class="flex items-start gap-3 cursor-pointer group">
                             <div class="relative flex items-center pt-1">
-                                <input type="checkbox" required id="inp-pdpa"
-                                    class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white shadow-sm checked:bg-orange-600 checked:border-orange-600 focus:ring-2 focus:ring-orange-500 transition-all">
-                                <i
-                                    class="fa-solid fa-check text-white absolute left-1/2 top-1/2 pt-1 -translate-x-1/2 -translate-y-1/2 text-xs opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></i>
+                                <input type="checkbox" required id="inp-pdpa" class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white shadow-sm checked:bg-orange-600 checked:border-orange-600 focus:ring-2 focus:ring-orange-500 transition-all">
+                                <i class="fa-solid fa-check text-white absolute left-1/2 top-1/2 pt-1 -translate-x-1/2 -translate-y-1/2 text-xs opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></i>
                             </div>
                             <span class="text-sm text-gray-600 leading-tight group-hover:text-gray-800 transition">
-                                ข้าพเจ้ายินยอมให้พรรคแผ่นดินธรรมเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้
-                                เพื่อวัตถุประสงค์ในการดำเนินกิจกรรมทางการเมืองและการติดต่อประสานงานตามข้อบังคับพรรค
-                                <span class="text-red-500">*</span>
+                                ข้าพเจ้ายินยอมให้พรรคแผ่นดินธรรมเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้ เพื่อวัตถุประสงค์ในการดำเนินกิจกรรมทางการเมืองและการติดต่อประสานงานตามข้อบังคับพรรค <span class="text-red-500">*</span>
                             </span>
                         </label>
                     </div>
 
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button" onclick="closeModal()"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-save"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-save" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -1095,38 +829,29 @@
     </div>
 
     <!-- KNOWLEDGE MODAL -->
-    <div id="modal-knowledge"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+    <div id="modal-knowledge" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-blue-600 text-white">
-                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร
-                </h3>
-                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
-                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร</h3>
+                <button onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form onsubmit="saveKnowledge(event)">
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ชื่อเอกสาร / หัวข้อ</label>
-                        <input id="inp-know-title" required class="w-full p-2 border rounded"
-                            placeholder="เช่น ระเบียบพรรค 2568">
+                        <input id="inp-know-title" required class="w-full p-2 border rounded" placeholder="เช่น ระเบียบพรรค 2568">
                     </div>
                     <div class="mb-4">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 1 (PDF)</label>
-                        <input type="file" id="inp-know-file-1" accept="application/pdf"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-1" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ที่ 2 (PDF) (ถ้ามี)</label>
-                        <input type="file" id="inp-know-file-2" accept="application/pdf"
-                            class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <input type="file" id="inp-know-file-2" accept="application/pdf" class="w-full p-2 border rounded bg-gray-50 text-sm">
                     </div>
                     <div class="flex justify-end gap-2 pt-4 border-t">
-                        <button type="button"
-                            onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
-                        <button type="submit" id="btn-know-save"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
+                        <button type="button" onclick="document.getElementById('modal-knowledge').classList.add('hidden')" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
+                        <button type="submit" id="btn-know-save" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
                     </div>
                 </form>
             </div>
@@ -1134,43 +859,32 @@
     </div>
 
     <!-- KNOWLEDGE READER MODAL -->
-    <div id="modal-knowledge-read"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div
-            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="modal-knowledge-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-blue-600 p-6 text-white flex justify-between items-start">
                 <div>
                     <h3 id="kn-read-title" class="text-xl font-bold font-head leading-snug"></h3>
                     <div id="kn-read-files" class="mt-3 flex flex-wrap gap-2"></div>
                 </div>
-                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
-                    class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-0 flex-grow overflow-hidden flex flex-col">
-                <div id="kn-interaction-area" class="flex-grow overflow-y-auto bg-gray-50 p-6 reader-scroll">
-                </div>
+                <div id="kn-interaction-area" class="flex-grow overflow-y-auto bg-gray-50 p-6 reader-scroll"></div>
             </div>
         </div>
     </div>
 
     <!-- NEWS READER MODAL -->
-    <div id="modal-news-reader"
-        class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
+    <div id="modal-news-reader" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
-            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')"
-                class="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/70 flex items-center justify-center z-10 transition">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')" class="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/70 flex items-center justify-center z-10 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             <div id="news-reader-img-container" class="w-full h-64 bg-gray-200 shrink-0 hidden">
                 <img id="news-reader-img" src="" class="w-full h-full object-cover">
             </div>
             <div class="p-8 overflow-y-auto flex-grow reader-scroll">
-                <span id="news-reader-date"
-                    class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
+                <span id="news-reader-date" class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
                 <h2 id="news-reader-title" class="text-3xl font-bold font-head text-gray-900 mb-6 leading-tight"></h2>
-                <div id="news-reader-content"
-                    class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
-
+                <div id="news-reader-content" class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="news-interaction-area"></div>
@@ -1179,27 +893,20 @@
     </div>
 
     <!-- FEEDBACK READER MODAL -->
-    <div id="modal-feedback-read"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div
-            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="modal-feedback-read" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="bg-gray-800 p-6 text-white flex justify-between items-start shrink-0">
                 <div>
-                    <span id="fb-read-type"
-                        class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
+                    <span id="fb-read-type" class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
                     <h3 id="fb-read-topic" class="text-xl font-bold font-head leading-snug"></h3>
                     <p id="fb-read-date" class="text-gray-400 text-xs mt-1"></p>
                 </div>
-                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
-                    class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6 overflow-y-auto flex-grow reader-scroll">
                 <h4 class="text-sm font-bold text-gray-500 mb-2">รายละเอียด</h4>
-                <p id="fb-read-detail"
-                    class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6">
-                </p>
+                <p id="fb-read-detail" class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6"></p>
                 <div id="fb-read-status" class="mb-6"></div>
-
                 <hr class="border-gray-200 mb-6">
                 <!-- Interaction Area -->
                 <div id="fb-interaction-area"></div>
