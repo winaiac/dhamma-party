@@ -407,14 +407,18 @@
                             class="bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl p-8 shadow-lg transition transform hover:-translate-y-1">
                             <h3 class="text-2xl font-bold text-gray-800 mb-4 font-head">สมัครเป็น "สมาชิกพรรค"</h3>
                             <button onclick="handlePublicAction('member')"
-                                class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">แสดงความจำนง</button>
+                                class="w-full py-3 bg-white border-2 border-orange-600 text-orange-600 font-bold rounded-xl hover:bg-orange-600 hover:text-white transition shadow-sm action-btn">
+                                แสดงความจำนง
+                            </button>
                         </div>
                         <div
                             class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-3xl p-8 shadow-lg transition transform hover:-translate-y-1">
                             <h3 class="text-2xl font-bold text-gray-800 mb-4 font-head">อาสาเป็น "ผู้แทนราษฎร (ส.ส.)"
                             </h3>
                             <button onclick="handlePublicAction('candidate')"
-                                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg action-btn">เสนอตัว</button>
+                                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg action-btn">
+                                เสนอตัว
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -499,6 +503,8 @@
                 <h2 class="text-3xl font-bold text-gray-800 font-head">ศูนย์รวมพลังสมาชิก</h2>
                 <div class="h-1 w-24 bg-blue-500 mx-auto rounded-full mt-2"></div>
             </div>
+
+            <!-- NEWS & ACTIVITIES -->
             <div class="mb-12">
                 <div class="flex justify-between items-end mb-6">
                     <h3 class="text-xl font-bold text-gray-800 font-head border-l-4 border-orange-500 pl-3">
@@ -512,7 +518,9 @@
                         กำลังโหลดข่าวสาร...</div>
                 </div>
             </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Support -->
                 <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
                     <div class="bg-orange-600 p-6 text-white text-center"><i
                             class="fa-solid fa-hand-holding-heart text-5xl mb-4"></i>
@@ -523,6 +531,7 @@
                             class="w-full py-3 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition action-btn"><i
                                 class="fa-solid fa-pen-nib mr-2"></i> ลงชื่อสนับสนุน</button></div>
                 </div>
+                <!-- Knowledge Library -->
                 <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 relative group">
                     <div class="bg-blue-600 p-6 text-white text-center relative"><i
                             class="fa-solid fa-book-open text-5xl mb-4"></i>
@@ -538,6 +547,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Feedback Form -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-4xl mx-auto mb-12">
                 <div class="bg-gray-800 p-4 px-6 text-white">
                     <h3 class="text-lg font-bold font-head"><i class="fa-regular fa-comments mr-2"></i> เสนอความคิดเห็น
@@ -553,19 +564,22 @@
                                     <option value="question">❓ สอบถาม</option>
                                 </select></div>
                             <div><label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อเรื่อง</label><input
-                                    id="fb-topic" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none">
-                            </div>
+                                    id="fb-topic" required class="w-full p-3 border rounded-lg bg-gray-50 outline-none"
+                                    placeholder="สรุปใจความสำคัญสั้นๆ"></div>
                         </div>
                         <div class="mb-6"><label
                                 class="text-xs font-bold text-gray-500 mb-1 block">รายละเอียด</label><textarea
                                 id="fb-detail" required
-                                class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32"></textarea></div>
+                                class="w-full p-3 border rounded-lg bg-gray-50 outline-none h-32"
+                                placeholder="ระบุรายละเอียดให้ครบถ้วน..."></textarea></div>
                         <div class="flex justify-end"><button type="submit" id="btn-feedback-submit"
                                 class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition flex items-center gap-2 action-btn"><i
                                     class="fa-solid fa-paper-plane"></i> ส่งเรื่อง</button></div>
                     </form>
                 </div>
             </div>
+
+            <!-- Feedback Board -->
             <div class="mt-12">
                 <h3 class="text-xl font-bold text-gray-800 font-head mb-6 text-center">📋 กระดานติดตามเรื่อง</h3>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -573,9 +587,9 @@
                         <table class="w-full text-sm text-left text-gray-600">
                             <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-bold">
                                 <tr>
-                                    <th class="px-6 py-3">ID</th>
-                                    <th class="px-6 py-3">วันที่</th>
-                                    <th class="px-6 py-3">ประเภท</th>
+                                    <th class="px-6 py-3 w-24">Ticket ID</th>
+                                    <th class="px-6 py-3 w-32">วันที่</th>
+                                    <th class="px-6 py-3 w-32">ประเภท</th>
                                     <th class="px-6 py-3">หัวข้อ</th>
                                     <th class="px-6 py-3 text-right">สถานะ</th>
                                 </tr>
@@ -593,15 +607,16 @@
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
-                <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3>
-                <button onclick="closePostModal()" class="hover:text-gray-300"><i
+                <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3><button
+                    onclick="closePostModal()" class="hover:text-gray-300"><i
                         class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
                 <form id="postForm" onsubmit="savePost(event)">
                     <input type="hidden" id="post-id">
                     <div class="mb-4"><label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label><input
-                            id="inp-post-title" required class="w-full p-2 border rounded"></div>
+                            id="inp-post-title" required class="w-full p-2 border rounded"
+                            placeholder="เช่น กิจกรรมลงพื้นที่..."></div>
                     <div id="post-target-wrapper" class="mb-4 hidden"><label
                             class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label><select
                             id="inp-post-target" class="w-full p-2 border rounded bg-white">
@@ -615,7 +630,8 @@
                     </div>
                     <div class="mb-6"><label
                             class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label><textarea
-                            id="inp-post-content" required class="w-full p-2 border rounded h-32"></textarea></div>
+                            id="inp-post-content" required class="w-full p-2 border rounded h-32"
+                            placeholder="รายละเอียด..."></textarea></div>
                     <div class="flex justify-end gap-2 pt-4 border-t"><button type="button" onclick="closePostModal()"
                             class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button><button
                             type="submit" id="btn-post-save"
@@ -633,8 +649,7 @@
             <div class="mb-10">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-orange-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow">
-                        <i class="fa-solid fa-users-gear text-lg"></i>
-                    </div>
+                        <i class="fa-solid fa-users-gear text-lg"></i></div>
                     <h2 class="text-2xl font-bold text-gray-800 font-head">คณะกรรมการบริหารพรรค</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="executive-container"></div>
@@ -646,8 +661,7 @@
                     <div class="flex items-center gap-2">
                         <div
                             class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                            <i class="fa-solid fa-landmark text-sm"></i>
-                        </div>
+                            <i class="fa-solid fa-landmark text-sm"></i></div>
                         <h3 class="text-lg font-bold text-gray-800 font-head">ข้อมูลสถิติพรรค (Live จาก กกต.)</h3>
                     </div>
                     <span
@@ -661,7 +675,7 @@
                     </div>
                     <div class="p-4 bg-orange-50 rounded-lg border border-orange-100">
                         <div class="text-xs text-orange-800 font-bold mb-1">สาขา / ตัวแทน</div>
-                        <div class="flex gap-4">
+                        <div class="flex gap-4 mb-2">
                             <div><span class="text-[10px] block">สาขา</span><span
                                     class="text-xl font-bold text-orange-600" id="dash-ect-branch-total">-</span></div>
                             <div><span class="text-[10px] block">ตัวแทน</span><span
@@ -704,6 +718,7 @@
                 </div>
             </div>
 
+            <!-- Filters -->
             <div class="flex gap-2 mb-6 overflow-x-auto pb-2" id="dashboard-filters">
                 <button onclick="filterDashboard('all')"
                     class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
@@ -797,7 +812,7 @@
         </div>
     </div>
 
-    <!-- MODAL FEEDBACK MANAGE -->
+    <!-- NEW MODAL: FEEDBACK MANAGER -->
     <div id="modal-feedback-manage"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-auto relative">
@@ -862,7 +877,6 @@
                 <form id="memberForm" onsubmit="saveData(event)">
                     <input type="hidden" id="record-id">
                     <input type="hidden" id="inp-type">
-                    <!-- HIDDEN INPUTS FOR MAP COORDS -->
                     <input type="hidden" id="inp-lat">
                     <input type="hidden" id="inp-lng">
 
@@ -888,7 +902,6 @@
                                 id="inp-recommender" class="w-full p-2 border rounded"></div>
                     </div>
 
-                    <!-- ✅✅ UPDATED ADDRESS SECTION ✅✅ -->
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
                         ที่อยู่ตามทะเบียนบ้าน</h4>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -920,7 +933,6 @@
                                 readonly></div>
                     </div>
 
-                    <!-- ✅✅ NEW: FORM MAP (DRAGGABLE MARKER) ✅✅ -->
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 block mb-2"><i
                                 class="fa-solid fa-map-pin text-red-500 mr-1"></i> ระบุพิกัดแผนที่
@@ -972,12 +984,103 @@
         </div>
     </div>
 
-    <!-- KNOWLEDGE MODAL, NEWS READER, ETC. -->
-    <div id="modal-knowledge" class="hidden"></div>
-    <div id="modal-news-reader" class="hidden"></div>
-    <div id="modal-knowledge-read" class="hidden"></div>
-    <div id="modal-feedback-read" class="hidden"></div>
+    <!-- KNOWLEDGE MODAL -->
+    <div id="modal-knowledge"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 my-auto relative">
+            <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-blue-600 text-white">
+                <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-file-arrow-up mr-2"></i> อัปโหลดเอกสาร
+                </h3><button onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
+                    class="hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <form onsubmit="saveKnowledge(event)">
+                    <div class="mb-4"><label class="text-xs font-bold text-gray-500 mb-1 block">ชื่อเอกสาร</label><input
+                            id="inp-know-title" required class="w-full p-2 border rounded"></div>
+                    <div class="mb-4"><label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ 1
+                            (PDF)</label><input type="file" id="inp-know-file-1" accept="application/pdf"
+                            class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
+                    <div class="mb-6"><label class="text-xs font-bold text-gray-500 mb-1 block">ไฟล์ 2
+                            (PDF)</label><input type="file" id="inp-know-file-2" accept="application/pdf"
+                            class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
+                    <div class="flex justify-end gap-2 pt-4 border-t"><button type="button"
+                            onclick="document.getElementById('modal-knowledge').classList.add('hidden')"
+                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button><button
+                            type="submit" id="btn-know-save"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow font-bold action-btn">อัปโหลด</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <!-- KNOWLEDGE READER MODAL -->
+    <div id="modal-knowledge-read"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-blue-600 p-6 text-white flex justify-between items-start">
+                <div>
+                    <h3 id="kn-read-title" class="text-xl font-bold font-head leading-snug"></h3>
+                    <div id="kn-read-files" class="mt-3 flex flex-wrap gap-2"></div>
+                </div>
+                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
+                    class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-0 flex-grow overflow-hidden flex flex-col">
+                <div id="kn-interaction-area" class="flex-grow overflow-y-auto bg-gray-50 p-6 reader-scroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWS READER MODAL -->
+    <div id="modal-news-reader"
+        class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
+            <button onclick="document.getElementById('modal-news-reader').classList.add('hidden')"
+                class="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/70 flex items-center justify-center z-10 transition"><i
+                    class="fa-solid fa-xmark text-xl"></i></button>
+            <div id="news-reader-img-container" class="w-full h-64 bg-gray-200 shrink-0 hidden"><img
+                    id="news-reader-img" src="" class="w-full h-full object-cover"></div>
+            <div class="p-8 overflow-y-auto flex-grow reader-scroll">
+                <span id="news-reader-date"
+                    class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
+                <h2 id="news-reader-title" class="text-3xl font-bold font-head text-gray-900 mb-6 leading-tight"></h2>
+                <div id="news-reader-content"
+                    class="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8"></div>
+                <hr class="border-gray-200 mb-6">
+                <div id="news-interaction-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK READER MODAL -->
+    <div id="modal-feedback-read"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-gray-800 p-6 text-white flex justify-between items-start shrink-0">
+                <div><span id="fb-read-type"
+                        class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
+                    <h3 id="fb-read-topic" class="text-xl font-bold font-head leading-snug"></h3>
+                    <p id="fb-read-date" class="text-gray-400 text-xs mt-1"></p>
+                </div>
+                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow reader-scroll">
+                <h4 class="text-sm font-bold text-gray-500 mb-2">รายละเอียด</h4>
+                <p id="fb-read-detail"
+                    class="text-gray-800 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100 whitespace-pre-line mb-6">
+                </p>
+                <div id="fb-read-status" class="mb-6"></div>
+                <hr class="border-gray-200 mb-6">
+                <div id="fb-interaction-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- เรียกใช้ไฟล์ JS จากภายนอก -->
     <script src="script.js"></script>
 </body>
 
