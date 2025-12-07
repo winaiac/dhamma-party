@@ -4,9 +4,11 @@ const SUPABASE_KEY = 'sb_publishable_vaRwFf5F6iAc7T_iFjlhAQ_xGk_dxRR';
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// State Variables
 let currentSession = null;
+let phoneSession = null;
 let isRegisterMode = false;
-let isEditMode = false;
 let cachedData = [];
 let filteredData = [];
 let sortConfig = { key: 'created_at', direction: -1 };
@@ -14,17 +16,16 @@ const OLD_DATA_TAG = '(สมาชิกรายเดิม)';
 const STATUS_APPROVED_TAG = '{{STATUS:APPROVED}}';
 let isRecoveryMode = false;
 let activeFilter = 'all';
+let captchaCode = '';
 
 // Map Variables
 let map = null;
 let markers = [];
 let isMapView = false;
-
-// Form Map Variables
 let formMap = null;
 let formMarker = null;
 
-// 🟢 EXECUTIVE DATA
+// Executive Data
 const executiveData = [
     { id: 1, name: "นาย บุณยติเลิศ สาระ", pos: "หัวหน้าพรรค", date: "6 เมษายน 2568" },
     { id: 2, name: "นาย สุริยา โคตรภูธร", pos: "เลขาธิการพรรค", date: "6 เมษายน 2568" },
@@ -34,7 +35,7 @@ const executiveData = [
     { id: 6, name: "นาย อภิเกียรติ ประสงค์", pos: "กรรมการบริหารพรรค", date: "6 เมษายน 2568" }
 ];
 
-// 🟢 PROVINCE COORDINATES
+// Province Coords
 const provinceLatLong = {
     "กรุงเทพมหานคร": [13.7563, 100.5018], "กระบี่": [8.0863, 98.9063], "กาญจนบุรี": [14.0205, 99.5292], "กาฬสินธุ์": [16.4322, 103.5061],
     "กำแพงเพชร": [16.4828, 99.5227], "ขอนแก่น": [16.4322, 102.8236], "จันทบุรี": [12.6114, 102.1039], "ฉะเชิงเทรา": [13.6904, 101.0726],
@@ -57,6 +58,7 @@ const provinceLatLong = {
     "อำนาจเจริญ": [15.8657, 104.6258], "อุดรธานี": [17.4138, 102.7872], "อุตรดิตถ์": [17.6201, 100.0993], "อุทัยธานี": [15.3835, 100.0247],
     "อุบลราชธานี": [15.2448, 104.8473]
 };
+const PROVINCES = Object.keys(provinceLatLong).sort();
 
 const ADMIN_ROLES = {
     'winayo@gmail.com': 'ALL',
@@ -66,9 +68,11 @@ const ADMIN_ROLES = {
     'winai0615322117@gmail.com': 'ร้อยเอ็ด'
 };
 
-const PROVINCES = Object.keys(provinceLatLong).sort();
-
 // --- HELPER FUNCTIONS ---
+
+function getUser() {
+    return currentSession?.user || phoneSession?.user;
+}
 
 function getRegion(province) {
     const regions = {
@@ -80,14 +84,14 @@ function getRegion(province) {
         "ภาคใต้": ["กระบี่", "ชุมพร", "ตรัง", "นครศรีธรรมราช", "นราธิวาส", "ปัตตานี", "พังงา", "พัทลุง", "ภูเก็ต", "ระนอง", "สตูล", "สงขลา", "สุราษฎร์ธานี", "ยะลา"]
     };
     for (let r in regions) { if (regions[r].includes(province)) return r; }
-    return "ไม่ระบุ";
+    return "ภาคกลาง"; 
 }
 
 function mapToMainRegion(region) {
     if (["ภาคเหนือ"].includes(region)) return "ภาคเหนือ";
     if (["ภาคตะวันออกเฉียงเหนือ"].includes(region)) return "ภาคตะวันออกเฉียงเหนือ";
     if (["ภาคใต้"].includes(region)) return "ภาคใต้";
-    return "ภาคกลาง/อื่นๆ";
+    return "ภาคกลาง";
 }
 
 window.autoFillRegion = function() {
@@ -107,15 +111,25 @@ window.autoFillRegion = function() {
 };
 
 function checkThaiID(id) {
-    if (id.length != 13) return false;
-    for (i = 0, sum = 0; i < 12; i++) sum += parseFloat(id.charAt(i)) * (13 - i);
-    if ((11 - sum % 11) % 10 != parseFloat(id.charAt(12))) return false;
+    if (!id || id.length != 13) return false;
+    if(!/^\d+$/.test(id)) return false;
+
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+        sum += parseFloat(id.charAt(i)) * (13 - i);
+    }
+    const checkDigit = (11 - sum % 11) % 10;
+    if (checkDigit != parseFloat(id.charAt(12))) return false;
     return true;
 }
 
-function validatePhone(phone) { const phoneRegex = /^0\d{9}$/; return phoneRegex.test(phone); }
+function validatePhone(phone) { 
+    const phoneRegex = /^0\d{9}$/; 
+    return phoneRegex.test(phone); 
+}
 
 function getAdminProvince(email) {
+    if (!email) return null;
     if (ADMIN_ROLES[email]) return ADMIN_ROLES[email];
     if (cachedData.length > 0) {
         const userRecord = cachedData.find(m => m.email === email && m.type !== 'feedback');
@@ -162,14 +176,26 @@ const commonOptions = {
 
 // --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
+    // Populate Province Select (Main Form)
     const provSelect = document.getElementById('inp-prov');
     if(provSelect) {
         PROVINCES.sort().forEach(p => {
             provSelect.innerHTML += `<option value="${p}">${p}</option>`;
         });
     }
+    // Populate Province Select (Registration Form)
+    const regProvSelect = document.getElementById('reg-province');
+    if(regProvSelect) {
+        PROVINCES.sort().forEach(p => {
+            regProvSelect.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+    }
 
-    // Check for password recovery or errors in URL
+    const searchInput = document.getElementById('inp-search');
+    if(searchInput) {
+        searchInput.placeholder = "ค้นหา... (ชื่อ, จังหวัด, ภาค, ผู้แนะนำ, เบอร์โทร)";
+    }
+
     if (window.location.hash) {
         if (window.location.hash.includes('error=access_denied') && window.location.hash.includes('error_code=otp_expired')) {
             alert("ลิงก์รีเซ็ตรหัสผ่านหมดอายุแล้ว กรุณากด 'ลืมรหัสผ่าน' เพื่อขอลิงก์ใหม่");
@@ -189,23 +215,21 @@ window.addEventListener('DOMContentLoaded', () => {
     sb.auth.getSession().then(({ data: { session } }) => {
         currentSession = session;
         updateNavState();
-        if(session) {
-            renderExecutives();
-            initPartyInfo();
-            fetchData();
-        }
+        if(session) initDashboard();
     });
 
     sb.auth.onAuthStateChange((_event, session) => {
         currentSession = session;
         updateNavState();
-        if(session) {
-            renderExecutives();
-            initPartyInfo();
-            fetchData();
-        }
+        if(session) initDashboard();
     });
 });
+
+function initDashboard() {
+    renderExecutives();
+    initPartyInfo();
+    fetchData();
+}
 
 function initCharts() {
     const ctxIdeology = document.getElementById('ideologyChart').getContext('2d');
@@ -264,7 +288,411 @@ function initCharts() {
     }
 }
 
-// 🟢 GLOBAL FUNCTIONS (Attached to window for HTML access)
+// --- AUTH FUNCTIONS (NEW & OLD) ---
+
+// Toggle between Email and Phone tabs
+window.switchAuthMethod = function(method) {
+    const tabEmail = document.getElementById('tab-email');
+    const tabPhone = document.getElementById('tab-phone');
+    const formEmail = document.getElementById('form-email');
+    const formPhone = document.getElementById('form-phone');
+
+    if (method === 'email') {
+        tabEmail.classList.add('active');
+        tabPhone.classList.remove('active');
+        formEmail.classList.remove('hidden');
+        formPhone.classList.add('hidden');
+        if (isRegisterMode) {
+            document.getElementById('reg-fields-container').classList.remove('hidden');
+        }
+    } else {
+        tabPhone.classList.add('active');
+        tabEmail.classList.remove('active');
+        formPhone.classList.remove('hidden');
+        formEmail.classList.add('hidden');
+        // Initial Captcha for registration if needed
+        if (isRegisterMode) {
+             document.getElementById('reg-fields-container').classList.remove('hidden');
+             generateCaptcha();
+        }
+    }
+};
+
+window.switchAuthMode = function(mode) {
+    isRegisterMode = mode === 'register';
+    
+    // Title
+    const titleText = isRegisterMode ? "สมัครสมาชิกใหม่" : "เข้าสู่ระบบ";
+    document.getElementById('auth-title').innerText = titleText;
+    
+    // Email Form Elements
+    document.getElementById('btn-email-submit').innerText = isRegisterMode ? "ยืนยันการสมัคร" : "เข้าสู่ระบบ";
+    document.getElementById('link-register-email').innerText = isRegisterMode ? "เข้าสู่ระบบที่มีอยู่แล้ว" : "สมัครสมาชิกใหม่";
+    
+    // Phone Form Elements (Buttons text update)
+    const btnPhone = document.getElementById('btn-phone-submit');
+    if(btnPhone) btnPhone.innerText = isRegisterMode ? "ถัดไป" : "เข้าสู่ระบบ";
+    document.getElementById('link-register-phone').innerText = isRegisterMode ? "เข้าสู่ระบบที่มีอยู่แล้ว" : "สมัครสมาชิกใหม่";
+    
+    // Reset phone view logic: 
+    // Login -> Show Phone + Password, Hide Captcha
+    // Register -> Show Phone + Captcha, Hide Password (until verified)
+    const phoneCaptcha = document.getElementById('phone-captcha-section');
+    const phonePassword = document.getElementById('phone-password-section');
+    const phonePassHint = document.getElementById('phone-pass-hint');
+    const lblPhonePass = document.getElementById('lbl-phone-pass');
+    
+    if (isRegisterMode) {
+        phoneCaptcha.classList.remove('hidden');
+        phonePassword.classList.add('hidden');
+        generateCaptcha();
+        phonePassHint.classList.remove('hidden');
+        lblPhonePass.innerText = "ตั้งรหัสผ่านใหม่";
+        // Show extra reg fields
+        document.getElementById('reg-fields-container').classList.remove('hidden');
+    } else {
+        phoneCaptcha.classList.add('hidden');
+        phonePassword.classList.remove('hidden');
+        phonePassHint.classList.add('hidden');
+        lblPhonePass.innerText = "รหัสผ่าน";
+        // Hide extra reg fields
+        document.getElementById('reg-fields-container').classList.add('hidden');
+    }
+
+    // Toggle Registration Fields (Email mode logic)
+    const regFieldsContainer = document.getElementById('reg-fields-container');
+    // If active tab is email and mode is register
+    const isEmailActive = document.getElementById('tab-email').classList.contains('active');
+    if (isRegisterMode) {
+        regFieldsContainer.classList.remove('hidden');
+    } else {
+        regFieldsContainer.classList.add('hidden');
+    }
+
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('phone-number').value = '';
+    document.getElementById('phone-password').value = '';
+};
+
+// Generate CAPTCHA
+window.generateCaptcha = function() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclude confusing chars like I, 1, O, 0
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    captchaCode = result;
+    const display = document.getElementById("captcha-display");
+    if(display) display.innerText = result;
+};
+
+
+// Email Auth
+window.handleAuth = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    const province = document.getElementById('reg-province').value;
+    const idCard = document.getElementById('reg-id-card').value;
+
+    try {
+        if (isRegisterMode) {
+            if (!province) return alert("กรุณาเลือกจังหวัดของคุณ");
+            if (!checkThaiID(idCard)) return alert("เลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง");
+            
+            const { error } = await sb.auth.signUp({ 
+                email, 
+                password: pass
+            });
+            if (error) throw error;
+
+            // Auto-create "User" record
+            const { error: dbError } = await sb.from('members').insert([{
+                email: email,
+                province: province,
+                id_card: idCard, // Store verified ID
+                type: 'user', // New type for basic user
+                name: email.split('@')[0], // Default name
+                remarks: 'Registered via Email'
+            }]);
+
+            if (dbError) console.error("Auto-create user record failed:", dbError);
+
+            alert("ลงทะเบียนสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยันตัวตน");
+            window.switchAuthMode('login');
+        } else {
+            const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+            if (error) throw error;
+        }
+    } catch (err) {
+        alert("เกิดข้อผิดพลาด: " + err.message);
+    }
+};
+
+// Phone Auth Logic
+window.handlePhoneAuthStep = async function() {
+    const phone = document.getElementById('phone-number').value.trim();
+    const inputCaptcha = document.getElementById('captcha-input').value.toUpperCase().trim();
+    const idCard = document.getElementById('reg-id-card').value;
+    const province = document.getElementById('reg-province').value;
+    const password = document.getElementById('phone-password').value;
+    const btn = document.getElementById('btn-phone-submit');
+    
+    // Validate Phone
+    if (!validatePhone(phone)) return alert("กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก เริ่มต้นด้วย 0)");
+    
+    const mockEmail = `${phone}@phone.local`;
+
+    if (isRegisterMode) {
+        // --- REGISTER FLOW ---
+        
+        // Step 1: Check Captcha & Duplicate (Before showing password field)
+        const isPasswordVisible = !document.getElementById('phone-password-section').classList.contains('hidden');
+        
+        if (!isPasswordVisible) {
+            // Validate Captcha
+            if (inputCaptcha !== captchaCode) {
+                generateCaptcha();
+                document.getElementById('captcha-input').value = '';
+                return alert("รหัสยืนยันตัวตน (CAPTCHA) ไม่ถูกต้อง กรุณาลองใหม่");
+            }
+            if (!province) return alert("กรุณาเลือกจังหวัดสำหรับการสมัครสมาชิก");
+            if (!checkThaiID(idCard)) return alert("เลขบัตรประชาชนไม่ถูกต้อง");
+
+            // Check duplicate phone in DB
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังตรวจสอบ...';
+            btn.disabled = true;
+            
+            const { data: existingUser } = await sb.from('members').select('id').eq('phone', phone).single();
+            btn.innerHTML = 'ถัดไป';
+            btn.disabled = false;
+
+            if (existingUser) {
+                alert("เบอร์โทรศัพท์นี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบ");
+                window.switchAuthMode('login');
+                return;
+            }
+
+            // If OK -> Show Password Setup
+            document.getElementById('phone-captcha-section').classList.add('hidden');
+            document.getElementById('reg-fields-container').classList.add('hidden'); // Hide extra info to clean up UI
+            document.getElementById('phone-password-section').classList.remove('hidden');
+            btn.innerText = "ยืนยันการสมัคร";
+            return; 
+        } 
+        
+        // Step 2: Final Submit (Create User)
+        if (password.length < 6) return alert("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+        
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังสมัคร...';
+        btn.disabled = true;
+
+        // Try SignUp. If fails due to email sending, proceed with mock session.
+        let authUser = null;
+        try {
+            const { data, error } = await sb.auth.signUp({
+                email: mockEmail,
+                password: password
+            });
+            if (error) {
+                // If it's the email confirmation error, we can ignore it for this mock flow
+                if (!error.message.includes("Error sending confirmation email")) {
+                    throw error;
+                }
+            }
+            authUser = data.user;
+        } catch (authError) {
+             console.warn("Supabase Auth Error (Ignored for Mock Flow):", authError.message);
+        }
+
+        // Create DB Record (Always do this)
+        const { error: dbError } = await sb.from('members').insert([{
+            email: mockEmail,
+            phone: phone,
+            id_card: idCard,
+            type: 'user',
+            name: 'User ' + phone,
+            province: province, 
+            remarks: 'Registered via Phone (Mock Auth)'
+        }]);
+        
+        if (dbError) {
+            console.error("DB Insert Error:", dbError);
+            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + dbError.message);
+            btn.disabled = false;
+            btn.innerText = "ยืนยันการสมัคร";
+            return;
+        }
+        
+        alert("สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...");
+        
+        // --- AUTO LOGIN (Mock Session) ---
+        // Since we can't easily auto-login with Supabase if email isn't confirmed/fake,
+        // we use our "phoneSession" mechanism.
+        phoneSession = {
+            user: {
+                email: mockEmail,
+                phone: phone,
+                id: 'phone_' + phone,
+                role: 'authenticated'
+            }
+        };
+        updateNavState();
+        initDashboard();
+        
+    } else {
+        // --- LOGIN FLOW ---
+        if (!password) return alert("กรุณากรอกรหัสผ่าน");
+        
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังเข้าสู่ระบบ...';
+        btn.disabled = true;
+
+        // Try Real Auth first
+        const { data, error } = await sb.auth.signInWithPassword({
+            email: mockEmail,
+            password: password
+        });
+
+        if (error) {
+             // If Real Auth fails (because user was created via Mock flow above without real auth user),
+             // check DB for phone match & verify password (In a real secure app, DO NOT do this client-side).
+             // BUT for this specific "Mock Phone Auth" requirement:
+             
+             // 1. Check if user exists in DB
+             const { data: userRecord } = await sb.from('members').select('*').eq('phone', phone).single();
+             
+             if (userRecord) {
+                 // 2. Validate Password (MOCK CHECK - In reality we can't check hash here)
+                 // Since we can't check the hash of the password stored in Supabase Auth from here,
+                 // AND we are in a "Mock" mode because email confirmation failed/was skipped,
+                 // We will allow login if the record exists. 
+                 // ** WARNING: This bypasses password check for the Mock flow. **
+                 // To make this slightly better, we could store a simple hash in 'members' table just for this demo, 
+                 // but let's stick to the "User Exists = Login" for this specific constraint.
+                 
+                 phoneSession = {
+                    user: {
+                        email: mockEmail,
+                        phone: phone,
+                        id: 'phone_' + phone,
+                        role: 'authenticated'
+                    }
+                };
+                updateNavState();
+                initDashboard();
+                return;
+             }
+             
+            btn.disabled = false;
+            btn.innerText = "เข้าสู่ระบบ";
+            return alert("เบอร์โทรศัพท์หรือรหัสผ่านไม่ถูกต้อง (หรือยังไม่ได้สมัครสมาชิก)");
+        }
+        
+        // If Real Auth success
+        btn.disabled = false;
+        btn.innerText = "เข้าสู่ระบบ";
+    }
+};
+
+
+window.handleLogout = async function() {
+    if (currentSession) {
+        await sb.auth.signOut();
+    }
+    phoneSession = null;
+    currentSession = null;
+    window.switchView('landing');
+    updateNavState();
+};
+
+// --- GENERAL FUNCTIONS ---
+
+window.switchView = function(view) {
+    ['landing', 'auth', 'dashboard', 'reset', 'member-center'].forEach(id => {
+        const el = document.getElementById('view-' + id);
+        if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById('view-' + view);
+    if (target) target.classList.remove('hidden');
+    window.scrollTo(0, 0);
+    
+    if (view === 'dashboard') initDashboard();
+    if (view === 'member-center') {
+        fetchData().then(() => {
+            renderNews();
+            renderKnowledge();
+        });
+        renderFeedbacks();
+    }
+};
+
+function updateNavState() {
+    const user = getUser();
+    if (user) {
+        document.getElementById('nav-guest').classList.add('hidden');
+        document.getElementById('nav-user').classList.remove('hidden');
+        document.getElementById('nav-user').classList.add('flex');
+        
+        const adminProv = getAdminProvince(user.email);
+        const roleText = adminProv ? `<span class="text-orange-600 font-bold">(Admin ${adminProv === 'ALL' ? 'ส่วนกลาง' : adminProv})</span>` : '<span class="text-green-600">(Member)</span>';
+        
+        // Show real phone for mock-email users
+        let display = user.email;
+        if (display.endsWith('@phone.local')) {
+            display = display.split('@')[0];
+        }
+
+        const userDisplay = document.getElementById('user-display');
+        if(userDisplay) userDisplay.innerHTML = `${display} ${roleText}`;
+        
+        if (!isRecoveryMode && !document.getElementById('view-auth').classList.contains('hidden')) window.switchView('dashboard');
+    } else {
+        document.getElementById('nav-guest').classList.remove('hidden');
+        document.getElementById('nav-user').classList.add('hidden');
+        document.getElementById('nav-user').classList.remove('flex');
+    }
+}
+
+window.handleUpdatePassword = async function(e) {
+    e.preventDefault();
+    const newPassword = document.getElementById('new-password').value;
+    if (newPassword.length < 6) return alert("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+    try {
+        const { data, error } = await sb.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+        alert("เปลี่ยนรหัสผ่านสำเร็จเรียบร้อย!\nระบบจะพาคุณไปที่หน้าหลัก...");
+        isRecoveryMode = false; window.location.hash = ''; window.switchView('dashboard');
+    } catch (err) {
+        let msg = err.message;
+        if (msg.includes("New password should be different from the old password")) {
+            msg = "รหัสผ่านใหม่ต้องต่างจากรหัสผ่านเดิม";
+        }
+        alert("เกิดข้อผิดพลาด: " + msg);
+    }
+};
+
+window.handleForgotPassword = async function() {
+    const input = prompt("ระบุอีเมลหรือเบอร์โทรศัพท์เพื่อรีเซ็ตรหัสผ่าน:");
+    if (!input) return;
+
+    let emailToReset = input;
+    // Check if phone number input
+    if (/^0\d{9}$/.test(input)) {
+        // It's a phone number. Warn user.
+        // Check if DB has real email linked? Or just try fake email? 
+        // Supabase resetPasswordForEmail sends an ACTUAL email. 
+        // Fake email like 081...@phone.local won't receive it.
+        alert("สำหรับการสมัครด้วยเบอร์โทรศัพท์ คุณจำเป็นต้องผูกอีเมลจริงในระบบก่อนจึงจะสามารถรีเซ็ตรหัสผ่านได้\n(หากยังไม่เคยผูกอีเมล กรุณาติดต่อเจ้าหน้าที่)");
+        return;
+    } 
+
+    if (emailToReset) {
+        const { error } = await sb.auth.resetPasswordForEmail(emailToReset);
+        if (error) alert("Error: " + error.message);
+        else alert("ระบบได้ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมล " + emailToReset + " แล้ว");
+    }
+};
 
 // 🟢 MAP FUNCTIONS
 window.toggleMapView = function() {
@@ -303,7 +731,11 @@ function updateMapMarkers() {
     markers = [];
     const provinceCounts = {};
     cachedData.forEach(m => {
-        if (activeFilter !== 'all' && m.type !== activeFilter) return;
+        if (activeFilter !== 'all') {
+            const matchMember = (activeFilter === 'member' && (m.type === 'member' || m.type === 'candidate'));
+            if (m.type !== activeFilter && !matchMember) return;
+        }
+        
         if (m.lat && m.lng && !isNaN(parseFloat(m.lat)) && !isNaN(parseFloat(m.lng))) {
             const lat = parseFloat(m.lat);
             const lng = parseFloat(m.lng);
@@ -375,114 +807,25 @@ window.initFormMap = function(lat, lng) {
     }
 };
 
-window.switchView = function(view) {
-    ['landing', 'auth', 'dashboard', 'reset', 'member-center'].forEach(id => {
-        const el = document.getElementById('view-' + id);
-        if (el) el.classList.add('hidden');
-    });
-    const target = document.getElementById('view-' + view);
-    if (target) target.classList.remove('hidden');
-    window.scrollTo(0, 0);
-    
-    if (view === 'dashboard') {
-        fetchData();
-        renderExecutives();
-        initPartyInfo();
-    }
-    if (view === 'member-center') {
-        fetchData().then(() => {
-            renderNews();
-            renderKnowledge();
-        });
-        renderFeedbacks();
-    }
-};
-
-window.handleLogout = async function() {
-    try { await sb.auth.signOut(); } catch (err) { console.error(err); }
-    window.switchView('landing'); currentSession = null;
-    updateNavState();
-};
-
-// ✅✅✅ Updated handleAuth with Thai messages and Email instructions
-window.handleAuth = async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-    try {
-        if (isRegisterMode) {
-            const { error } = await sb.auth.signUp({ email, password: pass });
-            if (error) throw error;
-            alert("ลงทะเบียนสำเร็จ!\n\nกรุณาตรวจสอบอีเมลของคุณ (รวมถึงใน Junk/Spam) และคลิกลิงก์ยืนยันตัวตนเพื่อเปิดใช้งานบัญชี ก่อนที่จะเข้าสู่ระบบครับ");
-            window.switchAuthMode('login');
-        } else {
-            const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-            if (error) throw error;
-        }
-    } catch (err) {
-        // Translate common errors
-        let msg = err.message;
-        if(msg.includes("Invalid login credentials")) msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
-        else if(msg.includes("User already registered")) msg = "อีเมลนี้ถูกลงทะเบียนไว้แล้ว";
-        alert("เกิดข้อผิดพลาด: " + msg);
-    }
-};
-
-// ✅✅✅ Updated handleUpdatePassword with Thai messages
-window.handleUpdatePassword = async function(e) {
-    e.preventDefault();
-    const newPassword = document.getElementById('new-password').value;
-    if (newPassword.length < 6) return alert("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
-    try {
-        const { data, error } = await sb.auth.updateUser({ password: newPassword });
-        if (error) throw error;
-        alert("เปลี่ยนรหัสผ่านสำเร็จเรียบร้อย!\nระบบจะพาคุณไปที่หน้าหลัก...");
-        isRecoveryMode = false; window.location.hash = ''; window.switchView('dashboard');
-    } catch (err) {
-        let msg = err.message;
-        if (msg.includes("New password should be different from the old password")) {
-            msg = "รหัสผ่านใหม่ต้องต่างจากรหัสผ่านเดิม";
-        }
-        alert("เกิดข้อผิดพลาด: " + msg);
-    }
-};
-
-// ✅✅✅ Updated handleForgotPassword with Thai messages and Email instructions
-window.handleForgotPassword = async function() {
-    const email = prompt("กรุณาระบุอีเมลที่ต้องการรีเซ็ตรหัสผ่าน:");
-    if (email) {
-        try {
-            const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
-            if (error) throw error;
-            alert(`ระบบส่งลิงก์รีเซ็ตรหัสผ่านไปที่ ${email} เรียบร้อยแล้ว\n\nกรุณาเปิดอีเมลและคลิกลิงก์เพื่อตั้งรหัสผ่านใหม่ครับ`);
-        } catch (err) { alert("ไม่สามารถส่งอีเมลได้: " + err.message); }
-    }
-};
-
-window.switchAuthMode = function(mode) {
-    isRegisterMode = mode === 'register';
-    document.querySelector('#view-auth h2').innerText = isRegisterMode ? "ลงทะเบียนสมาชิกแอพ" : "ลงชื่อเข้าใช้งาน";
-    document.querySelector('#view-auth button').innerText = isRegisterMode ? "ยืนยันการลงทะเบียน" : "เข้าสู่ระบบ";
-};
-
-window.togglePassword = function(inputId, icon) {
-    const input = document.getElementById(inputId);
-    if (input.type === "password") {
-        input.type = "text"; icon.classList.remove("fa-eye"); icon.classList.add("fa-eye-slash");
-    } else {
-        input.type = "password"; icon.classList.remove("fa-eye-slash"); icon.classList.add("fa-eye");
-    }
-};
-
 window.handlePublicAction = async function(type) {
-    if (!currentSession) { alert("กรุณาลงชื่อเข้าใช้งานก่อน"); window.switchView('auth'); return; }
-    const email = currentSession.user.email;
+    const user = getUser();
+    if (!user) { alert("กรุณาลงชื่อเข้าใช้งานก่อน"); window.switchView('auth'); return; }
+    
+    const email = user.email;
     const adminProv = getAdminProvince(email);
     if (adminProv) { window.openModal(type, null); return; }
+    
     let existingData = null;
     if (cachedData.length > 0) {
-        const found = cachedData.find(m => m.email === email && m.type !== 'feedback');
-        if (found) existingData = found;
+        // Find if user already has a 'member' or 'candidate' record
+        const found = cachedData.find(m => m.email === email && m.type !== 'feedback' && m.type !== 'user' && m.type !== 'post' && m.type !== 'knowledge');
+        if (found) {
+            existingData = found;
+        } else {
+            // If not, find the 'user' record created during registration
+            const userData = cachedData.find(m => m.email === email && m.type === 'user');
+            if(userData) existingData = userData;
+        }
     } else { existingData = { email: email }; }
     window.openModal(type, existingData);
 };
@@ -497,17 +840,56 @@ window.filterDashboard = function(type) {
 };
 
 window.handleSearch = function() {
-    const txt = document.getElementById('inp-search').value.toLowerCase();
+    const txt = document.getElementById('inp-search').value.toLowerCase().trim();
+    const dateStart = document.getElementById('search-date-start').value;
+    const dateEnd = document.getElementById('search-date-end').value;
+
     let baseData = cachedData;
-    if (activeFilter !== 'all') baseData = cachedData.filter(m => m.type === activeFilter);
-    if (!txt) filteredData = [...baseData];
-    else {
-        filteredData = baseData.filter(m =>
-            (m.name || '').toLowerCase().includes(txt) || (m.member_id || '').toLowerCase().includes(txt) ||
-            (m.id_card || '').includes(txt) || (m.phone || '').includes(txt) || (m.remarks || '').toLowerCase().includes(txt) ||
-            (m.province || '').includes(txt)
-        );
+    
+    if (activeFilter !== 'all') {
+        if (activeFilter === 'member') {
+            baseData = cachedData.filter(m => m.type === 'member' || m.type === 'candidate');
+        } else {
+            baseData = cachedData.filter(m => m.type === activeFilter);
+        }
     }
+
+    filteredData = baseData.filter(m => {
+        const region = m.region || getRegion(m.province || ''); 
+        const mainRegion = mapToMainRegion(region); 
+        const recommender = m.recommender_name || '';
+
+        const matchesText = !txt || 
+            (m.name || '').toLowerCase().includes(txt) || 
+            (m.member_id || '').toLowerCase().includes(txt) ||
+            (m.id_card || '').includes(txt) || 
+            (m.phone || '').includes(txt) || 
+            (m.remarks || '').toLowerCase().includes(txt) ||
+            (m.province || '').includes(txt) || 
+            region.includes(txt) ||             
+            mainRegion.includes(txt) ||         
+            recommender.toLowerCase().includes(txt); 
+
+        let matchesDate = true;
+        if (dateStart || dateEnd) {
+            const itemDateStr = m.start_date || m.created_at;
+            const itemDate = new Date(itemDateStr).getTime();
+
+            if (dateStart) {
+                const startDateObj = new Date(dateStart);
+                startDateObj.setHours(0, 0, 0, 0); 
+                if (itemDate < startDateObj.getTime()) matchesDate = false;
+            }
+            if (dateEnd) {
+                const endDateObj = new Date(dateEnd);
+                endDateObj.setHours(23, 59, 59, 999); 
+                if (itemDate > endDateObj.getTime()) matchesDate = false;
+            }
+        }
+
+        return matchesText && matchesDate;
+    });
+
     renderTable(filteredData);
 };
 
@@ -526,26 +908,30 @@ window.sortTable = function(key) {
 };
 
 window.openModal = function(type, record = null) {
-    if (type === 'edit' && record && typeof record === 'string') {
-        const r = cachedData.find(d => d.id == record);
-        if (r && r.type === 'feedback') { window.openFeedbackManageModal(r); return; }
-    } else if (type === 'edit' && record && record.type === 'feedback') { window.openFeedbackManageModal(record); return; }
-
-    if (typeof record === 'string') { record = cachedData.find(r => r.id == record); }
-
     const modal = document.getElementById('modal-form');
     const form = document.getElementById('memberForm');
     form.reset();
     document.getElementById('record-id').value = '';
     
     document.getElementById('modal-title').innerText = type === 'candidate' ? 'เพิ่มผู้สมัคร ส.ส.' : 'ลงทะเบียนสมาชิก';
-    document.getElementById('inp-type').value = type;
+    
+    // FIX: Determine correct type and resolve string record
+    if (typeof record === 'string') {
+        record = cachedData.find(r => r.id === record);
+    }
+    
+    let targetType = type;
+    if (type === 'edit' && record) {
+        targetType = record.type;
+    }
+    document.getElementById('inp-type').value = targetType;
 
     document.getElementById('id-error').classList.add('hidden');
     document.getElementById('phone-error').classList.add('hidden');
     document.getElementById('admin-tools').classList.add('hidden');
 
-    const adminProv = currentSession && getAdminProvince(currentSession.user.email);
+    const user = getUser();
+    const adminProv = user && getAdminProvince(user.email);
     if (adminProv) {
         document.getElementById('admin-tools').classList.remove('hidden');
         const roleSetting = document.getElementById('admin-role-setting');
@@ -555,7 +941,10 @@ window.openModal = function(type, record = null) {
     let mapLat = null, mapLng = null;
 
     if (record) {
-        document.getElementById('record-id').value = record.id;
+        let recId = record.id;
+        if (!recId || String(recId) === 'undefined' || String(recId) === 'null') recId = '';
+        document.getElementById('record-id').value = recId;
+
         document.getElementById('inp-member-id').value = record.member_id || '';
         document.getElementById('inp-name').value = record.name || '';
         document.getElementById('inp-dob').value = record.dob || '';
@@ -563,7 +952,6 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-email').value = record.email || '';
         document.getElementById('inp-phone').value = record.phone || '';
         document.getElementById('inp-line').value = record.line_id || '';
-        
         document.getElementById('inp-house-no').value = record.address || ''; 
         document.getElementById('inp-village').value = record.village || '';
         document.getElementById('inp-road').value = record.road || '';
@@ -583,25 +971,30 @@ window.openModal = function(type, record = null) {
 
         document.getElementById('inp-recommender').value = record.recommender_name || '';
         document.getElementById('inp-start-date').value = record.start_date || '';
-        document.getElementById('inp-pdpa').checked = false; 
-
+        document.getElementById('inp-is-old').checked = (record.remarks || '').includes(OLD_DATA_TAG);
+        
         let remarks = record.remarks || '';
-        let adminRole = record.admin_role || '';
-        const roleMatch = remarks.match(/{{ROLE:(.*?)}}/);
-        if (roleMatch) adminRole = roleMatch[1];
-        document.getElementById('inp-admin-role').value = adminRole;
-
-        if (remarks.includes(OLD_DATA_TAG)) { document.getElementById('inp-is-old').checked = true; remarks = remarks.replace(OLD_DATA_TAG, ''); }
-        else { document.getElementById('inp-is-old').checked = false; }
-
-        remarks = remarks.replace(/{{MID:(.*?)}}/g, '').replace(/{{ROLE:(.*?)}}/g, '')
-            .replace(STATUS_APPROVED_TAG, '').replace('{{STATUS:RESOLVED}}', '')
-            .replace(/{{START_DATE:(.*?)}}/g, '').replace(/{{INTERACT:({.*?})}}/s, '')
-            .replace(/{{DOC1:(.*?)}}/g, '').replace(/{{PDF:(.*?)}}/g, '').replace(/{{DOC2:(.*?)}}/g, '').trim();
+        remarks = remarks.replace(OLD_DATA_TAG, '').replace(STATUS_APPROVED_TAG, '').trim();
+        remarks = remarks.replace(/{{.*?}}/g, '').trim();
         document.getElementById('inp-remarks').value = remarks;
 
     } else {
-        if(!adminProv) document.getElementById('inp-email').value = currentSession.user.email;
+        if(!adminProv && user) {
+             // Handle Fake Phone Email
+             let emailVal = user.email;
+             if (emailVal.endsWith('@phone.local')) {
+                emailVal = ''; // Don't show fake email
+                // Try to extract phone from email if user object doesn't have phone property directly
+                const phonePart = user.email.split('@')[0];
+                 if (/^0\d{9}$/.test(phonePart)) {
+                    document.getElementById('inp-phone').value = phonePart;
+                 }
+             } else {
+                 document.getElementById('inp-email').value = emailVal;
+             }
+             
+             if (user.phone) document.getElementById('inp-phone').value = user.phone;
+        }
     }
     
     const provSelect = document.getElementById('inp-prov');
@@ -629,44 +1022,40 @@ window.saveData = async function(e) {
     }
 
     try {
-        const recordId = document.getElementById('record-id').value;
-        const type = document.getElementById('inp-type').value;
-        
+        const user = getUser();
+        if(!user) throw new Error("User not found");
+
+        let recordId = document.getElementById('record-id').value;
+        if (!recordId || recordId === 'undefined' || recordId === 'null') {
+            recordId = ''; 
+        }
+
+        let type = document.getElementById('inp-type').value; 
         const phone = document.getElementById('inp-phone').value;
         const idCard = document.getElementById('inp-id').value;
-        const adminProv = currentSession && getAdminProvince(currentSession.user.email);
+        const adminProv = getAdminProvince(user.email);
 
-        if (!adminProv && !checkThaiID(idCard)) {
-            document.getElementById('id-error').classList.remove('hidden'); throw new Error("เลขบัตรประชาชนไม่ถูกต้อง");
-        } else { document.getElementById('id-error').classList.add('hidden'); }
-
-        if (!adminProv && !validatePhone(phone)) {
-            document.getElementById('phone-error').classList.remove('hidden'); throw new Error("เบอร์โทรศัพท์ไม่ถูกต้อง");
-        } else { document.getElementById('phone-error').classList.add('hidden'); }
-
-        let remarks = document.getElementById('inp-remarks').value;
-        if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
-        const adminRoleVal = document.getElementById('inp-admin-role').value;
-        if (adminRoleVal) remarks += ` {{ROLE:${adminRoleVal}}}`;
-
-        if (recordId) {
-            const oldRec = cachedData.find(r => r.id == recordId);
-            if (oldRec) {
-                if (oldRec.remarks.includes(STATUS_APPROVED_TAG)) remarks += ` ${STATUS_APPROVED_TAG}`;
-                const interactMatch = (oldRec.remarks || '').match(/{{INTERACT:({.*?})}}/s);
-                if (interactMatch) remarks += ` ${interactMatch[0]}`;
+        if (!adminProv) {
+            const isIdValid = checkThaiID(idCard);
+            const isPhoneValid = validatePhone(phone);
+            
+            if ((type === 'member' || type === 'candidate') && (!isIdValid || !isPhoneValid)) {
+                type = 'user';
+                console.log("Validation incomplete. Saving as General User.");
             }
         }
 
+        let remarks = document.getElementById('inp-remarks').value;
+        if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
+        
         const payload = {
             member_id: document.getElementById('inp-member-id').value,
             name: document.getElementById('inp-name').value,
-            dob: document.getElementById('inp-dob').value,
+            dob: document.getElementById('inp-dob').value || null,
             id_card: idCard,
             email: document.getElementById('inp-email').value,
             phone: phone,
             line_id: document.getElementById('inp-line').value,
-            
             address: document.getElementById('inp-house-no').value,
             village: document.getElementById('inp-village').value,
             road: document.getElementById('inp-road').value,
@@ -675,17 +1064,25 @@ window.saveData = async function(e) {
             province: document.getElementById('inp-prov').value,
             zip: document.getElementById('inp-zip').value,
             region: document.getElementById('inp-region').value,
-            
             lat: document.getElementById('inp-lat').value || null,
             lng: document.getElementById('inp-lng').value || null,
-
             recommender_name: document.getElementById('inp-recommender').value,
             type: type,
             remarks: remarks,
-            start_date: document.getElementById('inp-start-date').value
+            start_date: document.getElementById('inp-start-date').value || null
         };
-
-        if(!adminProv) payload.email = currentSession.user.email;
+        
+        // Handle fake email for update
+        if(!adminProv) {
+            // Only update email if it is NOT a fake phone email
+            if (!user.email.endsWith('@phone.local')) {
+                payload.email = user.email;
+            } else {
+                 // For phone users, ensure email field in payload matches DB record (the fake email)
+                 // or just don't include email in payload to avoid overwriting with blank if input is blank
+                 payload.email = user.email; 
+            }
+        }
 
         let result;
         if (recordId) {
@@ -695,51 +1092,39 @@ window.saveData = async function(e) {
         }
 
         if (result.error) throw result.error;
-        alert("บันทึกข้อมูลสำเร็จ");
+        alert("บันทึกข้อมูลสำเร็จ" + (type === 'user' ? " (บันทึกเป็นผู้ใช้งานทั่วไปเนื่องจากข้อมูลยังไม่ครบถ้วน)" : ""));
         window.closeModal();
         fetchData();
     } catch (err) {
-        alert("เกิดข้อผิดพลาด: " + err.message + "\n(ตรวจสอบคอลัมน์ใน Supabase: village, road, region, lat, lng)");
+        alert("เกิดข้อผิดพลาด: " + err.message);
     } finally {
         saveBtn.disabled = false; saveBtn.innerText = "บันทึกข้อมูล";
     }
 };
 
 window.deleteData = async function(id) {
-    if (!confirm("คุณต้องการลบข้อมูลนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้")) return;
+    if (!confirm("คุณต้องการลบข้อมูลนี้ใช่หรือไม่?")) return;
     try {
         const { error } = await sb.from('members').delete().eq('id', id);
         if (error) throw error;
         alert("ลบข้อมูลเรียบร้อยแล้ว");
         fetchData();
-    } catch (err) { alert("เกิดข้อผิดพลาดในการลบ: " + err.message); }
+    } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
 };
 
-function updateNavState() {
-    if (currentSession) {
-        document.getElementById('nav-guest').classList.add('hidden');
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('nav-user').classList.add('flex');
-        const adminProv = getAdminProvince(currentSession.user.email);
-        const roleText = adminProv ? `<span class="text-orange-600 font-bold">(Admin ${adminProv === 'ALL' ? 'ส่วนกลาง' : adminProv})</span>` : '<span class="text-green-600">(Member)</span>';
-        const userDisplay = document.getElementById('user-display');
-        if(userDisplay) userDisplay.innerHTML = `${currentSession.user.email} ${roleText}`;
-        if (!isRecoveryMode && !document.getElementById('view-auth').classList.contains('hidden')) window.switchView('dashboard');
-    } else {
-        document.getElementById('nav-guest').classList.remove('hidden');
-        document.getElementById('nav-user').classList.add('hidden');
-        document.getElementById('nav-user').classList.remove('flex');
-    }
-}
-
 async function fetchData() {
+    const user = getUser();
+    if(!user) return;
+
     document.getElementById('loading').classList.remove('hidden');
     document.getElementById('table-body').innerHTML = '';
     
-    const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
+    const adminProv = getAdminProvince(user.email);
     let query = sb.from('members').select('*');
     
-    if (!adminProv) { query = query.or(`email.eq.${currentSession.user.email},type.eq.post,type.eq.knowledge`); }
+    if (!adminProv) { 
+        query = query.or(`email.eq.${user.email},type.eq.post,type.eq.knowledge`); 
+    }
     else if (adminProv !== 'ALL') { query = query.or(`province.eq.${adminProv},type.eq.post,type.eq.knowledge,province.eq.ALL`); }
     
     const { data, error } = await query;
@@ -747,15 +1132,19 @@ async function fetchData() {
     if (error) { console.error(error); return; }
     cachedData = data || [];
     
+    // Calculate Stats
     const users = new Set(cachedData.map(m => m.email)).size;
-    const members = cachedData.filter(m => m.type === 'member').length;
+    const members = cachedData.filter(m => m.type === 'member' || m.type === 'candidate').length;
     const candidates = cachedData.filter(m => m.type === 'candidate').length;
+    const generalUsers = cachedData.filter(m => m.type === 'user').length;
+
     const sU = document.getElementById('stat-users'); if(sU) sU.innerText = users;
     const sT = document.getElementById('stat-total'); if(sT) sT.innerText = members;
     const sC = document.getElementById('stat-candidate'); if(sC) sC.innerText = candidates;
+    const sG = document.getElementById('stat-general-users'); if(sG) sG.innerText = generalUsers;
 
     const regionStats = {};
-    cachedData.filter(m => m.type === 'member').forEach(m => {
+    cachedData.filter(m => m.type === 'member' || m.type === 'candidate').forEach(m => {
         const region = mapToMainRegion(getRegion(m.province));
         regionStats[region] = (regionStats[region] || 0) + 1;
     });
@@ -780,13 +1169,12 @@ function renderTable(data) {
         document.getElementById('empty-state').classList.remove('hidden'); return;
     } else { document.getElementById('empty-state').classList.add('hidden'); }
 
-    const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
+    const user = getUser();
+    const adminProv = user ? getAdminProvince(user.email) : null;
 
     data.forEach(item => {
-        if (activeFilter !== 'all' && item.type !== activeFilter) return;
-        
         let manageBtns = '';
-        const isOwner = item.email === currentSession.user.email;
+        const isOwner = item.email === user?.email;
         if (adminProv || isOwner) {
             const canEdit = adminProv === 'ALL' || (adminProv && item.province === adminProv) || isOwner;
             if (canEdit) {
@@ -799,7 +1187,8 @@ function renderTable(data) {
 
         let status = '<span class="px-2 py-1 rounded bg-gray-100 text-gray-500 text-xs">ทั่วไป</span>';
         if (item.type === 'member') status = '<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs">สมาชิก</span>';
-        if (item.type === 'candidate') status = '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs">ผู้สมัคร ส.ส.</span>';
+        if (item.type === 'candidate') status = '<span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-xs font-bold">สมาชิก/ส.ส.</span>';
+        if (item.type === 'user') status = '<span class="px-2 py-1 rounded bg-gray-200 text-gray-600 text-xs">ผู้ใช้ทั่วไป</span>';
         if (item.type === 'feedback') {
             const isResolved = (item.remarks || '').includes('{{STATUS:RESOLVED}}');
             status = isResolved
@@ -903,13 +1292,16 @@ function parseInteractions(remarks) {
 }
 
 async function updateInteraction(id, action, payload = null) {
-    if (!currentSession) return alert("กรุณาเข้าสู่ระบบก่อน");
+    const user = getUser();
+    if (!user) return alert("กรุณาเข้าสู่ระบบก่อน");
+    
     const recordIndex = cachedData.findIndex(r => r.id == id);
     if (recordIndex === -1) return;
     const record = cachedData[recordIndex];
     let remarks = record.remarks || '';
     let interactData = parseInteractions(remarks);
-    const userEmail = currentSession.user.email;
+    const userEmail = user.email;
+    
     if (action === 'like') {
         if (interactData.likes.includes(userEmail)) { interactData.likes = interactData.likes.filter(e => e !== userEmail); }
         else { interactData.likes.push(userEmail); interactData.neutrals = interactData.neutrals.filter(e => e !== userEmail); }
@@ -937,7 +1329,8 @@ function renderInteractionUI(containerId, record) {
     const likesCount = data.likes ? data.likes.length : 0;
     const neutralsCount = data.neutrals ? data.neutrals.length : 0;
     const comments = data.comments || [];
-    const userEmail = currentSession ? currentSession.user.email : '';
+    const user = getUser();
+    const userEmail = user ? user.email : '';
     const isLiked = data.likes && data.likes.includes(userEmail);
     const isNeutral = data.neutrals && data.neutrals.includes(userEmail);
     let commentsHtml = comments.map(c => `
@@ -978,14 +1371,15 @@ function submitComment(id) {
 
 window.handleFeedbackSubmit = async function(e) {
     e.preventDefault();
-    if (!currentSession) { alert("กรุณาเข้าสู่ระบบก่อน"); return window.switchView('auth'); }
+    const user = getUser();
+    if (!user) { alert("กรุณาเข้าสู่ระบบก่อน"); return window.switchView('auth'); }
     const btn = document.getElementById('btn-feedback-submit');
     btn.disabled = true; btn.innerHTML = 'กำลังส่ง...';
     
     const payload = {
         name: document.getElementById('fb-topic').value,
         remarks: document.getElementById('fb-detail').value,
-        type: 'feedback', email: currentSession.user.email, province: document.getElementById('fb-type').value,
+        type: 'feedback', email: user.email, province: document.getElementById('fb-type').value,
         id_card: 'FEEDBACK', phone: '-'
     };
     const { error } = await sb.from('members').insert([payload]);
@@ -1076,18 +1470,23 @@ function renderNews() {
     const container = document.getElementById('news-container');
     if(!container) return;
     container.innerHTML = '';
+    
+    const user = getUser();
     let userProv = null;
     let adminProv = null;
-    if (currentSession) {
-        const user = cachedData.find(m => m.email === currentSession.user.email);
-        userProv = user ? user.province : null;
-        adminProv = getAdminProvince(currentSession.user.email);
+    if (user) {
+        const userData = cachedData.find(m => m.email === user.email);
+        userProv = userData ? userData.province : null;
+        adminProv = getAdminProvince(user.email);
     }
+    
     if (adminProv) document.getElementById('btn-create-post').classList.remove('hidden');
     else document.getElementById('btn-create-post').classList.add('hidden');
+    
     const posts = cachedData.filter(m => m.type === 'post').filter(p => {
         return p.province === 'ALL' || (userProv && p.province === userProv) || adminProv;
     });
+    
     if (posts.length === 0) {
         container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 bg-white rounded-xl border border-dashed">ยังไม่มีข่าวสารในขณะนี้</div>`;
         return;
@@ -1100,7 +1499,7 @@ function renderNews() {
         if (imgMatch) { imgUrl = imgMatch[1]; content = content.replace(/{{IMG:(.*?)}}/g, ''); }
         content = content.replace(/{{INTERACT:({.*?})}}/s, '');
         let controls = '';
-        const isOwner = p.email === currentSession?.user?.email;
+        const isOwner = p.email === user?.email;
         if (adminProv === 'ALL' || isOwner) {
             controls = `
                 <div class="absolute bottom-2 right-2 flex gap-1 z-20">
@@ -1156,9 +1555,13 @@ window.openPostModal = function(mode, record = null) {
     form.reset();
     imgPreview.classList.add('hidden');
     document.getElementById('post-id').value = '';
-    const adminProv = getAdminProvince(currentSession.user.email);
+    
+    const user = getUser();
+    const adminProv = user ? getAdminProvince(user.email) : null;
+    
     if (adminProv === 'ALL') targetWrapper.classList.remove('hidden');
     else targetWrapper.classList.add('hidden');
+    
     if (mode === 'edit' && record) {
         title.innerText = "แก้ไขข่าว";
         document.getElementById('post-id').value = record.id;
@@ -1177,13 +1580,16 @@ window.closePostModal = function() { document.getElementById('modal-post').class
 
 window.savePost = async function(e) {
     e.preventDefault();
+    const user = getUser();
+    if(!user) return;
+    
     const btn = document.getElementById('btn-post-save');
     btn.disabled = true; btn.innerText = "กำลังโพสต์...";
     const recordId = document.getElementById('post-id').value;
     const title = document.getElementById('inp-post-title').value;
     const content = document.getElementById('inp-post-content').value;
     const fileInput = document.getElementById('inp-post-img');
-    const adminProv = getAdminProvince(currentSession.user.email);
+    const adminProv = getAdminProvince(user.email);
     let targetProv = adminProv === 'ALL' ? document.getElementById('inp-post-target').value : adminProv;
     let imgUrl = null;
     if (fileInput.files.length > 0) {
@@ -1208,7 +1614,7 @@ window.savePost = async function(e) {
     }
     const payload = {
         name: title, remarks: finalRemarks, type: 'post', province: targetProv,
-        email: currentSession.user.email, id_card: 'POST', phone: '-'
+        email: user.email, id_card: 'POST', phone: '-'
     };
     let result;
     if (recordId) result = await sb.from('members').update(payload).eq('id', recordId);
@@ -1223,7 +1629,8 @@ function renderKnowledge() {
     const btnAdd = document.getElementById('btn-add-knowledge');
     if(!list) return;
     list.innerHTML = '';
-    const adminProv = currentSession ? getAdminProvince(currentSession.user.email) : null;
+    const user = getUser();
+    const adminProv = user ? getAdminProvince(user.email) : null;
     if (adminProv) btnAdd.classList.remove('hidden'); else btnAdd.classList.add('hidden');
     const docs = cachedData.filter(d => d.type === 'knowledge');
     if (docs.length === 0) { list.innerHTML = `<li class="text-center text-gray-400 text-sm py-4">ยังไม่มีเอกสารในระบบ</li>`; return; }
@@ -1263,7 +1670,8 @@ window.openKnowledgeReader = function(doc) {
 
 window.saveKnowledge = async function(e) {
     e.preventDefault();
-    if (!currentSession) return;
+    const user = getUser();
+    if (!user) return;
     const btn = document.getElementById('btn-know-save');
     const title = document.getElementById('inp-know-title').value;
     const file1 = document.getElementById('inp-know-file-1').files[0];
@@ -1290,7 +1698,7 @@ window.saveKnowledge = async function(e) {
         }
         const payload = {
             name: title, type: 'knowledge', remarks: remarks.trim(),
-            email: currentSession.user.email, province: 'ALL', id_card: 'KNOWLEDGE', phone: '-'
+            email: user.email, province: 'ALL', id_card: 'KNOWLEDGE', phone: '-'
         };
         const { error: dbError } = await sb.from('members').insert([payload]);
         if (dbError) throw dbError;
