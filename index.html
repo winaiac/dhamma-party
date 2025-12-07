@@ -54,6 +54,20 @@
             }
         }
 
+        /* AUTH TABS STYLE */
+        .auth-tab {
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: #ea580c;
+            /* Orange-600 */
+            color: #ea580c;
+            font-weight: bold;
+        }
+
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -69,15 +83,6 @@
         th.sortable:hover {
             background-color: #f3f4f6;
             color: #ea580c;
-        }
-
-        .checkbox-wrapper input:checked+div {
-            background-color: #16a34a;
-            border-color: #16a34a;
-        }
-
-        .checkbox-wrapper input:checked+div svg {
-            display: block;
         }
 
         .password-container {
@@ -135,7 +140,7 @@
             line-height: 1.5;
         }
 
-        /* Chart */
+        /* Chart & Maps */
         .chart-container {
             position: relative;
             width: 100%;
@@ -146,7 +151,6 @@
             max-height: 400px;
         }
 
-        /* Table Cell Text Wrapping for Address */
         td.address-cell {
             white-space: normal;
             min-width: 200px;
@@ -154,7 +158,6 @@
             line-height: 1.4;
         }
 
-        /* Map specific styles */
         #map {
             height: 500px;
             width: 100%;
@@ -162,7 +165,6 @@
             border-radius: 0.75rem;
         }
 
-        /* Form Map */
         #form-map {
             height: 300px;
             width: 100%;
@@ -181,6 +183,13 @@
             font-weight: bold;
             color: #ea580c;
             margin-bottom: 0.25rem;
+        }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
 </head>
@@ -227,7 +236,7 @@
         </div>
     </nav>
 
-    <!-- LANDING PAGE -->
+    <!-- LANDING PAGE (เนื้อหาเดิม) -->
     <div id="view-landing" class="flex-grow fade-in">
         <header class="relative bg-gradient-to-b from-orange-50 via-white to-white pt-16 pb-16 overflow-hidden">
             <div class="container mx-auto px-4 text-center relative z-10">
@@ -447,31 +456,134 @@
         </div>
     </div>
 
-    <!-- AUTH PAGE -->
+    <!-- AUTH PAGE (UPDATED) -->
     <div id="view-auth" class="hidden flex-grow flex items-center justify-center p-4 bg-gray-100 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border-t-4 border-orange-600">
-            <div class="p-8 text-center">
-                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
-                    class="w-20 h-20 mx-auto mb-4">
-                <h2 class="text-2xl font-bold text-gray-800 font-head">ลงชื่อเข้าใช้งาน</h2>
-                <form onsubmit="handleAuth(event)" class="text-left mt-6">
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/pak%2Flogopak.png?alt=media&token=30557e25-5d5a-46f8-be24-babeaf095fad"
+                        class="w-16 h-16 mx-auto mb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 font-head" id="auth-title">เข้าสู่ระบบ</h2>
+                </div>
+
+                <!-- Auth Method Tabs -->
+                <div class="flex mb-6 border-b border-gray-200">
+                    <button onclick="switchAuthMethod('email')" id="tab-email"
+                        class="auth-tab active flex-1 py-2 text-center text-sm font-medium text-gray-500 hover:text-gray-700 transition">
+                        <i class="fa-regular fa-envelope mr-1"></i> อีเมล
+                    </button>
+                    <button onclick="switchAuthMethod('phone')" id="tab-phone"
+                        class="auth-tab flex-1 py-2 text-center text-sm font-medium text-gray-500 hover:text-gray-700 transition">
+                        <i class="fa-solid fa-mobile-screen mr-1"></i> เบอร์โทรศัพท์
+                    </button>
+                </div>
+
+                <!-- Shared Registration Fields -->
+                <div id="reg-fields-container" class="hidden mb-4 animate-fade-in space-y-4">
+                    <!-- Province -->
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-1 block">จังหวัดของคุณ <span
+                                class="text-red-500">*</span></label>
+                        <select id="reg-province"
+                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+                            <option value="">-- กรุณาเลือกจังหวัด --</option>
+                            <!-- Options populated via JS -->
+                        </select>
+                    </div>
+                    <!-- ID Card (Shared) -->
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-1 block">เลขบัตรประชาชน <span
+                                class="text-red-500">*</span></label>
+                        <input type="number" id="reg-id-card"
+                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                            placeholder="เลข 13 หลัก" maxlength="13">
+                        <p class="text-[10px] text-gray-400 mt-1">เพื่อยืนยันตัวตนความเป็นคนไทย
+                            (ข้อมูลถูกเก็บเป็นความลับ)</p>
+                    </div>
+                </div>
+
+                <!-- EMAIL FORM -->
+                <form id="form-email" onsubmit="handleAuth(event)" class="text-left animate-fade-in">
                     <input type="email" id="email"
                         class="w-full p-3 mb-4 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                        placeholder="อีเมล" required autocomplete="username">
+                        placeholder="อีเมล" autocomplete="username">
                     <div class="password-container mb-6">
                         <input type="password" id="password"
                             class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none pr-10"
-                            placeholder="รหัสผ่าน" required autocomplete="current-password">
+                            placeholder="รหัสผ่าน" autocomplete="current-password">
                         <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
                     </div>
                     <button
-                        class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn">เข้าสู่ระบบ</button>
+                        class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 shadow-lg transition action-btn"
+                        id="btn-email-submit">เข้าสู่ระบบ</button>
+
+                    <div class="mt-4 flex justify-between text-xs text-gray-400">
+                        <span class="cursor-pointer hover:text-orange-600"
+                            onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
+                        <span class="cursor-pointer hover:text-orange-600" id="link-register-email"
+                            onclick="switchAuthMode('register')">สมัครสมาชิกใหม่</span>
+                    </div>
                 </form>
-                <div class="mt-4 flex justify-between text-xs text-gray-400">
-                    <span class="cursor-pointer hover:text-orange-600"
-                        onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
-                    <span class="cursor-pointer hover:text-orange-600"
-                        onclick="switchAuthMode('register')">สมัครสมาชิกแอพ</span>
+
+                <!-- PHONE FORM (CAPTCHA + PASSWORD) -->
+                <div id="form-phone" class="hidden text-left animate-fade-in">
+                    <!-- Phone Input -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-xs font-bold mb-2">เบอร์โทรศัพท์มือถือ</label>
+                        <div class="relative">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <input type="tel" id="phone-number"
+                                class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="08xxxxxxxx" maxlength="10">
+                        </div>
+                    </div>
+
+                    <!-- CAPTCHA Section (Register Mode Only) -->
+                    <div id="phone-captcha-section" class="mb-6 hidden">
+                        <label class="block text-gray-700 text-xs font-bold mb-2">ยืนยันตัวตน (CAPTCHA)</label>
+                        <div class="flex gap-2 mb-2">
+                            <div id="captcha-display"
+                                class="bg-gray-200 border border-gray-300 rounded-lg flex-grow flex items-center justify-center text-xl font-mono font-bold tracking-widest text-gray-600 select-none py-2">
+                                <!-- Captcha Code Here -->
+                            </div>
+                            <button type="button" onclick="generateCaptcha()"
+                                class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg px-3 text-gray-500">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="captcha-input"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest uppercase"
+                            placeholder="กรอกรหัสที่ปรากฏ" maxlength="6">
+                    </div>
+
+                    <!-- Password Setup Section (For Both Login and Register - but shown dynamically) -->
+                    <div id="phone-password-section" class="mb-6">
+                        <label class="block text-gray-700 text-xs font-bold mb-2" id="lbl-phone-pass">รหัสผ่าน</label>
+                        <div class="password-container">
+                            <input type="password" id="phone-password"
+                                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
+                                placeholder="รหัสผ่าน">
+                            <i class="fa-solid fa-eye password-toggle"
+                                onclick="togglePassword('phone-password', this)"></i>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1 hidden" id="phone-pass-hint">
+                            กำหนดรหัสผ่านเพื่อใช้เข้าสู่ระบบในครั้งต่อไป</p>
+                    </div>
+
+                    <button onclick="handlePhoneAuthStep()" id="btn-phone-submit"
+                        class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 shadow-lg transition action-btn">
+                        ดำเนินการต่อ
+                    </button>
+
+                    <div class="mt-4 flex justify-between text-xs text-gray-400">
+                        <span class="cursor-pointer hover:text-orange-600"
+                            onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
+                        <span class="cursor-pointer hover:text-orange-600" id="link-register-phone"
+                            onclick="switchAuthMode('register')">สมัครสมาชิกใหม่</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -602,54 +714,15 @@
         </div>
     </div>
 
-    <!-- POST MODAL -->
-    <div id="modal-post"
-        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
-            <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
-                <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3><button
-                    onclick="closePostModal()" class="hover:text-gray-300"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="p-6">
-                <form id="postForm" onsubmit="savePost(event)">
-                    <input type="hidden" id="post-id">
-                    <div class="mb-4"><label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label><input
-                            id="inp-post-title" required class="w-full p-2 border rounded"
-                            placeholder="เช่น กิจกรรมลงพื้นที่..."></div>
-                    <div id="post-target-wrapper" class="mb-4 hidden"><label
-                            class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label><select
-                            id="inp-post-target" class="w-full p-2 border rounded bg-white">
-                            <option value="ALL">ส่วนกลาง</option>
-                        </select></div>
-                    <div class="mb-4"><label
-                            class="text-xs font-bold text-gray-500 mb-1 block">รูปภาพประกอบ</label><input type="file"
-                            id="inp-post-img" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm">
-                        <div id="post-img-preview" class="mt-2 hidden"><img src=""
-                                class="h-32 rounded border object-cover"></div>
-                    </div>
-                    <div class="mb-6"><label
-                            class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label><textarea
-                            id="inp-post-content" required class="w-full p-2 border rounded h-32"
-                            placeholder="รายละเอียด..."></textarea></div>
-                    <div class="flex justify-end gap-2 pt-4 border-t"><button type="button" onclick="closePostModal()"
-                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button><button
-                            type="submit" id="btn-post-save"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- DASHBOARD PAGE -->
+    <!-- DASHBOARD PAGE (UPDATED) -->
     <div id="view-dashboard" class="hidden flex-grow bg-gray-50 fade-in">
         <div class="container mx-auto px-4 py-8 max-w-6xl">
             <!-- EXECUTIVE SECTION -->
             <div class="mb-10">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-orange-600 text-white w-10 h-10 rounded-lg flex items-center justify-center shadow">
-                        <i class="fa-solid fa-users-gear text-lg"></i></div>
+                        <i class="fa-solid fa-users-gear text-lg"></i>
+                    </div>
                     <h2 class="text-2xl font-bold text-gray-800 font-head">คณะกรรมการบริหารพรรค</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="executive-container"></div>
@@ -657,11 +730,13 @@
 
             <!-- ECT REALTIME DATA -->
             <div class="mb-10 bg-white rounded-xl shadow-sm border p-6 relative overflow-hidden">
+                <!-- (เนื้อหาสถิติเดิมคงไว้) -->
                 <div class="flex items-center justify-between mb-4 border-b pb-4">
                     <div class="flex items-center gap-2">
                         <div
                             class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                            <i class="fa-solid fa-landmark text-sm"></i></div>
+                            <i class="fa-solid fa-landmark text-sm"></i>
+                        </div>
                         <h3 class="text-lg font-bold text-gray-800 font-head">ข้อมูลสถิติพรรค (Live จาก กกต.)</h3>
                     </div>
                     <span
@@ -718,35 +793,64 @@
                 </div>
             </div>
 
-            <!-- Filters -->
-            <div class="flex gap-2 mb-6 overflow-x-auto pb-2" id="dashboard-filters">
-                <button onclick="filterDashboard('all')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
-                    data-filter="all">ทั้งหมด</button>
-                <button onclick="filterDashboard('member')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="member">สมาชิกพรรค</button>
-                <button onclick="filterDashboard('candidate')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="candidate">ผู้สมัคร ส.ส.</button>
-                <button onclick="filterDashboard('feedback')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="feedback">ข้อเสนอแนะ</button>
-                <button onclick="filterDashboard('post')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="post">ข่าวสาร</button>
-                <button onclick="filterDashboard('knowledge')"
-                    class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
-                    data-filter="knowledge">คลังความรู้</button>
+            <!-- Filters & Search (UPDATED) -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6 items-end">
+                <div class="flex-grow w-full">
+                    <div class="flex gap-2 mb-2 overflow-x-auto pb-2" id="dashboard-filters">
+                        <button onclick="filterDashboard('all')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold whitespace-nowrap active-filter action-btn"
+                            data-filter="all">ทั้งหมด</button>
+                        <button onclick="filterDashboard('member')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="member">สมาชิกพรรค</button>
+                        <button onclick="filterDashboard('candidate')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="candidate">ผู้สมัคร ส.ส.</button>
+                        <button onclick="filterDashboard('user')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="user">ผู้ใช้งานทั่วไป</button>
+                        <button onclick="filterDashboard('feedback')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="feedback">ข้อเสนอแนะ</button>
+                        <button onclick="filterDashboard('post')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="post">ข่าวสาร</button>
+                        <button onclick="filterDashboard('knowledge')"
+                            class="filter-btn px-4 py-2 rounded-lg bg-white border text-gray-600 text-sm font-bold whitespace-nowrap action-btn"
+                            data-filter="knowledge">คลังความรู้</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
+                                    class="fa-solid fa-search text-gray-400"></i></div>
+                            <input type="text" id="inp-search" onkeyup="handleSearch()"
+                                class="block w-full p-2.5 pl-10 text-sm border rounded-lg bg-white shadow-sm"
+                                placeholder="ค้นหา... (ชื่อ, รหัส, เบอร์โทร)">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2 items-center w-full md:w-auto bg-white p-2 rounded-lg border shadow-sm">
+                    <span class="text-xs text-gray-500 whitespace-nowrap"><i class="fa-regular fa-calendar"></i>
+                        สมัครเมื่อ:</span>
+                    <input type="date" id="search-date-start" onchange="handleSearch()"
+                        class="text-xs p-1 border rounded text-gray-600">
+                    <span class="text-gray-400">-</span>
+                    <input type="date" id="search-date-end" onchange="handleSearch()"
+                        class="text-xs p-1 border rounded text-gray-600">
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-gray-500">
                     <p class="text-xs text-gray-500 font-bold">ผู้ใช้งานแอพ</p>
                     <h3 class="text-2xl font-bold text-gray-700" id="stat-users">-</h3>
                 </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-gray-400">
+                    <p class="text-xs text-gray-500 font-bold">ผู้ใช้ทั่วไป (ยังไม่สมัครสมาชิก)</p>
+                    <h3 class="text-2xl font-bold text-gray-600" id="stat-general-users">-</h3>
+                </div>
                 <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
-                    <p class="text-xs text-gray-500 font-bold">สมาชิกพรรค</p>
+                    <p class="text-xs text-gray-500 font-bold">สมาชิกพรรค (รวมผู้สมัคร)</p>
                     <h3 class="text-2xl font-bold text-blue-600" id="stat-total">-</h3>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-orange-500">
@@ -763,13 +867,6 @@
 
             <!-- TABLE VIEW -->
             <div id="dashboard-table-view">
-                <div class="mb-4 relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
-                            class="fa-solid fa-search text-gray-400"></i></div>
-                    <input type="text" id="inp-search" onkeyup="handleSearch()"
-                        class="block w-full p-4 pl-10 text-sm border rounded-lg bg-white shadow-sm"
-                        placeholder="ค้นหา... (ชื่อ, รหัสสมาชิก, เบอร์โทร)">
-                </div>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-600">
@@ -813,8 +910,10 @@
     </div>
 
     <!-- NEW MODAL: FEEDBACK MANAGER -->
+    <!-- (เหมือนเดิม ไม่มีการเปลี่ยนแปลงในส่วน Modal) -->
     <div id="modal-feedback-manage"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+        <!-- Content same as previous version -->
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-auto relative">
             <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-purple-600 text-white">
                 <h3 class="text-lg font-bold font-head"><i class="fa-solid fa-list-check mr-2"></i> จัดการข้อเสนอแนะ
@@ -846,7 +945,8 @@
         </div>
     </div>
 
-    <!-- MODAL FORM (MEMBER - UPDATED ADDRESS & DRAGGABLE MAP) -->
+    <!-- MODAL FORM (MEMBER) -->
+    <!-- (เหมือนเดิม) -->
     <div id="modal-form"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 my-auto relative">
@@ -857,6 +957,7 @@
                         class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6">
+                <!-- (Form content omitted for brevity - same as previous version) -->
                 <div id="admin-tools" class="hidden mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <h4 class="text-sm font-bold text-yellow-800 mb-2 border-b border-yellow-200 pb-1">
                         เครื่องมือผู้ดูแลระบบ</h4>
@@ -873,13 +974,9 @@
                             </select></div>
                     </div>
                 </div>
-
                 <form id="memberForm" onsubmit="saveData(event)">
-                    <input type="hidden" id="record-id">
-                    <input type="hidden" id="inp-type">
-                    <input type="hidden" id="inp-lat">
-                    <input type="hidden" id="inp-lng">
-
+                    <input type="hidden" id="record-id"><input type="hidden" id="inp-type"><input type="hidden"
+                        id="inp-lat"><input type="hidden" id="inp-lng">
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-regular fa-id-card"></i>
                         ข้อมูลส่วนตัว</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -901,7 +998,6 @@
                         <div class="md:col-span-1"><label class="text-xs font-bold text-gray-500">ผู้แนะนำ</label><input
                                 id="inp-recommender" class="w-full p-2 border rounded"></div>
                     </div>
-
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-house"></i>
                         ที่อยู่ตามทะเบียนบ้าน</h4>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -932,7 +1028,6 @@
                                 id="inp-region" class="w-full p-2 border rounded bg-white text-gray-600 font-bold"
                                 readonly></div>
                     </div>
-
                     <div class="mb-6">
                         <label class="text-xs font-bold text-gray-500 block mb-2"><i
                                 class="fa-solid fa-map-pin text-red-500 mr-1"></i> ระบุพิกัดแผนที่
@@ -940,7 +1035,6 @@
                         <div id="form-map"></div>
                         <p class="text-[10px] text-gray-400 mt-1">* หากไม่ระบุ ระบบจะใช้พิกัดกลางของจังหวัด</p>
                     </div>
-
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-phone"></i>
                         การติดต่อ</h4>
                     <div class="grid grid-cols-3 gap-4 mb-6">
@@ -955,12 +1049,10 @@
                                 class="text-xs font-bold text-gray-500">อีเมล</label><input id="inp-email" type="email"
                                 class="w-full p-2 border rounded"></div>
                     </div>
-
                     <h4 class="text-sm font-bold text-gray-800 border-b pb-2 mb-4"><i
                             class="fa-regular fa-comment-dots"></i> หมายเหตุ</h4>
                     <div class="mb-6"><textarea id="inp-remarks" class="w-full p-2 border rounded h-20"></textarea>
                     </div>
-
                     <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
                         <label class="flex items-start gap-3 cursor-pointer group">
                             <div class="relative flex items-center pt-1"><input type="checkbox" required id="inp-pdpa"
@@ -972,7 +1064,6 @@
                                 <span class="text-red-500">*</span></span>
                         </label>
                     </div>
-
                     <div class="flex justify-end gap-2 pt-4 border-t">
                         <button type="button" onclick="closeModal()"
                             class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button>
@@ -984,7 +1075,7 @@
         </div>
     </div>
 
-    <!-- KNOWLEDGE MODAL -->
+    <!-- Other Modals (omitted to save space - same as previous) -->
     <div id="modal-knowledge"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 my-auto relative">
@@ -1013,8 +1104,6 @@
             </div>
         </div>
     </div>
-
-    <!-- KNOWLEDGE READER MODAL -->
     <div id="modal-knowledge-read"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
         <div
@@ -1023,8 +1112,7 @@
                 <div>
                     <h3 id="kn-read-title" class="text-xl font-bold font-head leading-snug"></h3>
                     <div id="kn-read-files" class="mt-3 flex flex-wrap gap-2"></div>
-                </div>
-                <button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
+                </div><button onclick="document.getElementById('modal-knowledge-read').classList.add('hidden')"
                     class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-0 flex-grow overflow-hidden flex flex-col">
@@ -1032,8 +1120,6 @@
             </div>
         </div>
     </div>
-
-    <!-- NEWS READER MODAL -->
     <div id="modal-news-reader"
         class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
@@ -1042,8 +1128,7 @@
                     class="fa-solid fa-xmark text-xl"></i></button>
             <div id="news-reader-img-container" class="w-full h-64 bg-gray-200 shrink-0 hidden"><img
                     id="news-reader-img" src="" class="w-full h-full object-cover"></div>
-            <div class="p-8 overflow-y-auto flex-grow reader-scroll">
-                <span id="news-reader-date"
+            <div class="p-8 overflow-y-auto flex-grow reader-scroll"><span id="news-reader-date"
                     class="text-orange-600 font-bold text-sm tracking-wider uppercase mb-2 block"></span>
                 <h2 id="news-reader-title" class="text-3xl font-bold font-head text-gray-900 mb-6 leading-tight"></h2>
                 <div id="news-reader-content"
@@ -1053,8 +1138,6 @@
             </div>
         </div>
     </div>
-
-    <!-- FEEDBACK READER MODAL -->
     <div id="modal-feedback-read"
         class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
         <div
@@ -1064,8 +1147,7 @@
                         class="bg-gray-700 text-xs px-2 py-1 rounded text-gray-300 border border-gray-600 mb-2 inline-block"></span>
                     <h3 id="fb-read-topic" class="text-xl font-bold font-head leading-snug"></h3>
                     <p id="fb-read-date" class="text-gray-400 text-xs mt-1"></p>
-                </div>
-                <button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
+                </div><button onclick="document.getElementById('modal-feedback-read').classList.add('hidden')"
                     class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="p-6 overflow-y-auto flex-grow reader-scroll">
@@ -1076,6 +1158,43 @@
                 <div id="fb-read-status" class="mb-6"></div>
                 <hr class="border-gray-200 mb-6">
                 <div id="fb-interaction-area"></div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-post"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm flex overflow-y-auto py-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-auto relative">
+            <div class="px-6 py-4 border-b flex justify-between items-center rounded-t-xl bg-orange-600 text-white">
+                <h3 class="text-lg font-bold font-head" id="modal-post-title">สร้างข่าวใหม่</h3><button
+                    onclick="closePostModal()" class="hover:text-gray-300"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <form id="postForm" onsubmit="savePost(event)"><input type="hidden" id="post-id">
+                    <div class="mb-4"><label class="text-xs font-bold text-gray-500 mb-1 block">หัวข้อข่าว</label><input
+                            id="inp-post-title" required class="w-full p-2 border rounded"
+                            placeholder="เช่น กิจกรรมลงพื้นที่..."></div>
+                    <div id="post-target-wrapper" class="mb-4 hidden"><label
+                            class="text-xs font-bold text-gray-500 mb-1 block">เผยแพร่ในนาม</label><select
+                            id="inp-post-target" class="w-full p-2 border rounded bg-white">
+                            <option value="ALL">ส่วนกลาง</option>
+                        </select></div>
+                    <div class="mb-4"><label
+                            class="text-xs font-bold text-gray-500 mb-1 block">รูปภาพประกอบ</label><input type="file"
+                            id="inp-post-img" accept="image/*" class="w-full p-2 border rounded bg-gray-50 text-sm">
+                        <div id="post-img-preview" class="mt-2 hidden"><img src=""
+                                class="h-32 rounded border object-cover"></div>
+                    </div>
+                    <div class="mb-6"><label
+                            class="text-xs font-bold text-gray-500 mb-1 block">เนื้อหาข่าว</label><textarea
+                            id="inp-post-content" required class="w-full p-2 border rounded h-32"
+                            placeholder="รายละเอียด..."></textarea></div>
+                    <div class="flex justify-end gap-2 pt-4 border-t"><button type="button" onclick="closePostModal()"
+                            class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200 action-btn">ยกเลิก</button><button
+                            type="submit" id="btn-post-save"
+                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 shadow font-bold action-btn">โพสต์ข่าว</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
