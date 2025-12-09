@@ -562,11 +562,11 @@
                     <!-- Password Setup Section (For Both Login and Register - but shown dynamically) -->
                     <div id="phone-password-section" class="mb-6">
                         <label class="block text-gray-700 text-xs font-bold mb-2" id="lbl-phone-pass">รหัสผ่าน</label>
-                        <div class="password-container">
+                        <div class="password-container relative">
                             <input type="password" id="phone-password"
                                 class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
                                 placeholder="รหัสผ่าน">
-                            <i class="fa-solid fa-eye password-toggle"
+                            <i class="fa-solid fa-eye password-toggle absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-blue-600"
                                 onclick="togglePassword('phone-password', this)"></i>
                         </div>
                         <p class="text-xs text-gray-400 mt-1 hidden" id="phone-pass-hint">
@@ -577,12 +577,12 @@
                         class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 shadow-lg transition action-btn">
                         ดำเนินการต่อ
                     </button>
-
-                    <div class="mt-4 flex justify-between text-xs text-gray-400">
-                        <span class="cursor-pointer hover:text-orange-600"
-                            onclick="handleForgotPassword()">ลืมรหัสผ่าน?</span>
-                        <span class="cursor-pointer hover:text-orange-600" id="link-register-phone"
-                            onclick="switchAuthMode('register')">สมัครสมาชิกใหม่</span>
+                    <div class="password-container mb-6 relative">
+                        <input type="password" id="new-password"
+                            class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none pr-10"
+                            placeholder="รหัสผ่านใหม่" required minlength="6" autocomplete="new-password">
+                        <i class="fa-solid fa-eye password-toggle absolute right-3 top-3 text-gray-400 cursor-pointer hover:text-red-600"
+                            onclick="togglePassword('new-password', this)"></i>
                     </div>
                 </div>
             </div>
