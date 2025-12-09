@@ -1741,3 +1741,24 @@ window.saveKnowledge = async function(e) {
     } catch (err) { alert("เกิดข้อผิดพลาด: " + err.message); }
     finally { btn.disabled = false; btn.innerText = "อัปโหลด"; }
 };
+
+// --- PASSWORD TOGGLE FUNCTION ---
+// ฟังก์ชันสำหรับเปิด/ปิด การมองเห็นรหัสผ่าน
+window.togglePassword = function(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    if (input.type === "password") {
+        // เปลี่ยนเป็น text เพื่อแสดงรหัสผ่าน
+        input.type = "text";
+        // เปลี่ยนไอคอนเป็นรูปตาขีดฆ่า (eye-slash)
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        // เปลี่ยนกลับเป็น password เพื่อซ่อน
+        input.type = "password";
+        // เปลี่ยนไอคอนกลับเป็นรูปตาปกติ (eye)
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+};
