@@ -935,6 +935,17 @@ window.openModal = function(type, record = null) {
     if (adminProv) {
         document.getElementById('admin-tools').classList.remove('hidden');
         const roleSetting = document.getElementById('admin-role-setting');
+        
+        // 🟢 POPULATE ROLE DROPDOWN 🟢
+        const roleSelect = document.getElementById('inp-admin-role');
+        roleSelect.innerHTML = '<option value="">สมาชิกทั่วไป</option><option value="ALL">ผู้ดูแลระบบสูงสุด</option>';
+        PROVINCES.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p;
+            opt.innerText = `ผู้ดูแล ${p}`;
+            roleSelect.appendChild(opt);
+        });
+
         if (adminProv === 'ALL') roleSetting.classList.remove('hidden'); else roleSetting.classList.add('hidden');
     }
 
@@ -973,6 +984,19 @@ window.openModal = function(type, record = null) {
         document.getElementById('inp-start-date').value = record.start_date || '';
         document.getElementById('inp-is-old').checked = (record.remarks || '').includes(OLD_DATA_TAG);
         
+        // 🟢 SET SELECTED ROLE 🟢
+        if (adminProv) {
+            let currentRole = '';
+            // Try matching regex from remarks first
+            const roleMatch = (record.remarks || '').match(/{{ROLE:(.*?)}}/);
+            if (roleMatch) {
+                currentRole = roleMatch[1];
+            } else if (record.admin_role) {
+                currentRole = record.admin_role;
+            }
+            document.getElementById('inp-admin-role').value = currentRole;
+        }
+
         let remarks = record.remarks || '';
         remarks = remarks.replace(OLD_DATA_TAG, '').replace(STATUS_APPROVED_TAG, '').trim();
         remarks = remarks.replace(/{{.*?}}/g, '').trim();
@@ -1047,6 +1071,14 @@ window.saveData = async function(e) {
 
         let remarks = document.getElementById('inp-remarks').value;
         if (document.getElementById('inp-is-old').checked) remarks += ` ${OLD_DATA_TAG}`;
+        
+        // 🟢 SAVE ROLE 🟢
+        if (adminProv === 'ALL') {
+             const selectedRole = document.getElementById('inp-admin-role').value;
+             if (selectedRole) {
+                 remarks += ` {{ROLE:${selectedRole}}}`;
+             }
+        }
         
         const payload = {
             member_id: document.getElementById('inp-member-id').value,
