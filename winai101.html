@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +7,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Sarabun & Noto Sans Thai -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Noto+Sans+Thai:wght@300;400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Noto+Sans+Thai:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <script>
         tailwind.config = {
             theme: {
@@ -38,42 +35,24 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
-
         .a4-container {
             width: 210mm;
             min-height: 297mm;
             background: white;
             margin: 0 auto;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-
         @media print {
-            body {
-                margin: 0;
-                background: white;
-            }
-
-            .a4-container {
-                width: 100%;
-                margin: 0;
-                box-shadow: none;
-                min-height: auto;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
+            body { margin: 0; background: white; }
+            .a4-container { width: 100%; margin: 0; box-shadow: none; min-height: auto; }
+            .no-print { display: none !important; }
             /* Force breaks if content overflows */
-            .page-break {
-                page-break-before: always;
-            }
+            .page-break { page-break-before: always; }
         }
-
         .bg-pattern {
             background-image: radial-gradient(#F2C94C 1px, transparent 1px);
             background-size: 20px 20px;
@@ -81,13 +60,11 @@
         }
     </style>
 </head>
-
 <body class="py-10">
 
     <!-- Control Bar -->
     <div class="fixed top-4 right-4 z-50 flex gap-2 no-print">
-        <button onclick="window.print()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2 transition-all">
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2 transition-all">
             <i class="fas fa-print"></i> บันทึกเป็น PDF / พิมพ์
         </button>
     </div>
@@ -98,47 +75,37 @@
         <div class="absolute inset-0 bg-pattern pointer-events-none"></div>
 
         <!-- HEADER -->
-        <header
-            class="bg-gradient-to-b from-orange-50 to-white pt-6 pb-4 px-8 relative z-10 border-b-4 border-dharma-gold">
+        <header class="bg-gradient-to-b from-orange-50 to-white pt-6 pb-4 px-8 relative z-10 border-b-4 border-dharma-gold">
             <div class="text-center mb-2">
-                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2Flogopak.png?alt=media&token=86169564-2a61-421e-b5b5-584657cf2568"
-                    alt="โลโก้พรรคแผ่นดินธรรม" class="h-20 mx-auto mb-2 object-contain drop-shadow-md">
+                <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2Flogopak.png?alt=media&token=86169564-2a61-421e-b5b5-584657cf2568" alt="โลโก้พรรคแผ่นดินธรรม" class="h-20 mx-auto mb-2 object-contain drop-shadow-md">
             </div>
-
-            <h1
-                class="text-3xl font-header font-black text-dharma-orange text-center leading-tight mb-1 drop-shadow-sm">
+            
+            <h1 class="text-3xl font-header font-black text-dharma-orange text-center leading-tight mb-1 drop-shadow-sm">
                 ขอเชิญร่วมสร้าง "สังคมอุดมธรรม"<br>
                 <span class="text-2xl text-gray-700">เพื่อปากท้องพี่น้องไทยที่ยั่งยืน</span>
             </h1>
 
             <!-- New Slogan -->
             <div class="text-center mb-4">
-                <span
-                    class="bg-dharma-dark text-white text-lg font-bold px-6 py-1 rounded-full shadow-lg inline-block transform -skew-x-12 border-2 border-dharma-gold">
+                <span class="bg-dharma-dark text-white text-lg font-bold px-6 py-1 rounded-full shadow-lg inline-block transform -skew-x-12 border-2 border-dharma-gold">
                     <span class="transform skew-x-12 inline-block">" ศีลธรรม นำชาติ "</span>
                 </span>
             </div>
-
-            <div
-                class="bg-dharma-orange text-white text-center py-1 px-4 rounded-full w-fit mx-auto shadow-md mb-4 text-sm">
+            
+            <div class="bg-dharma-orange text-white text-center py-1 px-4 rounded-full w-fit mx-auto shadow-md mb-4 text-sm">
                 <h2 class="font-bold">พรรคแผ่นดินธรรม (รหัส 188) - ศีลธรรมนำชาติ ศาสน์นำไทย</h2>
             </div>
 
             <!-- Representative Profile (Winai) -->
-            <div
-                class="bg-white rounded-2xl p-3 shadow-md border border-orange-100 flex items-center gap-4 max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl p-3 shadow-md border border-orange-100 flex items-center gap-4 max-w-2xl mx-auto">
                 <div class="w-24 h-24 flex-shrink-0 relative">
                     <div class="absolute inset-0 bg-dharma-gold rounded-xl blur-sm opacity-50"></div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FGemini_Generated_Image_9unn6j9unn6j9unn.png?alt=media&token=cec04aca-8527-4d77-aeb2-60417406b69b"
-                        alt="วินัย ผันอากาศ"
-                        class="w-24 h-24 rounded-xl object-cover border-4 border-white shadow relative z-10">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FGemini_Generated_Image_9unn6j9unn6j9unn.png?alt=media&token=cec04aca-8527-4d77-aeb2-60417406b69b" alt="วินัย ผันอากาศ" class="w-24 h-24 rounded-xl object-cover border-4 border-white shadow relative z-10">
                 </div>
                 <div class="flex-1">
                     <p class="text-gray-700 text-sm leading-relaxed italic">
                         <i class="fas fa-quote-left text-dharma-orange text-lg mr-1"></i>
-                        สวัสดีครับ ผม <strong>วินัย ผันอากาศ</strong> ตัวแทนพรรคแผ่นดินธรรม จ.ร้อยเอ็ด
-                        ขอเชิญชวนพี่น้องมาร่วมเปิดมิติใหม่ของการเมือง ที่ใช้ <strong>'ความดี'</strong> นำทาง
-                        เพื่อสร้างความสุขที่ยั่งยืนให้บ้านเราครับ
+                        สวัสดีครับ ผม <strong>วินัย ผันอากาศ</strong> ตัวแทนพรรคแผ่นดินธรรม จ.ร้อยเอ็ด ขอเชิญชวนพี่น้องมาร่วมเปิดมิติใหม่ของการเมือง ที่ใช้ <strong>'ความดี'</strong> นำทาง เพื่อสร้างความสุขที่ยั่งยืนให้บ้านเราครับ
                         <i class="fas fa-quote-right text-dharma-orange text-lg ml-1"></i>
                     </p>
                 </div>
@@ -154,34 +121,27 @@
                     <div class="w-1 h-6 bg-dharma-orange rounded"></div>
                     <h3 class="text-lg font-header font-bold text-gray-800">นโยบายหลัก: ทำจริง เพื่อชีวิตที่ดีขึ้น</h3>
                 </div>
-
+                
                 <div class="grid grid-cols-3 gap-3">
                     <!-- Policy 1 -->
-                    <div
-                        class="bg-blue-50 rounded-xl p-2 border border-blue-100 text-center shadow-sm hover:shadow-md transition-shadow">
-                        <div
-                            class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
+                    <div class="bg-blue-50 rounded-xl p-2 border border-blue-100 text-center shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
                             <i class="fas fa-tint text-sm"></i>
                         </div>
                         <h4 class="font-bold text-blue-800 text-sm mb-0.5">น้ำคือชีวิต</h4>
                         <p class="text-[10px] text-gray-600 leading-tight">คนไทยต้องดื่มน้ำฟรี<br>รัฐจัดหาให้</p>
                     </div>
                     <!-- Policy 2 -->
-                    <div
-                        class="bg-orange-50 rounded-xl p-2 border border-orange-100 text-center shadow-sm hover:shadow-md transition-shadow">
-                        <div
-                            class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
+                    <div class="bg-orange-50 rounded-xl p-2 border border-orange-100 text-center shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
                             <i class="fas fa-graduation-cap text-sm"></i>
                         </div>
                         <h4 class="font-bold text-orange-800 text-sm mb-0.5">การศึกษาฟรี</h4>
-                        <p class="text-[10px] text-gray-600 leading-tight">ถึง ป.ตรี ไม่มีหนี้<br><span
-                                class="text-red-500 font-bold">ไม่ต้องกู้ กยศ.</span></p>
+                        <p class="text-[10px] text-gray-600 leading-tight">ถึง ป.ตรี ไม่มีหนี้<br><span class="text-red-500 font-bold">ไม่ต้องกู้ กยศ.</span></p>
                     </div>
                     <!-- Policy 3 -->
-                    <div
-                        class="bg-green-50 rounded-xl p-2 border border-green-100 text-center shadow-sm hover:shadow-md transition-shadow">
-                        <div
-                            class="w-8 h-8 bg-dharma-green rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
+                    <div class="bg-green-50 rounded-xl p-2 border border-green-100 text-center shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-8 h-8 bg-dharma-green rounded-full flex items-center justify-center text-white mx-auto mb-1 shadow">
                             <i class="fas fa-shopping-basket text-sm"></i>
                         </div>
                         <h4 class="font-bold text-green-800 text-sm mb-0.5">เศรษฐกิจชุมชน</h4>
@@ -200,9 +160,7 @@
                 <div class="flex rounded-xl overflow-hidden shadow-sm border border-gray-200 h-28">
                     <!-- Left: Outside Parliament -->
                     <div class="w-1/2 bg-yellow-50 p-3 border-r border-yellow-100 relative">
-                        <div
-                            class="absolute top-0 right-0 p-1 bg-yellow-200 rounded-bl text-[9px] font-bold text-yellow-800">
-                            ทำได้ทันที</div>
+                        <div class="absolute top-0 right-0 p-1 bg-yellow-200 rounded-bl text-[9px] font-bold text-yellow-800">ทำได้ทันที</div>
                         <div class="flex flex-row items-center gap-2 mb-1">
                             <i class="fas fa-hands-helping text-xl text-yellow-600"></i>
                             <h4 class="font-bold text-gray-800 text-sm">งานนอกสภา</h4>
@@ -216,9 +174,7 @@
 
                     <!-- Right: Inside Parliament -->
                     <div class="w-1/2 bg-indigo-50 p-3 relative">
-                        <div
-                            class="absolute top-0 right-0 p-1 bg-indigo-200 rounded-bl text-[9px] font-bold text-indigo-800">
-                            เป้าหมายใหญ่</div>
+                        <div class="absolute top-0 right-0 p-1 bg-indigo-200 rounded-bl text-[9px] font-bold text-indigo-800">เป้าหมายใหญ่</div>
                         <div class="flex flex-row items-center gap-2 mb-1">
                             <i class="fas fa-landmark text-xl text-indigo-600"></i>
                             <h4 class="font-bold text-gray-800 text-sm">งานในสภา</h4>
@@ -231,7 +187,7 @@
                     </div>
                 </div>
             </section>
-
+            
             <!-- SECTION 4: EXECUTIVE DIRECTORY (New Section) -->
             <section>
                 <div class="flex items-center gap-2 mb-2">
@@ -241,54 +197,42 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                1</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">1</div>
                             <div>
                                 <p class="font-bold text-gray-800">นายบุณยติเลิศ สาระ</p>
                                 <p class="text-gray-500 text-[10px]">หัวหน้าพรรค</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                2</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">2</div>
                             <div>
                                 <p class="font-bold text-gray-800">นายสุริยา โคตรภูธร</p>
                                 <p class="text-gray-500 text-[10px]">เลขาธิการพรรค</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                3</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">3</div>
                             <div>
                                 <p class="font-bold text-gray-800">นางสาวธยาพา เนขขัมม์</p>
                                 <p class="text-gray-500 text-[10px]">เหรัญญิกพรรค</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                4</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">4</div>
                             <div>
                                 <p class="font-bold text-gray-800">นางจิราภรณ์ สารตันติพงศ์</p>
                                 <p class="text-gray-500 text-[10px]">นายทะเบียนสมาชิกพรรค</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                5</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">5</div>
                             <div>
                                 <p class="font-bold text-gray-800">นายฐิติเมธินทร์ หลุ่นประพันธ์</p>
                                 <p class="text-gray-500 text-[10px]">กรรมการบริหารพรรค</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div
-                                class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">
-                                6</div>
+                            <div class="bg-orange-100 text-dharma-orange font-bold px-1.5 rounded mr-2 min-w-[20px] text-center">6</div>
                             <div>
                                 <p class="font-bold text-gray-800">นายอภิเกียรติ ประสงค์</p>
                                 <p class="text-gray-500 text-[10px]">กรรมการบริหารพรรค</p>
@@ -301,32 +245,45 @@
             <!-- SECTION 3: SUPPORT CHANNELS -->
             <section class="mt-2">
                 <div class="bg-gradient-to-r from-dharma-orange to-orange-400 rounded-t-xl p-1.5 text-center">
-                    <h3 class="text-white font-bold text-base"><i
-                            class="fas fa-star mr-2 text-yellow-300"></i>ร่วมเป็นพลังสีขาวกับเรา</h3>
+                    <h3 class="text-white font-bold text-base"><i class="fas fa-star mr-2 text-yellow-300"></i>ร่วมเป็นพลังสีขาวกับเรา</h3>
                 </div>
                 <div class="border-x-2 border-b-2 border-orange-400 rounded-b-xl p-2 bg-white grid grid-cols-3 gap-2">
-
+                    
                     <!-- Col 1: Join -->
-                    <div class="text-center p-1 border-r border-gray-100">
-                        <i class="fas fa-user-check text-xl text-dharma-orange mb-0.5"></i>
-                        <h4 class="font-bold text-xs">สมัครสมาชิก</h4>
-                        <a href="https://landofdharmaparty.org/"
-                            class="inline-block bg-gray-100 text-gray-600 text-[9px] px-2 py-0.5 rounded hover:bg-gray-200 my-1">
-                            landofdharmaparty.org
-                        </a>
-                        <p class="text-[9px] text-dharma-orange">หรือติดต่อสาขาร้อยเอ็ด</p>
+                    <div class="text-center p-1 border-r border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <i class="fas fa-user-check text-xl text-dharma-orange mb-0.5"></i>
+                            <h4 class="font-bold text-xs mb-1">สมัครสมาชิก</h4>
+                            
+                            <!-- Benefits List (Added) -->
+                            <div class="bg-orange-50 rounded p-1.5 mb-1 text-left border border-orange-100">
+                                <p class="text-[9px] font-bold text-dharma-orange mb-0.5 border-b border-orange-200 pb-0.5">สิทธิประโยชน์สมาชิก:</p>
+                                <ul class="text-[8px] text-gray-700 list-disc list-inside leading-tight space-y-0.5">
+                                    <li>ได้เสนอนโยบายพรรค</li>
+                                    <li>สิทธิ์ลงคะแนนเลือกตัวแทน</li>
+                                    <li>ติดตามการทำงานพรรค</li>
+                                    <li>รับข่าวสารความก้าวหน้า</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <a href="https://landofdharmaparty.org/" class="inline-block bg-gray-100 text-gray-600 text-[9px] px-2 py-0.5 rounded hover:bg-gray-200 w-full mb-0.5">
+                                landofdharmaparty.org
+                            </a>
+                            <p class="text-[8px] text-gray-500">หรือติดต่อสาขาร้อยเอ็ด</p>
+                        </div>
                     </div>
 
                     <!-- Col 2: Tax (Highlight) -->
-                    <div
-                        class="text-center p-1 bg-yellow-50 rounded-lg border border-yellow-200 transform scale-105 shadow-md z-10">
+                    <div class="text-center p-1 bg-yellow-50 rounded-lg border border-yellow-200 transform scale-105 shadow-md z-10 flex flex-col justify-center">
                         <i class="fas fa-file-invoice-dollar text-xl text-green-600 mb-0.5"></i>
                         <h4 class="font-bold text-xs text-green-700">สนับสนุนผ่านภาษี</h4>
-                        <div class="bg-white border-2 border-green-500 rounded p-0.5 my-0.5">
-                            <p class="text-[10px] font-black text-gray-800">รหัสพรรค <span
-                                    class="text-lg text-dharma-orange">188</span></p>
+                        <div class="bg-white border-2 border-green-500 rounded p-0.5 my-1">
+                            <p class="text-[10px] font-black text-gray-800">รหัสพรรค <span class="text-lg text-dharma-orange">188</span></p>
                         </div>
                         <p class="text-[9px] font-bold text-red-500">ฟรี! ไม่ต้องจ่ายเงินเพิ่ม</p>
+                        <p class="text-[8px] text-gray-500 mt-0.5 leading-tight">เงินภาษีจะถูกส่งมาสนับสนุนพรรค</p>
                     </div>
 
                     <!-- Col 3: Donate -->
@@ -336,8 +293,7 @@
                             <h4 class="font-bold text-xs">บริจาคสมทบทุน</h4>
                         </div>
                         <div class="mt-0.5">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FQR%E0%B8%98%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%A3%E0%B8%9E%E0%B8%A3%E0%B8%A3%E0%B8%84%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1.jpg?alt=media&token=6033590d-4a2d-477f-9549-a5b6c57badc3"
-                                alt="QR Code" class="w-full h-12 object-contain rounded border border-gray-200 mb-0.5">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FQR%E0%B8%98%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%A3%E0%B8%9E%E0%B8%A3%E0%B8%A3%E0%B8%84%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1.jpg?alt=media&token=6033590d-4a2d-477f-9549-a5b6c57badc3" alt="QR Code" class="w-full h-12 object-contain rounded border border-gray-200 mb-0.5">
                             <p class="text-[9px] font-bold text-gray-700">ธ.ไทยพาณิชย์</p>
                             <p class="text-[9px] font-black text-dharma-orange">435-020181-3</p>
                             <p class="text-[8px] text-green-600 font-bold mt-0.5">*พรรคออกใบเสร็จลดหย่อนภาษีได้</p>
@@ -354,14 +310,10 @@
             <div class="py-4 px-6 flex flex-col md:flex-row items-center justify-center gap-6">
                 <!-- Leader Image (Same size as User - Rounded Rect) -->
                 <div class="w-24 h-24 flex-shrink-0 relative group">
-                    <div
-                        class="absolute inset-0 bg-dharma-gold rounded-xl blur-sm opacity-50 group-hover:opacity-80 transition-opacity">
-                    </div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2F1763901555168.jpg?alt=media&token=2d1625ab-52bc-4937-84a5-6ff546e5bcd5"
-                        alt="หัวหน้าพรรค"
-                        class="w-24 h-24 rounded-xl object-cover border-4 border-gray-700 shadow-lg relative z-10">
+                    <div class="absolute inset-0 bg-dharma-gold rounded-xl blur-sm opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                    <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2F1763901555168.jpg?alt=media&token=2d1625ab-52bc-4937-84a5-6ff546e5bcd5" alt="หัวหน้าพรรค" class="w-24 h-24 rounded-xl object-cover border-4 border-gray-700 shadow-lg relative z-10">
                 </div>
-
+                
                 <!-- Quote & Info -->
                 <div class="text-center md:text-left flex-1 max-w-lg">
                     <p class="font-header italic text-sm text-yellow-100 mb-2">
@@ -378,13 +330,12 @@
             <!-- Contact Strip -->
             <div class="bg-dharma-orange py-2 px-4 text-center">
                 <div class="flex flex-col items-center gap-2 text-sm">
-
+                    
                     <!-- Row 1: Label + Name + Photo -->
                     <div class="flex flex-wrap justify-center items-center gap-2 md:gap-4">
                         <span class="font-light text-white">สอบถามข้อมูลเพิ่มเติม:</span>
                         <div class="flex items-center gap-2">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FGemini_Generated_Image_9unn6j9unn6j9unn.png?alt=media&token=cec04aca-8527-4d77-aeb2-60417406b69b"
-                                class="w-8 h-8 rounded-lg border border-white object-cover" alt="วินัย ผันอากาศ">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2FGemini_Generated_Image_9unn6j9unn6j9unn.png?alt=media&token=cec04aca-8527-4d77-aeb2-60417406b69b" class="w-8 h-8 rounded-lg border border-white object-cover" alt="วินัย ผันอากาศ">
                             <span class="font-bold text-white">คุณวินัย ผันอากาศ (ร้อยเอ็ด)</span>
                         </div>
                     </div>
@@ -392,23 +343,20 @@
                     <!-- Row 2: Contact Details (Phone + Line + QR) -->
                     <div class="flex flex-wrap justify-center items-center gap-3 mt-1">
                         <!-- Phone -->
-                        <div
-                            class="flex items-center gap-1 bg-white text-dharma-orange px-3 py-1 rounded-full font-bold shadow-sm text-xs">
+                        <div class="flex items-center gap-1 bg-white text-dharma-orange px-3 py-1 rounded-full font-bold shadow-sm text-xs">
                             <i class="fas fa-phone-alt"></i>
                             <span>092-653-3228</span>
                         </div>
-
+                        
                         <!-- Line ID -->
-                        <div
-                            class="flex items-center gap-1 bg-[#06C755] text-white px-3 py-1 rounded-full font-bold shadow-sm text-xs border border-white">
+                        <div class="flex items-center gap-1 bg-[#06C755] text-white px-3 py-1 rounded-full font-bold shadow-sm text-xs border border-white">
                             <i class="fab fa-line text-lg"></i>
                             <span>ID: 0926533228</span>
                         </div>
 
                         <!-- Line QR Code Image -->
                         <div class="bg-white p-1 rounded-lg shadow-md border border-gray-200">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2F13653.jpg?alt=media&token=914cac4e-a355-46ff-a432-34edf08b0258"
-                                alt="Line QR Code" class="h-12 w-12 object-contain">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/firepak%2F13653.jpg?alt=media&token=914cac4e-a355-46ff-a432-34edf08b0258" alt="Line QR Code" class="h-12 w-12 object-contain">
                         </div>
                     </div>
 
@@ -419,5 +367,4 @@
     </div>
 
 </body>
-
 </html>
